@@ -2,8 +2,10 @@ import { useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import { departureFuel, phaseOf, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
+import { departureFuel, phaseOf, type AttackRun, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
+import { AttackCard, AttackPicture } from './Popup'
+import type { PopupResult } from '../nav/popup'
 
 // DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
@@ -17,8 +19,10 @@ const LOITER_ROW = 0.4
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
 /** The nav log as one or more kneeboard pages, with PNG and PDF export. */
-export function Kneeboard({ mission, rows, settings: s, fuel }:
-  { mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null }) {
+export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
+  mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null
+  run: AttackRun | null; attack: PopupResult | null
+}) {
   const pagesRef = useRef<HTMLDivElement>(null)
   const [busy, setBusy] = useState<string | null>(null)
 
@@ -81,6 +85,7 @@ export function Kneeboard({ mission, rows, settings: s, fuel }:
           <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
+        {run && attack && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
       </div>
     </section>
   )
@@ -155,6 +160,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
                   <span class="kb-tacan">{tacanFix(mission, r.wp)}</span>
                   <span>INS {ddm(r.wp)}</span>
                   <span class="kb-dms">{dms(r.wp)}</span>
+                  {r.wp.elevFt !== undefined && <span>ELEV {lb(r.wp.elevFt)}{r.wp.elevSource === 'dem' ? '≈' : ''}</span>}
                 </td>
               </tr>
               {r.loiter && (
@@ -179,6 +185,33 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         MC/MH magnetic · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
         leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
       </div>
+    </div>
+  )
+}
+
+/** The pop-up attack card and picture as its own kneeboard page. */
+function AttackPage({ mission, rows, run, attack }: { mission: MissionExport; rows: Row[]; run: AttackRun; attack: PopupResult }) {
+  const tgt = rows[run.tgt].wp
+  const ip = rows[run.ip].wp
+  const p = attack.inputs
+  return (
+    <div class="kb-page kb-attack">
+      <div class="kb-title">
+        <span>{mission.mission.name}</span>
+        <span class="kb-pageno">POP-UP ATTACK</span>
+      </div>
+      <div class="kb-line">
+        <span>IP <b>{ip.name}</b></span>
+        <span>TGT <b>{tgt.name}</b></span>
+        <span>Elev <b>{Math.round(p.tgtElev).toLocaleString('en-US')}</b>{tgt.elevSource === 'dem' ? '≈' : ''} MSL</span>
+        <span>Dive <b>{p.dive}°</b></span>
+        <span>Rel <b>{Math.round(p.relAgl).toLocaleString('en-US')}</b> AGL</span>
+      </div>
+      <div class="kb-strip"><small>TGT</small> {tacanFix(mission, tgt)} · INS {ddm(tgt)}</div>
+      {attack.warning && <div class="kb-warn">{attack.warning}</div>}
+      <AttackCard attack={attack} />
+      <AttackPicture attack={attack} />
+      <div class="kb-foot">Nil wind · action right drawn, left is the mirror image · ranges are ground distance to the target</div>
     </div>
   )
 }

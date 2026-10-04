@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, WAYPOINT_TAGS, computeRows, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+import { AIRCRAFT, WAYPOINT_TAGS, attackRun, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
+import { PopupPanel } from './Popup'
+import { defaultPopup, popupAttack } from '../nav/popup'
+import { lookupElevations } from '../nav/elevation'
 
 const STORAGE_KEY = 'flightplanner.v2'
 
@@ -77,6 +80,24 @@ export function App() {
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
   const fuel = useMemo(() => (settings ? fuelPlan(route, settings) : null), [route, settings])
+  // Waypoints with no elevation get one from the terrain lookup; each is tried once per visit.
+  const tried = useRef(new Set<string>())
+  useEffect(() => {
+    const need = route.filter((w) => w.elevFt === undefined && !tried.current.has(w.id))
+    if (need.length === 0) return
+    need.forEach((w) => tried.current.add(w.id))
+    lookupElevations(need)
+      .then((elev) => {
+        const byId = new Map(need.map((w, i) => [w.id, elev[i]]))
+        setRoute((r) => r.map((w) => (w.elevFt === undefined && byId.has(w.id)
+          ? { ...w, elevFt: byId.get(w.id), elevSource: 'dem' as const } : w)))
+      })
+      .catch(() => { /* offline or blocked: elevations stay blank and can be typed */ })
+  }, [route])
+
+  const run = useMemo(() => (mission && settings ? attackRun(mission, route, settings) : null), [mission, route, settings])
+  const attack = useMemo(() => (run && settings ? popupAttack(popupInputs(run, settings.popup ?? defaultPopup())) : null),
+    [run, settings])
 
   return (
     <>
@@ -113,7 +134,8 @@ export function App() {
         <>
           <SettingsPanel settings={settings} route={route} fuel={fuel} onChange={setSettings} />
           <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
-          <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} />
+          <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
+          <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} />
         </>
       )}
     </>
@@ -235,7 +257,8 @@ function RoutePanel({ mission, route, settings, onChange }:
     const picked = byLabel.get(t) ?? points.find((p) => p.name.toLowerCase() === t.toLowerCase())
     let wp: Waypoint | null = null
     if (picked) {
-      wp = { id: newId(), name: picked.name, source: picked.kind, lat: picked.lat, lon: picked.lon }
+      wp = { id: newId(), name: picked.name, source: picked.kind, lat: picked.lat, lon: picked.lon,
+        ...(picked.elevFt === undefined ? {} : { elevFt: Math.round(picked.elevFt), elevSource: 'dcs' as const }) }
     } else {
       const fix = parseTacanFix(mission, t)
       const ll = fix ?? parseLatLon(t)
@@ -274,7 +297,7 @@ function RoutePanel({ mission, route, settings, onChange }:
       {route.length > 0 && (
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
+            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
@@ -282,6 +305,12 @@ function RoutePanel({ mission, route, settings, onChange }:
                 <td>{i}</td>
                 <td><input value={w.name} onInput={(e) => update(i, { name: (e.target as HTMLInputElement).value })} /></td>
                 <td class="muted">{w.source === 'manual' ? 'Typed' : kindLabel(w.source as CatalogPoint['kind'])}</td>
+                <td><input type="number" class="elev" value={w.elevFt ?? ''} placeholder="MSL"
+                  title={elevTitle(w)}
+                  onInput={(e) => {
+                    const v = optElev((e.target as HTMLInputElement).value)
+                    update(i, { elevFt: v, elevSource: v === undefined ? undefined : 'typed' })
+                  }} />{w.elevSource === 'dem' && <span class="muted small" title={elevTitle(w)}> ≈</span>}</td>
                 <td>{i > 0 && (
                   <select value={w.phase ?? ''} disabled={w.ff !== undefined}
                     onChange={(e) => {
@@ -347,6 +376,19 @@ function RoutePanel({ mission, route, settings, onChange }:
       )}
     </section>
   )
+}
+
+function elevTitle(w: Waypoint) {
+  return w.elevSource === 'dcs' ? 'From the DCS export'
+    : w.elevSource === 'dem' ? 'Real-world terrain lookup (close to DCS, not exact). Type a value to replace it.'
+    : w.elevSource === 'typed' ? 'Typed' : 'Looking up…'
+}
+
+/** Elevation may be zero or below sea level. */
+function optElev(v: string): number | undefined {
+  if (v.trim() === '') return undefined
+  const n = Number(v)
+  return Number.isFinite(n) ? n : undefined
 }
 
 function optNum(v: string): number | undefined {

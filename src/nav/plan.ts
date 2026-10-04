@@ -4,6 +4,7 @@
 import { inverse, norm360 } from './geodesy'
 import { magVarAt } from './mission'
 import type { LatLon, MissionExport } from './types'
+import { DEFAULT_INGRESS_AGL, type PopupInputs, type PopupSettings } from './popup'
 
 export type AircraftId = 'F-4E' | 'F-5E' | 'F-100D'
 export type PhaseId = 'cruise-high' | 'cruise-low' | 'mil' | 'ab'
@@ -112,6 +113,10 @@ export interface Waypoint extends LatLon {
   loiter?: { min: number; phase?: PhaseId }
   /** Initial point, CAP station, target, egress point. */
   tags?: WaypointTag[]
+  /** Ground elevation, ft MSL. */
+  elevFt?: number
+  /** Where elevFt came from: the DCS export, a real-world terrain lookup, or typed by the crew. */
+  elevSource?: 'dcs' | 'dem' | 'typed'
 }
 
 export interface PlanSettings {
@@ -137,6 +142,8 @@ export interface PlanSettings {
   /** Typed values replace the calculated joker / bingo. */
   jokerOverride?: number
   bingoOverride?: number
+  /** Pop-up attack numbers; unset = defaults. */
+  popup?: PopupSettings
 }
 
 export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSettings {
@@ -335,5 +342,44 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings): FuelPlan | null {
     bingo: s.bingoOverride ?? bingo,
     joker: s.jokerOverride ?? joker,
     calc: { rtbFuel, bingo, abLoiter, abEgress, cruiseHome, joker },
+  }
+}
+
+/** The IP-to-target run for the pop-up attack, taken from the route. */
+export interface AttackRun {
+  /** Route indexes of the IP and the target. */
+  ip: number
+  tgt: number
+  ipNm: number
+  /** Magnetic course IP to target. */
+  magCourse: number
+  /** TAS on the leg into the target. */
+  tas: number
+  /** Target waypoint elevation, ft MSL, when known. */
+  elevFt?: number
+}
+
+/** The first waypoint marked TGT, run in from the nearest earlier waypoint marked IP (else the waypoint before it). */
+export function attackRun(m: MissionExport, route: Waypoint[], s: PlanSettings): AttackRun | null {
+  const tgt = route.findIndex((w) => w.tags?.includes('TGT'))
+  if (tgt < 1) return null
+  let ip = tgt - 1
+  for (let i = tgt - 1; i >= 0; i--) if (route[i].tags?.includes('IP')) { ip = i; break }
+  const a = route[ip]
+  const t = route[tgt]
+  const { az, nm } = inverse(a.lat, a.lon, t.lat, t.lon)
+  return { ip, tgt, ipNm: nm, magCourse: norm360(az - magVarAt(m, a)), tas: t.tas ?? s.tas, elevFt: t.elevFt }
+}
+
+/** Pop-up inputs with the route filling IP range, ingress speed and heading unless the crew overrode them. */
+export function popupInputs(run: AttackRun | null, p: PopupSettings): PopupInputs {
+  const tgtElev = run?.elevFt ?? NaN
+  return {
+    dive: p.dive, ktas: p.ktas, track: p.track, tgtElev,
+    relAgl: p.relRef === 'agl' ? p.rel : p.rel - tgtElev,
+    g: p.g, ingAlt: p.ingAlt ?? tgtElev + DEFAULT_INGRESS_AGL,
+    ipNm: p.ipNm ?? run?.ipNm ?? NaN,
+    ingressKt: p.ingressKt ?? run?.tas ?? NaN,
+    hdg: p.hdg ?? (run ? Math.round(run.magCourse) || 360 : NaN),
   }
 }
