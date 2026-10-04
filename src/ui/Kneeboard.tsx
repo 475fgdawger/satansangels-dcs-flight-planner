@@ -11,6 +11,8 @@ export const PAGE_W = 768
 export const PAGE_H = 1024
 const EXPORT_SCALE = 2
 const ROWS_PER_PAGE = 10
+// A loiter line is about 40% of a waypoint's height on the page.
+const LOITER_ROW = 0.4
 
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
@@ -24,8 +26,17 @@ export function Kneeboard({ mission, rows, settings: s, fuel }:
     return <section class="panel no-print muted">Add waypoints to see the nav log.</section>
   }
 
-  const pages: Row[][] = []
-  for (let i = 0; i < rows.length; i += ROWS_PER_PAGE) pages.push(rows.slice(i, i + ROWS_PER_PAGE))
+  const pages: { first: number; rows: Row[] }[] = []
+  let used = Infinity
+  rows.forEach((r, i) => {
+    const h = 1 + (r.loiter ? LOITER_ROW : 0)
+    if (used + h > ROWS_PER_PAGE) {
+      pages.push({ first: i, rows: [] })
+      used = 0
+    }
+    pages[pages.length - 1].rows.push(r)
+    used += h
+  })
   const fileBase = `${mission.mission.theatre}_navlog`.replace(/[^A-Za-z0-9_-]+/g, '_')
 
   async function exportAs(kind: 'png' | 'pdf') {
@@ -66,8 +77,8 @@ export function Kneeboard({ mission, rows, settings: s, fuel }:
         </span>
       </div>
       <div ref={pagesRef} class="kb-pages">
-        {pages.map((pageRows, p) => (
-          <Page key={p} mission={mission} all={rows} rows={pageRows} first={p * ROWS_PER_PAGE}
+        {pages.map((pg, p) => (
+          <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
       </div>
@@ -98,14 +109,14 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         <span><b>{s.aircraft}</b></span>
         <span>T/O <b>{s.takeoff === undefined ? '______' : clock(s.takeoff)}</b></span>
         <span><b>{Math.round(last.totalNm)}</b> nm</span>
-        <span><b>{duration(last.elapsed)}</b> enroute</span>
+        <span><b>{duration(last.elapsedAfter)}</b> enroute</span>
         <span>{s.windKt > 0 ? <>Wind <b>{heading3(s.windDir)}/{s.windKt}</b>T</> : 'No wind'}</span>
       </div>
       <div class="kb-fuel">
         <div><small>START</small><b>{lb(s.startFuel)}</b></div>
         <div class="joker"><small>JOKER</small><b>{fuel ? lb(fuel.joker) : '—'}</b></div>
         <div class="bingo"><small>BINGO</small><b>{fuel ? lb(fuel.bingo) : '—'}</b></div>
-        <div><small>AT TGT</small><b>{fuel ? all[fuel.target].wp.name : '—'}</b></div>
+        <div><small>AT {fuel?.targetKind === 'CAP' ? 'CAP' : 'TGT'}</small><b>{fuel ? all[fuel.target].wp.name : '—'}</b></div>
       </div>
       <div class="kb-strip"><small>TACAN</small> {beacons.join(' · ')}</div>
       <div class="kb-strip">
@@ -127,7 +138,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
               <tr class="kb-main">
                 <td class="kb-num">{i}</td>
                 <td class="kb-name">
-                  {r.wp.name}{fuel?.target === i && <span class="tag">TGT</span>}
+                  {r.wp.name}{r.wp.tags?.map((t) => <span key={t} class="tag">{t}</span>)}
                   <div class="kb-near">{nearRef(mission, r.wp, mv)}</div>
                 </td>
                 <td class="n">{r.leg ? heading3(r.leg.magCourse) : ''}</td>
@@ -146,6 +157,19 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
                   <span class="kb-dms">{dms(r.wp)}</span>
                 </td>
               </tr>
+              {r.loiter && (
+                <tr class={`kb-loiter ${lowFuel(r.fuelAfter)}`}>
+                  <td />
+                  <td colSpan={5}>
+                    <b>LOITER {duration(r.loiter.min)}</b>
+                    <span>{r.loiter.phase ? r.loiter.phase.short : `${Math.round(r.loiter.ff)} lb/hr`}</span>
+                    <span>{lb(r.loiter.fuel)} lb</span>
+                  </td>
+                  <td class="n">OUT</td>
+                  <td class="n">{s.takeoff === undefined ? '' : clock(s.takeoff + r.elapsedAfter * 60)}</td>
+                  <td class="n">{lb(r.fuelAfter)}</td>
+                </tr>
+              )}
             </tbody>
           )
         })}
@@ -153,7 +177,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
 
       <div class="kb-foot">
         MC/MH magnetic · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
-        leg 1 includes {lb(dep.climb)} MIL climb{fuel ? ' · shaded rows below joker/bingo' : ''}
+        leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
       </div>
     </div>
   )

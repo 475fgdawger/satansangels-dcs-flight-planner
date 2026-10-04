@@ -95,6 +95,10 @@ export function phaseOf(aircraft: AircraftId, id: PhaseId): Phase {
   return phases.find((p) => p.id === id) ?? phases[0]
 }
 
+/** Waypoint roles shown on the nav log. TGT and CAP also set where joker and bingo are measured. */
+export const WAYPOINT_TAGS = ['IP', 'CAP', 'TGT', 'EP'] as const
+export type WaypointTag = (typeof WAYPOINT_TAGS)[number]
+
 export interface Waypoint extends LatLon {
   id: string
   name: string
@@ -106,6 +110,10 @@ export interface Waypoint extends LatLon {
   phase?: PhaseId
   /** Custom fuel flow (lb/hr) for the leg INTO this waypoint; overrides the phase. */
   ff?: number
+  /** Time spent holding at this waypoint before the next leg; phase unset = same as the leg in. */
+  loiter?: { min: number; phase?: PhaseId }
+  /** Initial point, CAP station, target, egress point. */
+  tags?: WaypointTag[]
 }
 
 export interface PlanSettings {
@@ -181,7 +189,14 @@ export interface Row {
   /** Seconds after midnight; null when no takeoff time is set. */
   eta: number | null
   totalNm: number
+  /** Fuel on arrival at this waypoint. */
   fuelRemaining: number
+  /** Holding at this waypoint; null when the waypoint has no loiter. */
+  loiter: { min: number; ff: number; phase: Phase | null; fuel: number } | null
+  /** Fuel when leaving this waypoint (after any loiter). */
+  fuelAfter: number
+  /** Minutes since takeoff when leaving this waypoint (after any loiter). */
+  elapsedAfter: number
 }
 
 /** Wind triangle. Returns true heading and ground speed; null when the wind is stronger than TAS allows. */
@@ -204,40 +219,61 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
   let fuel = s.startFuel - departureFuel(s).beforeFirstLeg
   const milFf = phaseOf(s.aircraft, 'mil').ff
   route.forEach((wp, i) => {
-    if (i === 0) {
-      rows.push({ wp, leg: null, elapsed: 0, eta: s.takeoff ?? null, totalNm: 0, fuelRemaining: fuel })
-      return
+    let leg: Leg | null = null
+    if (i > 0) {
+      const from = route[i - 1]
+      const { az, nm } = inverse(from.lat, from.lon, wp.lat, wp.lon)
+      const magVar = magVarAt(m, from)
+      const tas = wp.tas ?? s.tas
+      const phase = wp.ff === undefined ? phaseOf(s.aircraft, wp.phase ?? s.phase) : null
+      const ff = wp.ff ?? phase!.ff
+      const wind = windTriangle(az, tas, s.windDir, s.windKt) ?? { heading: az, gs: tas }
+      const ete = (nm / wind.gs) * 60
+      // The climb at MIL is flown at the start of the first leg; the rest of the leg uses its own phase.
+      const climbMin = i === 1 ? Math.min(Math.max(s.climbMin, 0), ete) : 0
+      const fuelUsed = (milFf * climbMin + ff * (ete - climbMin)) / 60
+      elapsed += ete
+      totalNm += nm
+      fuel -= fuelUsed
+      leg = { to: i, trueCourse: az, magCourse: norm360(az - magVar), magHeading: norm360(wind.heading - magVar),
+        magVar, nm, tas, gs: wind.gs, ete, ff, phase, climbMin, fuelUsed }
     }
-    const from = route[i - 1]
-    const { az, nm } = inverse(from.lat, from.lon, wp.lat, wp.lon)
-    const magVar = magVarAt(m, from)
-    const tas = wp.tas ?? s.tas
-    const phase = wp.ff === undefined ? phaseOf(s.aircraft, wp.phase ?? s.phase) : null
-    const ff = wp.ff ?? phase!.ff
-    const wind = windTriangle(az, tas, s.windDir, s.windKt) ?? { heading: az, gs: tas }
-    const ete = (nm / wind.gs) * 60
-    // The climb at MIL is flown at the start of the first leg; the rest of the leg uses its own phase.
-    const climbMin = i === 1 ? Math.min(Math.max(s.climbMin, 0), ete) : 0
-    const fuelUsed = (milFf * climbMin + ff * (ete - climbMin)) / 60
-    elapsed += ete
-    totalNm += nm
-    fuel -= fuelUsed
+    const arrival = { elapsed, fuel }
+    const loiter = loiterAt(wp, leg, s)
+    if (loiter) {
+      elapsed += loiter.min
+      fuel -= loiter.fuel
+    }
     rows.push({
       wp,
-      leg: { to: i, trueCourse: az, magCourse: norm360(az - magVar), magHeading: norm360(wind.heading - magVar),
-        magVar, nm, tas, gs: wind.gs, ete, ff, phase, climbMin, fuelUsed },
-      elapsed,
-      eta: s.takeoff === undefined ? null : s.takeoff + elapsed * 60,
+      leg,
+      elapsed: arrival.elapsed,
+      eta: s.takeoff === undefined ? null : s.takeoff + arrival.elapsed * 60,
       totalNm,
-      fuelRemaining: fuel,
+      fuelRemaining: arrival.fuel,
+      loiter,
+      fuelAfter: fuel,
+      elapsedAfter: elapsed,
     })
   })
   return rows
 }
 
+/** Loiter fuel flow: the loiter's own phase, else whatever the leg in was flown at, else the plan default. */
+function loiterAt(wp: Waypoint, leg: Leg | null, s: PlanSettings): Row['loiter'] {
+  const min = wp.loiter?.min ?? 0
+  if (!(min > 0)) return null
+  const phase = wp.loiter!.phase ? phaseOf(s.aircraft, wp.loiter!.phase)
+    : leg ? leg.phase : phaseOf(s.aircraft, s.phase)
+  const ff = phase ? phase.ff : leg!.ff
+  return { min, ff, phase, fuel: (ff * min) / 60 }
+}
+
 export interface FuelPlan {
   /** Route index of the target / CAP station. */
   target: number
+  /** How the target was chosen: a TGT or CAP mark, or the farthest point from base. */
+  targetKind: 'TGT' | 'CAP' | 'auto'
   /** Direct distance target -> last waypoint (base), nm. */
   rtbNm: number
   bingo: number
@@ -266,7 +302,9 @@ export const JOKER_AB_EGRESS_NM = 30
 export function fuelPlan(route: Waypoint[], s: PlanSettings): FuelPlan | null {
   if (route.length < 2) return null
   const base = route[route.length - 1]
-  let target = route.findIndex((w) => w.id === s.targetId)
+  // The first waypoint marked TGT or CAP; plans saved before tags existed use targetId.
+  let target = route.slice(0, -1).findIndex((w) => w.tags?.includes('TGT') || w.tags?.includes('CAP'))
+  if (target < 0) target = route.findIndex((w) => w.id === s.targetId)
   if (target < 0 || target === route.length - 1) {
     target = 0
     let best = -1
@@ -276,6 +314,7 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings): FuelPlan | null {
     })
   }
   const t = route[target]
+  const targetKind = t.tags?.includes('TGT') ? 'TGT' : t.tags?.includes('CAP') ? 'CAP' : 'auto'
   const { az, nm: rtbNm } = inverse(t.lat, t.lon, base.lat, base.lon)
   const a = AIRCRAFT[s.aircraft]
   const cruise = a.phases.reduce((lo, p) => (p.ff < lo.ff ? p : lo))
@@ -293,6 +332,7 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings): FuelPlan | null {
 
   return {
     target,
+    targetKind,
     rtbNm,
     bingo: s.bingoOverride ?? bingo,
     joker: s.jokerOverride ?? joker,
