@@ -1,11 +1,12 @@
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import type { PlanSettings, Row } from '../nav/plan'
+import { departureFuel, phaseOf, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 
 /** The printable kneeboard card. */
-export function NavLog({ mission, rows, settings: s }: { mission: MissionExport; rows: Row[]; settings: PlanSettings }) {
+export function NavLog({ mission, rows, settings: s, fuel }:
+  { mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null }) {
   if (rows.length === 0) {
     return <section class="panel no-print muted">Add waypoints to see the nav log.</section>
   }
@@ -14,7 +15,9 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
     ...mission.tacans.map((t) => ({ id: t.id, chan: t.chan, site: '' })),
     ...(EXTRA_BEACONS[mission.mission.theatre] ?? []),
   ]
-  const lowFuel = (f: number) => (f < s.bingo ? 'bingo' : f < s.joker ? 'joker' : '')
+  const lowFuel = (f: number) => (!fuel ? '' : f < fuel.bingo ? 'bingo' : f < fuel.joker ? 'joker' : '')
+  const lb = (n: number) => Math.round(n).toLocaleString('en-US')
+  const dep = departureFuel(s)
 
   return (
     <section class="navlog">
@@ -24,7 +27,7 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
           <div>{s.aircraft} · T/O {clock(s.takeoff)} · {Math.round(last.totalNm)} nm · {duration(last.elapsed)} enroute</div>
         </div>
         <div class="right">
-          <div>Fuel {s.startFuel} lb · Joker {s.joker} · Bingo {s.bingo}</div>
+          <div>Fuel {lb(s.startFuel)} lb{fuel && <> · Joker {lb(fuel.joker)} · Bingo {lb(fuel.bingo)} (at {rows[fuel.target].wp.name})</>}</div>
           <div>{s.windKt > 0 ? `Wind ${heading3(s.windDir)}/${s.windKt} kt (true)` : 'No wind'}</div>
         </div>
       </div>
@@ -41,6 +44,7 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
             <th>MH</th>
             <th>Dist</th>
             <th>GS</th>
+            <th>Pwr</th>
             <th>ETE</th>
             <th>ETA</th>
             <th>Fuel</th>
@@ -53,7 +57,7 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
               <tr key={r.wp.id} class={lowFuel(r.fuelRemaining)}>
                 <td>{i}</td>
                 <td>
-                  <strong>{r.wp.name}</strong>
+                  <strong>{r.wp.name}</strong>{fuel?.target === i && <span class="tag">TGT</span>}
                   <div class="sub">{nearRef(mission, r.wp, mv)}</div>
                 </td>
                 <td class="mono">{tacanFix(mission, r.wp)}</td>
@@ -63,9 +67,10 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
                 <td class="num">{r.leg ? heading3(r.leg.magHeading) : ''}</td>
                 <td class="num">{r.leg ? r.leg.nm.toFixed(1) : ''}</td>
                 <td class="num">{r.leg ? Math.round(r.leg.gs) : ''}</td>
+                <td>{r.leg ? powerLabel(r.leg, s) : ''}</td>
                 <td class="num">{r.leg ? duration(r.leg.ete) : ''}</td>
                 <td class="num">{clock(r.eta)}</td>
-                <td class="num">{Math.round(r.fuelRemaining)}</td>
+                <td class="num">{lb(r.fuelRemaining)}</td>
               </tr>
             )
           })}
@@ -87,10 +92,16 @@ export function NavLog({ mission, rows, settings: s }: { mission: MissionExport;
         </table>
         <div class="notes">
           <div>MC/MH magnetic; TACAN fixes are radial from the station / nm.</div>
-          <div>Fuel is remaining at the waypoint (lb), after {s.taxiFuel} lb taxi/takeoff.</div>
+          <div>Fuel remaining at each waypoint (lb), after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB takeoff to 400 kt; leg 1 starts with {lb(dep.climb)} MIL climb.</div>
+          {fuel && <div>Joker/bingo are fuel states at TGT; rows below them are shaded.</div>}
           <div>Data exported {mission.built_utc}.</div>
         </div>
       </div>
     </section>
   )
+}
+
+function powerLabel(leg: NonNullable<Row['leg']>, s: PlanSettings): string {
+  const main = leg.phase ? leg.phase.short : `${Math.round(leg.ff)}/hr`
+  return leg.climbMin > 0 ? `${phaseOf(s.aircraft, 'mil').short} ${Math.round(leg.climbMin)}m, ${main}` : main
 }

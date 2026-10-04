@@ -3,7 +3,7 @@ import raw from './fixtures/targets_syria.json'
 import { direct, inverse } from '../src/nav/geodesy'
 import { compass16, ddm, dms, duration, heading3, parseClock, parseLatLon } from '../src/nav/format'
 import { airfields, catalog, magVarAt, nearRef, parseMission, parseTacanFix, runwayPairs, tacanFix } from '../src/nav/mission'
-import { computeRows, defaultSettings, windTriangle, type Waypoint } from '../src/nav/plan'
+import { AIRCRAFT, computeRows, defaultSettings, departureFuel, fuelPlan, windTriangle, type Waypoint } from '../src/nav/plan'
 
 const m = parseMission(raw)
 
@@ -99,20 +99,56 @@ describe('legs', () => {
     const x = windTriangle(360, 400, 90, 40)!
     expect(x.heading).toBeCloseTo(5.74, 1)
   })
-  it('computes time, distance and fuel along a route', () => {
-    const inc = airfields(m).find((a) => a.name === 'Incirlik')!
-    const t5 = m.targets.find((t) => t.name === 'T-5')!
-    const route: Waypoint[] = [
-      { id: 'a', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
-      { id: 'b', name: 'T-5', source: 'target', lat: t5.lat, lon: t5.lon },
-    ]
-    const s = { ...defaultSettings('F-4E', 43200), tas: 420, ff: 6000 }
+  const inc = airfields(m).find((a) => a.name === 'Incirlik')!
+  const t5 = m.targets.find((t) => t.name === 'T-5')!
+  const route: Waypoint[] = [
+    { id: 'a', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
+    { id: 'b', name: 'T-5', source: 'target', lat: t5.lat, lon: t5.lon },
+    { id: 'c', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
+  ]
+
+  it('F-4E departure (taxi, AB takeoff, MIL climb) is about 2,000 lb', () => {
+    const d = departureFuel(defaultSettings('F-4E', 43200))
+    expect(d.total).toBeGreaterThan(1800)
+    expect(d.total).toBeLessThan(2200)
+  })
+
+  it('computes time, distance and fuel along a route, with the climb on the first leg', () => {
+    const s = { ...defaultSettings('F-4E', 43200), tas: 420 }
+    const d = departureFuel(s)
     const rows = computeRows(m, route, s)
     const leg = rows[1].leg!
     expect(leg.nm).toBeGreaterThan(90)
     expect(leg.nm).toBeLessThan(95)
     expect(leg.ete).toBeCloseTo((leg.nm / 420) * 60, 6)
-    expect(rows[1].fuelRemaining).toBeCloseTo(12000 - 600 - leg.ete * 100, 6)
+    expect(leg.climbMin).toBe(4)
+    const want = 12200 - d.beforeFirstLeg - (13000 * 4 + 4250 * (leg.ete - 4)) / 60
+    expect(rows[1].fuelRemaining).toBeCloseTo(want, 6)
+    expect(rows[2].leg!.climbMin).toBe(0)
     expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)
+  })
+
+  it('a custom fuel flow overrides the leg phase', () => {
+    const s = defaultSettings('F-4E', 43200)
+    const rows = computeRows(m, [route[0], { ...route[1], phase: 'ab', ff: 5000 }], s)
+    expect(rows[1].leg!.ff).toBe(5000)
+    expect(rows[1].leg!.phase).toBeNull()
+  })
+
+  it('joker and bingo follow the squadron definitions', () => {
+    const s = { ...defaultSettings('F-4E', 43200), tas: 460, abTas: 550 }
+    const f = fuelPlan(route, s)!
+    expect(f.target).toBe(1)
+    const rtb = f.rtbNm
+    expect(f.calc.rtbFuel).toBeCloseTo((rtb / 460) * 4250, 6)
+    expect(f.bingo).toBe(Math.max(3000, f.calc.rtbFuel))
+    const joker = 65000 / 60 + (30 / 550) * 65000 + ((rtb - 30) / 460) * 4250
+    expect(f.joker).toBeCloseTo(Math.max(joker, f.bingo), 6)
+    expect(fuelPlan(route, { ...s, jokerOverride: 7000 })!.joker).toBe(7000)
+  })
+
+  it('bingo never drops below the floor', () => {
+    const near: Waypoint[] = [route[0], { ...route[0], id: 'x', lat: inc.lat + 0.1 }, { ...route[0], id: 'y' }]
+    expect(fuelPlan(near, defaultSettings('F-4E', 0))!.bingo).toBe(AIRCRAFT['F-4E'].bingoFloor)
   })
 })

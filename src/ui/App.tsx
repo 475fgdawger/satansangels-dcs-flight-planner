@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, computeRows, defaultSettings, type AircraftId, type PlanSettings, type Waypoint } from '../nav/plan'
+import { AIRCRAFT, computeRows, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+  type PlanSettings, type Waypoint } from '../nav/plan'
 import { NavLog } from './NavLog'
 
-const STORAGE_KEY = 'flightplanner.v1'
+const STORAGE_KEY = 'flightplanner.v2'
 
 interface Saved {
   mission: MissionExport
@@ -75,6 +76,7 @@ export function App() {
   }
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
+  const fuel = useMemo(() => (settings ? fuelPlan(route, settings) : null), [route, settings])
 
   return (
     <>
@@ -109,9 +111,10 @@ export function App() {
 
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} onChange={setSettings} />
-          <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
-          <NavLog mission={mission} rows={rows} settings={settings} />
+          <SettingsPanel settings={settings} fuel={fuel} onChange={setSettings} />
+          <RoutePanel mission={mission} route={route} settings={settings} fuel={fuel}
+            onChange={setRoute} onSettings={setSettings} />
+          <NavLog mission={mission} rows={rows} settings={settings} fuel={fuel} />
         </>
       )}
     </>
@@ -123,7 +126,9 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, onChange }: { settings: PlanSettings; onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, fuel, onChange }:
+  { settings: PlanSettings; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
+  const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
     <label class="field">
@@ -133,6 +138,15 @@ function SettingsPanel({ settings: s, onChange }: { settings: PlanSettings; onCh
       <small>{unit}</small>
     </label>
   )
+  const override = (label: string, key: 'jokerOverride' | 'bingoOverride', calc: number | undefined) => (
+    <label class="field">
+      <span>{label}</span>
+      <input type="number" value={s[key] ?? ''} placeholder={calc === undefined ? '' : String(Math.round(calc))}
+        onInput={(e) => set({ [key]: optNum((e.target as HTMLInputElement).value) })} />
+      <small>{s[key] === undefined ? 'lb, calculated' : 'lb, typed (clear to calculate)'}</small>
+    </label>
+  )
+  const load = a.fuelLoads.find((l) => l.lb === s.startFuel)
   return (
     <section class="panel no-print">
       <h2>Flight</h2>
@@ -141,7 +155,7 @@ function SettingsPanel({ settings: s, onChange }: { settings: PlanSettings; onCh
           <span>Aircraft</span>
           <select value={s.aircraft}
             onChange={(e) => onChange({ ...defaultSettings((e.target as HTMLSelectElement).value as AircraftId, s.takeoff),
-              windDir: s.windDir, windKt: s.windKt })}>
+              windDir: s.windDir, windKt: s.windKt, targetId: s.targetId })}>
             {Object.keys(AIRCRAFT).map((id) => <option value={id}>{id}</option>)}
           </select>
         </label>
@@ -154,22 +168,60 @@ function SettingsPanel({ settings: s, onChange }: { settings: PlanSettings; onCh
             }} />
           <small>mission time</small>
         </label>
+        <label class="field">
+          <span>Fuel load</span>
+          <select value={load ? String(load.lb) : 'custom'}
+            onChange={(e) => {
+              const v = (e.target as HTMLSelectElement).value
+              if (v !== 'custom') set({ startFuel: Number(v) })
+            }}>
+            {a.fuelLoads.map((l) => <option value={String(l.lb)}>{l.label} ({l.lb.toLocaleString('en-US')})</option>)}
+            {!load && <option value="custom">Custom</option>}
+          </select>
+        </label>
         {field('Start fuel', 'startFuel', 'lb')}
-        {field('Taxi/takeoff', 'taxiFuel', 'lb')}
-        {field('TAS', 'tas', 'kt')}
-        {field('Fuel flow', 'ff', 'lb/hr')}
-        {field('Joker', 'joker', 'lb')}
-        {field('Bingo', 'bingo', 'lb')}
+        {field('Taxi', 'taxiMin', `min at idle (${a.idleLbMin} lb/min)`)}
+        {field('AB takeoff', 'abTakeoffMin', 'min, full AB to 400 kt')}
+        {field('MIL climb', 'climbMin', 'min, start of first leg')}
+        {field('Cruise TAS', 'tas', 'kt')}
+        <label class="field">
+          <span>Default phase</span>
+          <select value={s.phase} onChange={(e) => set({ phase: (e.target as HTMLSelectElement).value as PhaseId })}>
+            {a.phases.map((p) => <option value={p.id}>{p.label} ({p.ff.toLocaleString('en-US')} lb/hr)</option>)}
+          </select>
+        </label>
+        {field('AB egress TAS', 'abTas', 'kt, for joker')}
+        {override('Joker', 'jokerOverride', fuel?.calc.joker)}
+        {override('Bingo', 'bingoOverride', fuel?.calc.bingo)}
         {field('Wind from', 'windDir', '° true')}
         {field('Wind speed', 'windKt', 'kt')}
       </div>
-      <p class="muted small">Fuel numbers are placeholder estimates for {s.aircraft}, not flight-manual data. Edit them for your flight.</p>
+      <p class="muted small">
+        Departure (taxi, AB takeoff to 400 kt, MIL climb): {Math.round(departureFuel(s).total).toLocaleString('en-US')} lb
+        = {Math.round(departureFuel(s).taxi)} taxi + {Math.round(departureFuel(s).takeoff)} AB
+        + {Math.round(departureFuel(s).climb)} climb. The climb is flown at the start of the first leg.
+      </p>
+      {fuel && (
+        <p class="muted small">
+          Joker and bingo are fuel states at the target ({fuel.rtbNm.toFixed(0)} nm from base).
+          Bingo: the higher of {a.bingoFloor.toLocaleString('en-US')} lb and {Math.round(fuel.calc.rtbFuel)} lb to fly home at
+          high cruise. Joker: {Math.round(fuel.calc.abLoiter)} lb for 1 min AB + {Math.round(fuel.calc.abEgress)} lb AB
+          for the first 30 nm + {Math.round(fuel.calc.cruiseHome)} lb high cruise home.
+        </p>
+      )}
+      <p class="muted small">
+        {a.placeholder
+          ? `${s.aircraft} fuel numbers are placeholders, not squadron figures. Edit them for your flight.`
+          : `${s.aircraft} fuel numbers are the squadron's initial planning figures.`}
+      </p>
     </section>
   )
 }
 
-function RoutePanel({ mission, route, settings, onChange }:
-  { mission: MissionExport; route: Waypoint[]; settings: PlanSettings; onChange: (r: Waypoint[]) => void }) {
+function RoutePanel({ mission, route, settings, fuel, onChange, onSettings }:
+  { mission: MissionExport; route: Waypoint[]; settings: PlanSettings; fuel: FuelPlan | null;
+    onChange: (r: Waypoint[]) => void; onSettings: (s: PlanSettings) => void }) {
+  const phases = AIRCRAFT[settings.aircraft].phases
   const points = useMemo(() => catalog(mission), [mission])
   const byLabel = useMemo(() => new Map(points.map((p) => [optionLabel(p), p])), [points])
   const [text, setText] = useState('')
@@ -220,7 +272,7 @@ function RoutePanel({ mission, route, settings, onChange }:
       {route.length > 0 && (
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th>TAS in (kt)</th><th>Fuel flow in (lb/hr)</th><th /></tr>
+            <tr><th>#</th><th>Name</th><th>From</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Target or CAP station for joker/bingo">Target</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
@@ -228,10 +280,25 @@ function RoutePanel({ mission, route, settings, onChange }:
                 <td>{i}</td>
                 <td><input value={w.name} onInput={(e) => update(i, { name: (e.target as HTMLInputElement).value })} /></td>
                 <td class="muted">{w.source === 'manual' ? 'Typed' : kindLabel(w.source as CatalogPoint['kind'])}</td>
+                <td>{i > 0 && (
+                  <select value={w.phase ?? ''} disabled={w.ff !== undefined}
+                    onChange={(e) => {
+                      const v = (e.target as HTMLSelectElement).value
+                      update(i, { phase: v === '' ? undefined : (v as PhaseId) })
+                    }}>
+                    <option value="">Default ({phaseOf(settings.aircraft, settings.phase).label})</option>
+                    {phases.map((p) => <option value={p.id} title={p.note}>{p.label} ({p.ff.toLocaleString('en-US')})</option>)}
+                  </select>
+                )}</td>
+                <td>{i > 0 && <input type="number" value={w.ff ?? ''}
+                  placeholder={String(phaseOf(settings.aircraft, w.phase ?? settings.phase).ff)}
+                  onInput={(e) => update(i, { ff: optNum((e.target as HTMLInputElement).value) })} />}</td>
                 <td>{i > 0 && <input type="number" placeholder={String(settings.tas)} value={w.tas ?? ''}
                   onInput={(e) => update(i, { tas: optNum((e.target as HTMLInputElement).value) })} />}</td>
-                <td>{i > 0 && <input type="number" placeholder={String(settings.ff)} value={w.ff ?? ''}
-                  onInput={(e) => update(i, { ff: optNum((e.target as HTMLInputElement).value) })} />}</td>
+                <td>{i < route.length - 1 && (
+                  <input type="radio" name="target" checked={fuel?.target === i}
+                    onChange={() => onSettings({ ...settings, targetId: w.id })} />
+                )}</td>
                 <td class="actions">
                   <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>
                   <button type="button" title="Move down" onClick={() => move(i, 1)}>↓</button>

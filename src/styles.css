@@ -64,8 +64,8 @@ table { border-collapse: collapse; width: 100%; }
 th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 
-.route input { width: 100%; }
-.route td:nth-child(4) input, .route td:nth-child(5) input { max-width: 110px; }
+.route input, .route select { width: 100%; }
+.route td:nth-child(5) input, .route td:nth-child(6) input { max-width: 110px; }
 .actions { white-space: nowrap; }
 .actions button { padding: 2px 8px; }
 
@@ -99,3 +99,5 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
   .navlog { border: none; padding: 0; overflow: visible; }
   .log tr.joker td, .log tr.bingo td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+.route input[type=radio] { width: auto; }
+.log .tag { margin-left: 6px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--ink); padding: 0 3px; }
