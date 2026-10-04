@@ -4,7 +4,7 @@ import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } fr
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, computeRows, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
-import { NavLog } from './NavLog'
+import { Kneeboard } from './Kneeboard'
 
 const STORAGE_KEY = 'flightplanner.v2'
 
@@ -114,7 +114,7 @@ export function App() {
           <SettingsPanel settings={settings} fuel={fuel} onChange={setSettings} />
           <RoutePanel mission={mission} route={route} settings={settings} fuel={fuel}
             onChange={setRoute} onSettings={setSettings} />
-          <NavLog mission={mission} rows={rows} settings={settings} fuel={fuel} />
+          <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} />
         </>
       )}
     </>
@@ -314,7 +314,6 @@ function RoutePanel({ mission, route, settings, fuel, onChange, onSettings }:
       {route.length > 0 && (
         <div class="row">
           <button type="button" onClick={() => onChange([])}>Clear route</button>
-          <button type="button" onClick={() => window.print()}>Print nav log</button>
         </div>
       )}
     </section>

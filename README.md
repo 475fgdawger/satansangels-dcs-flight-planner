@@ -11,7 +11,9 @@ radial/DME fix and coordinates for every waypoint.
 2. Add waypoints: pick an airfield, mission zone, range target, TACAN station, map label or place, or
    type a TACAN fix (`DAN 287/99`) or coordinates (`N37 37.05 E033 30.65`, DMS or decimal also work).
 3. Set aircraft, takeoff time, fuel, TAS and wind. Per-leg TAS and fuel flow can be overridden.
-4. Print the nav log (landscape). The route is saved in the browser.
+4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it.
+   PNGs go in `Saved Games\DCS\Kneeboard\<aircraft>` (or `Saved Games\DCS\Kneeboard` for every aircraft).
+   The route is saved in the browser.
 
 ## Nav conventions
 
