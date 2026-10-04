@@ -1,0 +1,5024 @@
+{
+ "schema": 1,
+ "mission": {
+  "name": "Syria TDY 433rd",
+  "file": "Syria_TDY_433rd.miz",
+  "theatre": "Syria",
+  "date": "2016-06-21 00:00:00",
+  "start_time": 43200
+ },
+ "built_utc": "2026-10-04T21:15:20Z",
+ "mag_var": {
+  "source": "DCS",
+  "fallback": 5.0
+ },
+ "tacans": [
+  {
+   "id": "DAN",
+   "chan": "21X",
+   "lat": 37.015611,
+   "lon": 35.448194,
+   "mag_var": 5.23
+  },
+  {
+   "id": "KON",
+   "chan": "88X",
+   "lat": 37.999037,
+   "lon": 32.564838,
+   "mag_var": 5.21
+  }
+ ],
+ "targets": [
+  {
+   "name": "T-1",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.617523,
+   "lon": 33.510843,
+   "mag_var": 5.22,
+   "latlon": "N37°37'03\" E033°30'39\"",
+   "tacan": "DAN 287/99, KON 111/50",
+   "near": "Karapinar West Range",
+   "line": "T-1, N37°37'03\" E033°30'39\", DAN 287/99, KON 111/50, Karapinar West Range"
+  },
+  {
+   "name": "T-2",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.58197,
+   "lon": 33.50942,
+   "mag_var": 5.21,
+   "latlon": "N37°34'55\" E033°30'34\"",
+   "tacan": "DAN 285/99, KON 114/51",
+   "near": "Karapinar West Range",
+   "line": "T-2, N37°34'55\" E033°30'34\", DAN 285/99, KON 114/51, Karapinar West Range"
+  },
+  {
+   "name": "T-3",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.601265,
+   "lon": 33.510606,
+   "mag_var": 5.22,
+   "latlon": "N37°36'05\" E033°30'38\"",
+   "tacan": "DAN 286/99, KON 112/51",
+   "near": "Karapinar West Range",
+   "line": "T-3, N37°36'05\" E033°30'38\", DAN 286/99, KON 112/51, Karapinar West Range"
+  },
+  {
+   "name": "T-4",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.602724,
+   "lon": 33.703923,
+   "mag_var": 5.23,
+   "latlon": "N37°36'10\" E033°42'14\"",
+   "tacan": "DAN 288/91, KON 108/59",
+   "near": "Karapinar West Range",
+   "line": "T-4, N37°36'10\" E033°42'14\", DAN 288/91, KON 108/59, Karapinar West Range"
+  },
+  {
+   "name": "T-5",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.606407,
+   "lon": 33.643025,
+   "mag_var": 5.22,
+   "latlon": "N37°36'23\" E033°38'35\"",
+   "tacan": "DAN 288/93, KON 109/56",
+   "near": "Karapinar West Range",
+   "line": "T-5, N37°36'23\" E033°38'35\", DAN 288/93, KON 109/56, Karapinar West Range"
+  },
+  {
+   "name": "T-6",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.589443,
+   "lon": 33.573443,
+   "mag_var": 5.22,
+   "latlon": "N37°35'22\" E033°34'24\"",
+   "tacan": "DAN 286/96, KON 112/54",
+   "near": "Karapinar West Range",
+   "line": "T-6, N37°35'22\" E033°34'24\", DAN 286/96, KON 112/54, Karapinar West Range"
+  },
+  {
+   "name": "T-7",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.575707,
+   "lon": 33.705057,
+   "mag_var": 5.22,
+   "latlon": "N37°34'33\" E033°42'18\"",
+   "tacan": "DAN 287/90, KON 110/60",
+   "near": "Karapinar West Range",
+   "line": "T-7, N37°34'33\" E033°42'18\", DAN 287/90, KON 110/60, Karapinar West Range"
+  },
+  {
+   "name": "T-8",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.60392,
+   "lon": 33.818026,
+   "mag_var": 5.24,
+   "latlon": "N37°36'14\" E033°49'05\"",
+   "tacan": "DAN 290/86, KON 106/64",
+   "near": "Karapinar West Range",
+   "line": "T-8, N37°36'14\" E033°49'05\", DAN 290/86, KON 106/64, Karapinar West Range"
+  },
+  {
+   "name": "T-9",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.572565,
+   "lon": 33.747498,
+   "mag_var": 5.23,
+   "latlon": "N37°34'21\" E033°44'51\"",
+   "tacan": "DAN 288/88, KON 109/62",
+   "near": "Karapinar West Range",
+   "line": "T-9, N37°34'21\" E033°44'51\", DAN 288/88, KON 109/62, Karapinar West Range"
+  },
+  {
+   "name": "T-10",
+   "kind": "range",
+   "section": "Range Targets",
+   "group": null,
+   "lat": 37.575764,
+   "lon": 33.804755,
+   "mag_var": 5.23,
+   "latlon": "N37°34'33\" E033°48'17\"",
+   "tacan": "DAN 288/86, KON 108/64",
+   "near": "Karapinar West Range",
+   "line": "T-10, N37°34'33\" E033°48'17\", DAN 288/86, KON 108/64, Karapinar West Range"
+  },
+  {
+   "name": "Aleppo SA-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "Aleppo SA-2",
+   "lat": 36.298043,
+   "lon": 37.158964,
+   "mag_var": 5.18,
+   "latlon": "N36°17'53\" E037°09'32\"",
+   "tacan": "DAN 112/93, KON 108/243",
+   "near": "8 nm NNW of Aleppo",
+   "line": "Aleppo SA-2, N36°17'53\" E037°09'32\", DAN 112/93, KON 108/243, 8 nm NNW of Aleppo"
+  },
+  {
+   "name": "Latakia SA-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "LATAKIA SA-2",
+   "lat": 35.532766,
+   "lon": 35.818429,
+   "mag_var": 5.03,
+   "latlon": "N35°31'58\" E035°49'06\"",
+   "tacan": "DAN 163/91, KON 127/215",
+   "near": "1 nm E of Latakia",
+   "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 163/91, KON 127/215, 1 nm E of Latakia"
+  },
+  {
+   "name": "Aleppo EWR",
+   "kind": "EWR",
+   "section": "EWR",
+   "group": "Aleppo EWR",
+   "lat": 36.179271,
+   "lon": 37.227435,
+   "mag_var": 5.16,
+   "latlon": "N36°10'45\" E037°13'39\"",
+   "tacan": "DAN 114/100, KON 109/249",
+   "near": "at Aleppo",
+   "line": "Aleppo EWR, N36°10'45\" E037°13'39\", DAN 114/100, KON 109/249, at Aleppo"
+  },
+  {
+   "name": "Bassel Al-Assad EWR",
+   "kind": "EWR",
+   "section": "EWR",
+   "group": "BASSEL AL-ASSAD EWR",
+   "lat": 35.401948,
+   "lon": 35.946823,
+   "mag_var": 5.01,
+   "latlon": "N35°24'07\" E035°56'49\"",
+   "tacan": "DAN 161/100, KON 127/225",
+   "near": "at Bassel Al-Assad",
+   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, at Bassel Al-Assad"
+  },
+  {
+   "name": "Damascus EWR",
+   "kind": "EWR",
+   "section": "EWR",
+   "group": "DAMASCUS EWR",
+   "lat": 33.427144,
+   "lon": 36.522327,
+   "mag_var": 4.75,
+   "latlon": "N33°25'38\" E036°31'20\"",
+   "tacan": "DAN 161/221, KON 138/335",
+   "near": "1 nm NNE of Damascus",
+   "line": "Damascus EWR, N33°25'38\" E036°31'20\", DAN 161/221, KON 138/335, 1 nm NNE of Damascus"
+  },
+  {
+   "name": "Minakh EWR",
+   "kind": "EWR",
+   "section": "EWR",
+   "group": "MINAKH EWR",
+   "lat": 36.52277,
+   "lon": 37.039825,
+   "mag_var": 5.21,
+   "latlon": "N36°31'22\" E037°02'23\"",
+   "tacan": "DAN 105/82, KON 106/232",
+   "near": "at Minakh",
+   "line": "Minakh EWR, N36°31'22\" E037°02'23\", DAN 105/82, KON 106/232, at Minakh"
+  },
+  {
+   "name": "Shayrat EWR",
+   "kind": "EWR",
+   "section": "EWR",
+   "group": "SHAYRAT EWR",
+   "lat": 34.491685,
+   "lon": 36.908634,
+   "mag_var": 4.9,
+   "latlon": "N34°29'30\" E036°54'31\"",
+   "tacan": "DAN 149/167, KON 128/298",
+   "near": "at Shayrat",
+   "line": "Shayrat EWR, N34°29'30\" E036°54'31\", DAN 149/167, KON 128/298, at Shayrat"
+  },
+  {
+   "name": "Aleppo Fire Can 1-1",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Aleppo Fire Can 1-1",
+   "lat": 36.18312,
+   "lon": 37.200199,
+   "mag_var": 5.16,
+   "latlon": "N36°10'59\" E037°12'01\"",
+   "tacan": "DAN 115/98, KON 109/248",
+   "near": "1 nm W of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-1, N36°10'59\" E037°12'01\", DAN 115/98, KON 109/248, 1 nm W of Aleppo EWR"
+  },
+  {
+   "name": "Aleppo Fire Can 1-2",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Aleppo Fire Can 1-2",
+   "lat": 36.175716,
+   "lon": 37.209686,
+   "mag_var": 5.16,
+   "latlon": "N36°10'33\" E037°12'35\"",
+   "tacan": "DAN 115/99, KON 109/248",
+   "near": "1 nm WSW of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-2, N36°10'33\" E037°12'35\", DAN 115/99, KON 109/248, 1 nm WSW of Aleppo EWR"
+  },
+  {
+   "name": "Aleppo Fire Can 1-3",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Aleppo Fire Can 1-3",
+   "lat": 36.1768,
+   "lon": 37.250974,
+   "mag_var": 5.16,
+   "latlon": "N36°10'36\" E037°15'04\"",
+   "tacan": "DAN 114/101, KON 109/250",
+   "near": "1 nm E of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-3, N36°10'36\" E037°15'04\", DAN 114/101, KON 109/250, 1 nm E of Aleppo EWR"
+  },
+  {
+   "name": "Latakia Fire Can 1-4",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Latakia Fire Can 1-4",
+   "lat": 35.539111,
+   "lon": 35.814677,
+   "mag_var": 5.03,
+   "latlon": "N35°32'21\" E035°48'53\"",
+   "tacan": "DAN 163/90, KON 127/215",
+   "near": "at Latakia SA-2",
+   "line": "Latakia Fire Can 1-4, N35°32'21\" E035°48'53\", DAN 163/90, KON 127/215, at Latakia SA-2"
+  },
+  {
+   "name": "Latakia Fire Can 1-5",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Latakia Fire Can 1-5",
+   "lat": 35.512165,
+   "lon": 35.831862,
+   "mag_var": 5.02,
+   "latlon": "N35°30'44\" E035°49'55\"",
+   "tacan": "DAN 163/92, KON 127/217",
+   "near": "1 nm SSE of Latakia SA-2",
+   "line": "Latakia Fire Can 1-5, N35°30'44\" E035°49'55\", DAN 163/92, KON 127/217, 1 nm SSE of Latakia SA-2"
+  },
+  {
+   "name": "Latakia Fire Can 1-6",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Latakia Fire Can 1-6",
+   "lat": 35.498443,
+   "lon": 35.829027,
+   "mag_var": 5.02,
+   "latlon": "N35°29'54\" E035°49'44\"",
+   "tacan": "DAN 163/93, KON 127/217",
+   "near": "3 nm SE of Latakia",
+   "line": "Latakia Fire Can 1-6, N35°29'54\" E035°49'44\", DAN 163/93, KON 127/217, 3 nm SE of Latakia"
+  },
+  {
+   "name": "Latakia Fire Can 1-7",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Latakia Fire Can 1-7",
+   "lat": 35.526006,
+   "lon": 35.839201,
+   "mag_var": 5.03,
+   "latlon": "N35°31'34\" E035°50'21\"",
+   "tacan": "DAN 163/91, KON 127/216",
+   "near": "1 nm ESE of Latakia SA-2",
+   "line": "Latakia Fire Can 1-7, N35°31'34\" E035°50'21\", DAN 163/91, KON 127/216, 1 nm ESE of Latakia SA-2"
+  },
+  {
+   "name": "Minakh Fire Can 1",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Minakh Fire Can 1",
+   "lat": 36.5247,
+   "lon": 37.041682,
+   "mag_var": 5.21,
+   "latlon": "N36°31'29\" E037°02'30\"",
+   "tacan": "DAN 105/82, KON 106/232",
+   "near": "at Minakh EWR",
+   "line": "Minakh Fire Can 1, N36°31'29\" E037°02'30\", DAN 105/82, KON 106/232, at Minakh EWR"
+  },
+  {
+   "name": "Minakh Fire Can 2",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Minakh Fire Can 2",
+   "lat": 36.532813,
+   "lon": 37.048508,
+   "mag_var": 5.21,
+   "latlon": "N36°31'58\" E037°02'55\"",
+   "tacan": "DAN 105/82, KON 106/232",
+   "near": "1 nm NNE of Minakh EWR",
+   "line": "Minakh Fire Can 2, N36°31'58\" E037°02'55\", DAN 105/82, KON 106/232, 1 nm NNE of Minakh EWR"
+  }
+ ],
+ "places": [
+  {
+   "name": "Aleppo",
+   "lat": 36.1807,
+   "lon": 37.2273
+  },
+  {
+   "name": "Minakh",
+   "lat": 36.5228,
+   "lon": 37.0398
+  },
+  {
+   "name": "Latakia",
+   "lat": 35.5317,
+   "lon": 35.7901
+  },
+  {
+   "name": "Bassel Al-Assad",
+   "lat": 35.4019,
+   "lon": 35.9468
+  },
+  {
+   "name": "Incirlik",
+   "lat": 37.002,
+   "lon": 35.4259
+  },
+  {
+   "name": "Konya",
+   "lat": 37.979,
+   "lon": 32.5619
+  },
+  {
+   "name": "Karapinar",
+   "lat": 37.7154,
+   "lon": 33.55
+  },
+  {
+   "name": "Hatay",
+   "lat": 36.3627,
+   "lon": 36.2822
+  },
+  {
+   "name": "Gaziantep",
+   "lat": 36.9472,
+   "lon": 37.4786
+  },
+  {
+   "name": "Damascus",
+   "lat": 33.4108,
+   "lon": 36.5155
+  },
+  {
+   "name": "Adana",
+   "lat": 36.9822,
+   "lon": 35.2803
+  },
+  {
+   "name": "Jableh",
+   "lat": 35.3622,
+   "lon": 35.9272
+  },
+  {
+   "name": "Tartus",
+   "lat": 34.8896,
+   "lon": 35.8866
+  },
+  {
+   "name": "Homs",
+   "lat": 34.7324,
+   "lon": 36.7137
+  },
+  {
+   "name": "Shayrat",
+   "lat": 34.4944,
+   "lon": 36.9014
+  },
+  {
+   "name": "Hama",
+   "lat": 35.1318,
+   "lon": 36.7578
+  },
+  {
+   "name": "Idlib",
+   "lat": 35.9306,
+   "lon": 36.6339
+  },
+  {
+   "name": "Abu al-Duhur",
+   "lat": 35.7317,
+   "lon": 37.0972
+  },
+  {
+   "name": "Taftanaz",
+   "lat": 35.9747,
+   "lon": 36.7819
+  },
+  {
+   "name": "Kuweires",
+   "lat": 36.1856,
+   "lon": 37.5997
+  },
+  {
+   "name": "Kilis",
+   "lat": 36.7184,
+   "lon": 37.1212
+  },
+  {
+   "name": "Iskenderun",
+   "lat": 36.5872,
+   "lon": 36.1735
+  }
+ ],
+ "zones": [
+  {
+   "name": "REDAIR",
+   "lat": 36.305924,
+   "lon": 35.34751
+  },
+  {
+   "name": "Karapinar Weapons Range West",
+   "lat": 37.594959,
+   "lon": 33.633465
+  },
+  {
+   "name": "Karapinar Weapons Range East",
+   "lat": 37.526387,
+   "lon": 33.761966
+  },
+  {
+   "name": "Incirlik Offshore Range",
+   "lat": 36.408657,
+   "lon": 35.055395
+  },
+  {
+   "name": "T-1",
+   "lat": 37.617523,
+   "lon": 33.510843
+  },
+  {
+   "name": "T-2",
+   "lat": 37.58197,
+   "lon": 33.50942
+  },
+  {
+   "name": "T-3",
+   "lat": 37.601265,
+   "lon": 33.510606
+  },
+  {
+   "name": "T-4",
+   "lat": 37.602724,
+   "lon": 33.703923
+  },
+  {
+   "name": "T-5",
+   "lat": 37.606407,
+   "lon": 33.643025
+  },
+  {
+   "name": "T-6",
+   "lat": 37.589443,
+   "lon": 33.573443
+  },
+  {
+   "name": "T-7",
+   "lat": 37.575707,
+   "lon": 33.705057
+  },
+  {
+   "name": "T-8",
+   "lat": 37.60392,
+   "lon": 33.818026
+  },
+  {
+   "name": "T-9",
+   "lat": 37.572565,
+   "lon": 33.747498
+  },
+  {
+   "name": "T-10",
+   "lat": 37.575764,
+   "lon": 33.804755
+  },
+  {
+   "name": "DAN24042",
+   "lat": 36.636102,
+   "lon": 34.713812
+  },
+  {
+   "name": "Incirlik Radar",
+   "lat": 37.002315,
+   "lon": 35.427842
+  },
+  {
+   "name": "Konya Radar",
+   "lat": 37.977334,
+   "lon": 32.557217
+  },
+  {
+   "name": "KON14546",
+   "lat": 37.603039,
+   "lon": 33.395035
+  },
+  {
+   "name": "DAN30075",
+   "lat": 37.601353,
+   "lon": 34.063925
+  },
+  {
+   "name": "DAN28050",
+   "lat": 37.105183,
+   "lon": 34.395056
+  },
+  {
+   "name": "KON13530",
+   "lat": 37.664032,
+   "lon": 33.042488
+  },
+  {
+   "name": "INCIRLIK05IP",
+   "lat": 36.978816,
+   "lon": 35.387488
+  },
+  {
+   "name": "INCIRLIK23IP",
+   "lat": 37.031179,
+   "lon": 35.474327
+  },
+  {
+   "name": "KONYA01LIP",
+   "lat": 37.948416,
+   "lon": 32.547746
+  },
+  {
+   "name": "SHELL",
+   "lat": 37.162266,
+   "lon": 36.312889
+  },
+  {
+   "name": "ARCO",
+   "lat": 37.886507,
+   "lon": 33.947359
+  }
+ ],
+ "labels": [
+  {
+   "text": "Weapons Range South",
+   "lat": 36.733703,
+   "lon": 35.572339
+  },
+  {
+   "text": "WRS Strafe Pit",
+   "lat": 36.673436,
+   "lon": 35.660204
+  },
+  {
+   "text": "Truck Convoy Target",
+   "lat": 36.703038,
+   "lon": 35.580162
+  },
+  {
+   "text": "Bomb Range",
+   "lat": 36.721708,
+   "lon": 35.590705
+  },
+  {
+   "text": "Incirlik Offshore",
+   "lat": 36.533641,
+   "lon": 34.878065
+  },
+  {
+   "text": "SHELL Tanker",
+   "lat": 37.075316,
+   "lon": 36.379448
+  },
+  {
+   "text": "Karapinar East",
+   "lat": 37.525461,
+   "lon": 33.732274
+  },
+  {
+   "text": "Karapinar West",
+   "lat": 37.586134,
+   "lon": 33.553751
+  },
+  {
+   "text": "ARCO Tanker",
+   "lat": 38.083511,
+   "lon": 33.915145
+  },
+  {
+   "text": "KON 145/46 nm",
+   "lat": 37.600064,
+   "lon": 33.392241
+  },
+  {
+   "text": "Karapinar West",
+   "lat": 37.553113,
+   "lon": 33.641065
+  }
+ ],
+ "airbases": [
+  {
+   "name": "Abu al-Duhur",
+   "code": "OS57",
+   "type": "Airbase",
+   "lat": 35.732306,
+   "lon": 37.104128,
+   "elev_m": 250.0,
+   "runways": [
+    "09",
+    "27"
+   ],
+   "rwy_heading_true": 274,
+   "frequencies_hz": [
+    [
+     38950000,
+     0
+    ],
+    [
+     122200000,
+     0
+    ],
+    [
+     250500000,
+     0
+    ],
+    [
+     4025000,
+     0
+    ]
+   ],
+   "mag_var": 5.09
+  },
+  {
+   "name": "Adana Sakirpasa",
+   "code": "LTAF",
+   "type": "Airbase",
+   "lat": 36.981938,
+   "lon": 35.280098,
+   "elev_m": 17.0,
+   "runways": [
+    "05",
+    "23"
+   ],
+   "rwy_heading_true": 236,
+   "frequencies_hz": [
+    [
+     39700000,
+     0
+    ],
+    [
+     121100000,
+     0
+    ],
+    [
+     251250000,
+     0
+    ],
+    [
+     4400000,
+     0
+    ]
+   ],
+   "mag_var": 5.22
+  },
+  {
+   "name": "Al Qusayr",
+   "code": "OS70",
+   "type": "Airbase",
+   "lat": 34.569276,
+   "lon": 36.571454,
+   "elev_m": 527.0,
+   "runways": [
+    "10",
+    "28"
+   ],
+   "rwy_heading_true": 282,
+   "frequencies_hz": [
+    [
+     40250000,
+     0
+    ],
+    [
+     119200000,
+     0
+    ],
+    [
+     251800000,
+     0
+    ],
+    [
+     4675000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "An Nasiriyah",
+   "code": "OS64",
+   "type": "Airbase",
+   "lat": 33.918607,
+   "lon": 36.86584,
+   "elev_m": 834.3,
+   "runways": [
+    "04",
+    "22"
+   ],
+   "rwy_heading_true": 225,
+   "frequencies_hz": [
+    [
+     40750000,
+     0
+    ],
+    [
+     122300000,
+     0
+    ],
+    [
+     252300000,
+     0
+    ],
+    [
+     4925000,
+     0
+    ]
+   ],
+   "mag_var": 4.82
+  },
+  {
+   "name": "Tha'lah",
+   "code": "OS60",
+   "type": "Airbase",
+   "lat": 32.704004,
+   "lon": 36.413775,
+   "elev_m": 733.2,
+   "runways": [
+    "23L",
+    "05R"
+   ],
+   "rwy_heading_true": 58,
+   "frequencies_hz": [
+    [
+     41250000,
+     0
+    ],
+    [
+     118000000,
+     0
+    ],
+    [
+     252800000,
+     0
+    ],
+    [
+     3925000,
+     0
+    ]
+   ],
+   "mag_var": 4.66
+  },
+  {
+   "name": "Beirut-Rafic Hariri",
+   "code": "OLBA",
+   "type": "Airbase",
+   "lat": 33.825144,
+   "lon": 35.483038,
+   "elev_m": 12.0,
+   "runways": [
+    "16",
+    "17",
+    "35",
+    "21",
+    "03",
+    "34"
+   ],
+   "rwy_heading_true": 349,
+   "frequencies_hz": [
+    [
+     41650000,
+     0
+    ],
+    [
+     118900000,
+     0
+    ],
+    [
+     253200000,
+     0
+    ],
+    [
+     4325000,
+     0
+    ]
+   ],
+   "mag_var": 4.79
+  },
+  {
+   "name": "Damascus",
+   "code": "OSDI",
+   "type": "Airbase",
+   "lat": 33.425508,
+   "lon": 36.518512,
+   "elev_m": 612.0,
+   "runways": [
+    "23R",
+    "05R",
+    "23L",
+    "05L"
+   ],
+   "rwy_heading_true": 50,
+   "frequencies_hz": [
+    [
+     41700000,
+     0
+    ],
+    [
+     118500000,
+     0
+    ],
+    [
+     253250000,
+     0
+    ],
+    [
+     4900000,
+     0
+    ]
+   ],
+   "mag_var": 4.75
+  },
+  {
+   "name": "Marj as Sultan South",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.487222,
+   "lon": 36.475394,
+   "elev_m": 611.4,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 90,
+   "frequencies_hz": [
+    [
+     41750000,
+     0
+    ],
+    [
+     122900000,
+     0
+    ],
+    [
+     253300000,
+     0
+    ],
+    [
+     4950000,
+     0
+    ]
+   ],
+   "mag_var": 4.76
+  },
+  {
+   "name": "Al-Dumayr",
+   "code": "OS61",
+   "type": "Airbase",
+   "lat": 33.609697,
+   "lon": 36.749135,
+   "elev_m": 630.0,
+   "runways": [
+    "06",
+    "24"
+   ],
+   "rwy_heading_true": 246,
+   "frequencies_hz": [
+    [
+     41800000,
+     0
+    ],
+    [
+     120300000,
+     0
+    ],
+    [
+     253350000,
+     0
+    ],
+    [
+     4850000,
+     0
+    ]
+   ],
+   "mag_var": 4.78
+  },
+  {
+   "name": "Eyn Shemer",
+   "code": "LLES",
+   "type": "Airbase",
+   "lat": 32.440932,
+   "lon": 35.006998,
+   "elev_m": 30.7,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 100,
+   "frequencies_hz": [
+    [
+     38450000,
+     0
+    ],
+    [
+     123400000,
+     0
+    ],
+    [
+     250050000,
+     0
+    ],
+    [
+     3775000,
+     0
+    ]
+   ],
+   "mag_var": 4.61
+  },
+  {
+   "name": "Gaziantep",
+   "code": "LTAJ",
+   "type": "Airbase",
+   "lat": 36.948128,
+   "lon": 37.478344,
+   "elev_m": 681.8,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 106,
+   "frequencies_hz": [
+    [
+     38500000,
+     0
+    ],
+    [
+     120100000,
+     0
+    ],
+    [
+     250100000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 5.29
+  },
+  {
+   "name": "H4",
+   "code": "OJHR",
+   "type": "Airbase",
+   "lat": 32.539283,
+   "lon": 38.195079,
+   "elev_m": 688.0,
+   "runways": [
+    "10",
+    "28"
+   ],
+   "rwy_heading_true": 283,
+   "frequencies_hz": [
+    [
+     38550000,
+     0
+    ],
+    [
+     122600000,
+     0
+    ],
+    [
+     250150000,
+     0
+    ],
+    [
+     3825000,
+     0
+    ]
+   ],
+   "mag_var": 4.63
+  },
+  {
+   "name": "Haifa",
+   "code": "LLHA",
+   "type": "Airbase",
+   "lat": 32.810748,
+   "lon": 35.04354,
+   "elev_m": 6.0,
+   "runways": [
+    "16",
+    "34"
+   ],
+   "rwy_heading_true": 342,
+   "frequencies_hz": [
+    [
+     38600000,
+     0
+    ],
+    [
+     127800000,
+     0
+    ],
+    [
+     250200000,
+     0
+    ],
+    [
+     3850000,
+     0
+    ]
+   ],
+   "mag_var": 4.66
+  },
+  {
+   "name": "Hama",
+   "code": "OS58",
+   "type": "Airbase",
+   "lat": 35.118044,
+   "lon": 36.712379,
+   "elev_m": 300.0,
+   "runways": [
+    "09",
+    "27"
+   ],
+   "rwy_heading_true": 280,
+   "frequencies_hz": [
+    [
+     38650000,
+     0
+    ],
+    [
+     118050000,
+     0
+    ],
+    [
+     250250000,
+     0
+    ],
+    [
+     3875000,
+     0
+    ]
+   ],
+   "mag_var": 4.99
+  },
+  {
+   "name": "Hatay",
+   "code": "LTDA",
+   "type": "Airbase",
+   "lat": 36.36232,
+   "lon": 36.287422,
+   "elev_m": 69.5,
+   "runways": [
+    "04",
+    "22"
+   ],
+   "rwy_heading_true": 224,
+   "frequencies_hz": [
+    [
+     38700000,
+     0
+    ],
+    [
+     128500000,
+     0
+    ],
+    [
+     250300000,
+     0
+    ],
+    [
+     3900000,
+     0
+    ]
+   ],
+   "mag_var": 5.16
+  },
+  {
+   "name": "Incirlik",
+   "code": "LTAG",
+   "type": "Airbase",
+   "lat": 37.002048,
+   "lon": 35.426089,
+   "elev_m": 58.2,
+   "runways": [
+    "23",
+    "05"
+   ],
+   "rwy_heading_true": 55,
+   "frequencies_hz": [
+    [
+     38750000,
+     0
+    ],
+    [
+     122100000,
+     0
+    ],
+    [
+     360100000,
+     0
+    ],
+    [
+     3925000,
+     0
+    ]
+   ],
+   "mag_var": 5.23
+  },
+  {
+   "name": "Jirah",
+   "code": "OS62",
+   "type": "Airbase",
+   "lat": 36.096872,
+   "lon": 37.936536,
+   "elev_m": 353.0,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 101,
+   "frequencies_hz": [
+    [
+     38800000,
+     0
+    ],
+    [
+     118100000,
+     0
+    ],
+    [
+     250350000,
+     0
+    ],
+    [
+     3950000,
+     0
+    ]
+   ],
+   "mag_var": 5.16
+  },
+  {
+   "name": "Khalkhalah",
+   "code": "OS69",
+   "type": "Airbase",
+   "lat": 33.078369,
+   "lon": 36.5411,
+   "elev_m": 708.0,
+   "runways": [
+    "33",
+    "07",
+    "25",
+    "15"
+   ],
+   "rwy_heading_true": 151,
+   "frequencies_hz": [
+    [
+     38850000,
+     0
+    ],
+    [
+     122500000,
+     0
+    ],
+    [
+     250400000,
+     0
+    ],
+    [
+     3975000,
+     0
+    ]
+   ],
+   "mag_var": 4.71
+  },
+  {
+   "name": "King Hussein Air College",
+   "code": "OJMF",
+   "type": "Airbase",
+   "lat": 32.35668,
+   "lon": 36.259855,
+   "elev_m": 672.0,
+   "runways": [
+    "13",
+    "31"
+   ],
+   "rwy_heading_true": 312,
+   "frequencies_hz": [
+    [
+     38900000,
+     0
+    ],
+    [
+     118300000,
+     0
+    ],
+    [
+     250450000,
+     0
+    ],
+    [
+     4000000,
+     0
+    ]
+   ],
+   "mag_var": 4.62
+  },
+  {
+   "name": "Kiryat Shmona",
+   "code": "LLKS",
+   "type": "Airbase",
+   "lat": 33.215815,
+   "lon": 35.595835,
+   "elev_m": 104.0,
+   "runways": [
+    "21",
+    "03"
+   ],
+   "rwy_heading_true": 38,
+   "frequencies_hz": [
+    [
+     39000000,
+     0
+    ],
+    [
+     118400000,
+     0
+    ],
+    [
+     250550000,
+     0
+    ],
+    [
+     4050000,
+     0
+    ]
+   ],
+   "mag_var": 4.71
+  },
+  {
+   "name": "Bassel Al-Assad",
+   "code": "OSLK",
+   "type": "Airbase",
+   "lat": 35.403848,
+   "lon": 35.95024,
+   "elev_m": 28.6,
+   "runways": [
+    "35R",
+    "17R",
+    "35L",
+    "17L"
+   ],
+   "rwy_heading_true": 179,
+   "frequencies_hz": [
+    [
+     39050000,
+     0
+    ],
+    [
+     118100000,
+     0
+    ],
+    [
+     250600000,
+     0
+    ],
+    [
+     4075000,
+     0
+    ]
+   ],
+   "mag_var": 5.01
+  },
+  {
+   "name": "Marj as Sultan North",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.50028,
+   "lon": 36.467149,
+   "elev_m": 611.6,
+   "runways": [
+    "26",
+    "08"
+   ],
+   "rwy_heading_true": 81,
+   "frequencies_hz": [
+    [
+     39300000,
+     0
+    ],
+    [
+     122700000,
+     0
+    ],
+    [
+     250850000,
+     0
+    ],
+    [
+     4200000,
+     0
+    ]
+   ],
+   "mag_var": 4.76
+  },
+  {
+   "name": "Marj Ruhayyil",
+   "code": "OS63",
+   "type": "Airbase",
+   "lat": 33.288761,
+   "lon": 36.455438,
+   "elev_m": 658.6,
+   "runways": [
+    "24R",
+    "06L"
+   ],
+   "rwy_heading_true": 64,
+   "frequencies_hz": [
+    [
+     39350000,
+     0
+    ],
+    [
+     120800000,
+     0
+    ],
+    [
+     250900000,
+     0
+    ],
+    [
+     4225000,
+     0
+    ]
+   ],
+   "mag_var": 4.73
+  },
+  {
+   "name": "Megiddo",
+   "code": "LLMG",
+   "type": "Airbase",
+   "lat": 32.597107,
+   "lon": 35.230082,
+   "elev_m": 55.0,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 93,
+   "frequencies_hz": [
+    [
+     39400000,
+     0
+    ],
+    [
+     119900000,
+     0
+    ],
+    [
+     250950000,
+     0
+    ],
+    [
+     4250000,
+     0
+    ]
+   ],
+   "mag_var": 4.63
+  },
+  {
+   "name": "Mezzeh",
+   "code": "OS67",
+   "type": "Airbase",
+   "lat": 33.477795,
+   "lon": 36.224216,
+   "elev_m": 720.2,
+   "runways": [
+    "06",
+    "24"
+   ],
+   "rwy_heading_true": 242,
+   "frequencies_hz": [
+    [
+     39450000,
+     0
+    ],
+    [
+     120700000,
+     0
+    ],
+    [
+     251000000,
+     0
+    ],
+    [
+     4275000,
+     0
+    ]
+   ],
+   "mag_var": 4.76
+  },
+  {
+   "name": "Minakh",
+   "code": "OS71",
+   "type": "Airbase",
+   "lat": 36.521376,
+   "lon": 37.041337,
+   "elev_m": 492.0,
+   "runways": [
+    "28",
+    "04",
+    "22",
+    "10"
+   ],
+   "rwy_heading_true": 102,
+   "frequencies_hz": [
+    [
+     39500000,
+     0
+    ],
+    [
+     120600000,
+     0
+    ],
+    [
+     251050000,
+     0
+    ],
+    [
+     4300000,
+     0
+    ]
+   ],
+   "mag_var": 5.21
+  },
+  {
+   "name": "Aleppo",
+   "code": "OSAP",
+   "type": "Airbase",
+   "lat": 36.180618,
+   "lon": 37.224367,
+   "elev_m": 382.2,
+   "runways": [
+    "09",
+    "27"
+   ],
+   "rwy_heading_true": 278,
+   "frequencies_hz": [
+    [
+     39550000,
+     0
+    ],
+    [
+     119100000,
+     0
+    ],
+    [
+     251100000,
+     0
+    ],
+    [
+     4325000,
+     0
+    ]
+   ],
+   "mag_var": 5.16
+  },
+  {
+   "name": "Palmyra",
+   "code": "OSPR",
+   "type": "Airbase",
+   "lat": 34.557297,
+   "lon": 38.316824,
+   "elev_m": 393.9,
+   "runways": [
+    "08",
+    "26"
+   ],
+   "rwy_heading_true": 265,
+   "frequencies_hz": [
+    [
+     39600000,
+     0
+    ],
+    [
+     121900000,
+     0
+    ],
+    [
+     251150000,
+     0
+    ],
+    [
+     4350000,
+     0
+    ]
+   ],
+   "mag_var": 4.92
+  },
+  {
+   "name": "Qabr as Sitt",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.458735,
+   "lon": 36.357718,
+   "elev_m": 650.5,
+   "runways": [
+    "23",
+    "05"
+   ],
+   "rwy_heading_true": 59,
+   "frequencies_hz": [
+    [
+     39650000,
+     0
+    ],
+    [
+     122600000,
+     0
+    ],
+    [
+     251200000,
+     0
+    ],
+    [
+     4375000,
+     0
+    ]
+   ],
+   "mag_var": 4.75
+  },
+  {
+   "name": "Ramat David",
+   "code": "LLRD",
+   "type": "Airbase",
+   "lat": 32.666411,
+   "lon": 35.184166,
+   "elev_m": 39.6,
+   "runways": [
+    "15",
+    "11",
+    "29",
+    "09",
+    "27",
+    "33"
+   ],
+   "rwy_heading_true": 327,
+   "frequencies_hz": [
+    [
+     39750000,
+     0
+    ],
+    [
+     118600000,
+     0
+    ],
+    [
+     251300000,
+     0
+    ],
+    [
+     4425000,
+     0
+    ]
+   ],
+   "mag_var": 4.64
+  },
+  {
+   "name": "Kuweires",
+   "code": "OS66",
+   "type": "Airbase",
+   "lat": 36.187494,
+   "lon": 37.581495,
+   "elev_m": 361.6,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 101,
+   "frequencies_hz": [
+    [
+     39800000,
+     0
+    ],
+    [
+     120500000,
+     0
+    ],
+    [
+     251350000,
+     0
+    ],
+    [
+     4450000,
+     0
+    ]
+   ],
+   "mag_var": 5.17
+  },
+  {
+   "name": "Rayak",
+   "code": "OLRA",
+   "type": "Airbase",
+   "lat": 33.851123,
+   "lon": 35.987324,
+   "elev_m": 906.9,
+   "runways": [
+    "22",
+    "04"
+   ],
+   "rwy_heading_true": 47,
+   "frequencies_hz": [
+    [
+     39850000,
+     0
+    ],
+    [
+     124400000,
+     0
+    ],
+    [
+     251400000,
+     0
+    ],
+    [
+     4475000,
+     0
+    ]
+   ],
+   "mag_var": 4.8
+  },
+  {
+   "name": "Rene Mouawad",
+   "code": "OLKA",
+   "type": "Airbase",
+   "lat": 34.5893,
+   "lon": 36.011449,
+   "elev_m": 4.8,
+   "runways": [
+    "24",
+    "06"
+   ],
+   "rwy_heading_true": 64,
+   "frequencies_hz": [
+    [
+     39900000,
+     0
+    ],
+    [
+     121000000,
+     0
+    ],
+    [
+     251450000,
+     0
+    ],
+    [
+     4500000,
+     0
+    ]
+   ],
+   "mag_var": 4.9
+  },
+  {
+   "name": "Rosh Pina",
+   "code": "LLIB",
+   "type": "Airbase",
+   "lat": 32.982648,
+   "lon": 35.570738,
+   "elev_m": 264.6,
+   "runways": [
+    "15",
+    "33"
+   ],
+   "rwy_heading_true": 332,
+   "frequencies_hz": [
+    [
+     39950000,
+     0
+    ],
+    [
+     118450000,
+     0
+    ],
+    [
+     251500000,
+     0
+    ],
+    [
+     4525000,
+     0
+    ]
+   ],
+   "mag_var": 4.68
+  },
+  {
+   "name": "Sayqal",
+   "code": "OS68",
+   "type": "Airbase",
+   "lat": 33.679842,
+   "lon": 37.217112,
+   "elev_m": 693.0,
+   "runways": [
+    "26",
+    "08"
+   ],
+   "rwy_heading_true": 91,
+   "frequencies_hz": [
+    [
+     40000000,
+     0
+    ],
+    [
+     120400000,
+     0
+    ],
+    [
+     251550000,
+     0
+    ],
+    [
+     4550000,
+     0
+    ]
+   ],
+   "mag_var": 4.79
+  },
+  {
+   "name": "Shayrat",
+   "code": "OS65",
+   "type": "Airbase",
+   "lat": 34.490202,
+   "lon": 36.907613,
+   "elev_m": 804.0,
+   "runways": [
+    "29",
+    "11"
+   ],
+   "rwy_heading_true": 112,
+   "frequencies_hz": [
+    [
+     40050000,
+     0
+    ],
+    [
+     120200000,
+     0
+    ],
+    [
+     251600000,
+     0
+    ],
+    [
+     4575000,
+     0
+    ]
+   ],
+   "mag_var": 4.9
+  },
+  {
+   "name": "Tabqa",
+   "code": "OS59",
+   "type": "Airbase",
+   "lat": 35.754721,
+   "lon": 38.566448,
+   "elev_m": 335.0,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 93,
+   "frequencies_hz": [
+    [
+     40100000,
+     0
+    ],
+    [
+     118500000,
+     0
+    ],
+    [
+     251650000,
+     0
+    ],
+    [
+     4600000,
+     0
+    ]
+   ],
+   "mag_var": 5.11
+  },
+  {
+   "name": "Taftanaz",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.974105,
+   "lon": 36.781442,
+   "elev_m": 311.0,
+   "runways": [
+    "10",
+    "28"
+   ],
+   "rwy_heading_true": 281,
+   "frequencies_hz": [
+    [
+     40150000,
+     0
+    ],
+    [
+     122800000,
+     0
+    ],
+    [
+     251700000,
+     0
+    ],
+    [
+     4625000,
+     0
+    ]
+   ],
+   "mag_var": 5.12
+  },
+  {
+   "name": "Tiyas",
+   "code": "OS72",
+   "type": "Airbase",
+   "lat": 34.522629,
+   "lon": 37.630123,
+   "elev_m": 548.0,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 90,
+   "frequencies_hz": [
+    [
+     40200000,
+     0
+    ],
+    [
+     120500000,
+     0
+    ],
+    [
+     251750000,
+     0
+    ],
+    [
+     4650000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Wujah Al Hajar",
+   "code": "Z19O",
+   "type": "Airbase",
+   "lat": 34.281337,
+   "lon": 35.680106,
+   "elev_m": 198.3,
+   "runways": [
+    "02",
+    "20"
+   ],
+   "rwy_heading_true": 209,
+   "frequencies_hz": [
+    [
+     40300000,
+     0
+    ],
+    [
+     120500000,
+     0
+    ],
+    [
+     251850000,
+     0
+    ],
+    [
+     4700000,
+     0
+    ]
+   ],
+   "mag_var": 4.85
+  },
+  {
+   "name": "Gazipasa",
+   "code": "LTFG",
+   "type": "Airbase",
+   "lat": 36.298922,
+   "lon": 32.297628,
+   "elev_m": 24.0,
+   "runways": [
+    "26",
+    "08"
+   ],
+   "rwy_heading_true": 86,
+   "frequencies_hz": [
+    [
+     40350000,
+     0
+    ],
+    [
+     119250000,
+     0
+    ],
+    [
+     251900000,
+     0
+    ],
+    [
+     4725000,
+     0
+    ]
+   ],
+   "mag_var": 4.96
+  },
+  {
+   "name": "Deir ez-Zor",
+   "code": "OSDZ",
+   "type": "Airbase",
+   "lat": 35.285432,
+   "lon": 40.176061,
+   "elev_m": 211.6,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 109,
+   "frequencies_hz": [
+    [
+     40400000,
+     0
+    ],
+    [
+     118100000,
+     0
+    ],
+    [
+     251950000,
+     0
+    ],
+    [
+     4750000,
+     0
+    ]
+   ],
+   "mag_var": 5.03
+  },
+  {
+   "name": "Akrotiri",
+   "code": "LCRA",
+   "type": "Airbase",
+   "lat": 34.590373,
+   "lon": 32.987777,
+   "elev_m": 21.0,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 111,
+   "frequencies_hz": [
+    [
+     40450000,
+     0
+    ],
+    [
+     128000000,
+     0
+    ],
+    [
+     252000000,
+     0
+    ],
+    [
+     4775000,
+     0
+    ]
+   ],
+   "mag_var": 4.79
+  },
+  {
+   "name": "Kingsfield",
+   "code": "LCRE",
+   "type": "Airbase",
+   "lat": 35.014806,
+   "lon": 33.717033,
+   "elev_m": 84.0,
+   "runways": [
+    "06",
+    "24"
+   ],
+   "rwy_heading_true": 244,
+   "frequencies_hz": [
+    [
+     40500000,
+     0
+    ],
+    [
+     121000000,
+     0
+    ],
+    [
+     252050000,
+     0
+    ],
+    [
+     4800000,
+     0
+    ]
+   ],
+   "mag_var": 4.88
+  },
+  {
+   "name": "Paphos",
+   "code": "LCPH",
+   "type": "Airbase",
+   "lat": 34.718152,
+   "lon": 32.484789,
+   "elev_m": 25.9,
+   "runways": [
+    "29",
+    "11"
+   ],
+   "rwy_heading_true": 114,
+   "frequencies_hz": [
+    [
+     40550000,
+     0
+    ],
+    [
+     119900000,
+     0
+    ],
+    [
+     252100000,
+     0
+    ],
+    [
+     4825000,
+     0
+    ]
+   ],
+   "mag_var": 4.78
+  },
+  {
+   "name": "Larnaca",
+   "code": "LCLK",
+   "type": "Airbase",
+   "lat": 34.873174,
+   "lon": 33.623249,
+   "elev_m": 5.0,
+   "runways": [
+    "22",
+    "04"
+   ],
+   "rwy_heading_true": 48,
+   "frequencies_hz": [
+    [
+     40600000,
+     0
+    ],
+    [
+     121200000,
+     0
+    ],
+    [
+     252150000,
+     0
+    ],
+    [
+     4850000,
+     0
+    ]
+   ],
+   "mag_var": 4.86
+  },
+  {
+   "name": "Lakatamia",
+   "code": "CY-0001",
+   "type": "Airbase",
+   "lat": 35.104606,
+   "lon": 33.321655,
+   "elev_m": 231.0,
+   "runways": [
+    "35",
+    "17"
+   ],
+   "rwy_heading_true": 175,
+   "frequencies_hz": [
+    [
+     40650000,
+     0
+    ],
+    [
+     120200000,
+     0
+    ],
+    [
+     252200000,
+     0
+    ],
+    [
+     4875000,
+     0
+    ]
+   ],
+   "mag_var": 4.87
+  },
+  {
+   "name": "Ercan",
+   "code": "LCEN",
+   "type": "Airbase",
+   "lat": 35.149641,
+   "lon": 33.512512,
+   "elev_m": 115.8,
+   "runways": [
+    "29",
+    "11"
+   ],
+   "rwy_heading_true": 115,
+   "frequencies_hz": [
+    [
+     40700000,
+     0
+    ],
+    [
+     120200000,
+     0
+    ],
+    [
+     252250000,
+     0
+    ],
+    [
+     4900000,
+     0
+    ]
+   ],
+   "mag_var": 4.88
+  },
+  {
+   "name": "Gecitkale",
+   "code": "LCGK",
+   "type": "Airbase",
+   "lat": 35.236011,
+   "lon": 33.720895,
+   "elev_m": 45.0,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 94,
+   "frequencies_hz": [
+    [
+     40800000,
+     0
+    ],
+    [
+     120000000,
+     0
+    ],
+    [
+     252350000,
+     0
+    ],
+    [
+     4950000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Pinarbashi",
+   "code": "CY-0003",
+   "type": "Airbase",
+   "lat": 35.273829,
+   "lon": 33.268239,
+   "elev_m": 235.0,
+   "runways": [
+    "34",
+    "16"
+   ],
+   "rwy_heading_true": 167,
+   "frequencies_hz": [
+    [
+     40850000,
+     0
+    ],
+    [
+     121000000,
+     0
+    ],
+    [
+     252400000,
+     0
+    ],
+    [
+     4750000,
+     0
+    ]
+   ],
+   "mag_var": 4.89
+  },
+  {
+   "name": "Naqoura",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.107905,
+   "lon": 35.127286,
+   "elev_m": 105.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [
+    [
+     40900000,
+     0
+    ],
+    [
+     122000000,
+     0
+    ],
+    [
+     252450000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 4.69
+  },
+  {
+   "name": "H3",
+   "code": "IQ-0018",
+   "type": "Airbase",
+   "lat": 32.936195,
+   "lon": 39.745813,
+   "elev_m": 777.1,
+   "runways": [
+    "29",
+    "06",
+    "24",
+    "11"
+   ],
+   "rwy_heading_true": 112,
+   "frequencies_hz": [
+    [
+     40950000,
+     0
+    ],
+    [
+     122000000,
+     0
+    ],
+    [
+     252500000,
+     0
+    ],
+    [
+     4725000,
+     0
+    ]
+   ],
+   "mag_var": 4.66
+  },
+  {
+   "name": "H3 Northwest",
+   "code": "IQ-0020",
+   "type": "Airbase",
+   "lat": 33.075956,
+   "lon": 39.596579,
+   "elev_m": 785.1,
+   "runways": [
+    "12",
+    "30"
+   ],
+   "rwy_heading_true": 302,
+   "frequencies_hz": [
+    [
+     41000000,
+     0
+    ],
+    [
+     122100000,
+     0
+    ],
+    [
+     252550000,
+     0
+    ],
+    [
+     4825000,
+     0
+    ]
+   ],
+   "mag_var": 4.68
+  },
+  {
+   "name": "H3 Southwest",
+   "code": "IQ-0021",
+   "type": "Airbase",
+   "lat": 32.743345,
+   "lon": 39.602408,
+   "elev_m": 814.0,
+   "runways": [
+    "12",
+    "30"
+   ],
+   "rwy_heading_true": 301,
+   "frequencies_hz": [
+    [
+     41050000,
+     0
+    ],
+    [
+     122400000,
+     0
+    ],
+    [
+     252600000,
+     0
+    ],
+    [
+     4775000,
+     0
+    ]
+   ],
+   "mag_var": 4.63
+  },
+  {
+   "name": "Zarqa",
+   "code": "OJ38",
+   "type": "Airbase",
+   "lat": 32.025762,
+   "lon": 36.143735,
+   "elev_m": 650.6,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 108,
+   "frequencies_hz": [
+    [
+     40550000,
+     0
+    ],
+    [
+     119900000,
+     0
+    ],
+    [
+     252100000,
+     0
+    ],
+    [
+     4825000,
+     0
+    ]
+   ],
+   "mag_var": 4.58
+  },
+  {
+   "name": "Ruwayshid",
+   "code": "IQ-0040",
+   "type": "Airbase",
+   "lat": 32.404967,
+   "lon": 39.130518,
+   "elev_m": 907.3,
+   "runways": [
+    "09",
+    "27"
+   ],
+   "rwy_heading_true": 276,
+   "frequencies_hz": [
+    [
+     41100000,
+     0
+    ],
+    [
+     122100000,
+     0
+    ],
+    [
+     252650000,
+     0
+    ],
+    [
+     4400000,
+     0
+    ]
+   ],
+   "mag_var": 4.6
+  },
+  {
+   "name": "Sanliurfa",
+   "code": "LTCS",
+   "type": "Airbase",
+   "lat": 37.448071,
+   "lon": 38.898378,
+   "elev_m": 823.9,
+   "runways": [
+    "04",
+    "22"
+   ],
+   "rwy_heading_true": 222,
+   "frequencies_hz": [
+    [
+     41150000,
+     0
+    ],
+    [
+     118400000,
+     0
+    ],
+    [
+     252700000,
+     0
+    ],
+    [
+     4150000,
+     0
+    ]
+   ],
+   "mag_var": 5.41
+  },
+  {
+   "name": "Kharab Ishk",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.546869,
+   "lon": 38.587487,
+   "elev_m": 431.4,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [
+    [
+     41200000,
+     0
+    ],
+    [
+     122200000,
+     0
+    ],
+    [
+     252750000,
+     0
+    ],
+    [
+     4175000,
+     0
+    ]
+   ],
+   "mag_var": 5.24
+  },
+  {
+   "name": "Tal Siman",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.262422,
+   "lon": 38.928313,
+   "elev_m": 299.0,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 103,
+   "frequencies_hz": [
+    [
+     41300000,
+     0
+    ],
+    [
+     121900000,
+     0
+    ],
+    [
+     252850000,
+     0
+    ],
+    [
+     4100000,
+     0
+    ]
+   ],
+   "mag_var": 5.2
+  },
+  {
+   "name": "H4 Emergency",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.386262,
+   "lon": 37.781702,
+   "elev_m": 762.6,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 91,
+   "frequencies_hz": [
+    [
+     40000000,
+     0
+    ],
+    [
+     118500000,
+     0
+    ],
+    [
+     250000000,
+     0
+    ],
+    [
+     4500000,
+     0
+    ]
+   ],
+   "mag_var": 4.62
+  },
+  {
+   "name": "Nevatim",
+   "code": "LLNV",
+   "type": "Airbase",
+   "lat": 31.208377,
+   "lon": 35.012096,
+   "elev_m": 420.0,
+   "runways": [
+    "08R",
+    "25",
+    "07",
+    "26R",
+    "08L",
+    "26L"
+   ],
+   "rwy_heading_true": 259,
+   "frequencies_hz": [
+    [
+     38900000,
+     0
+    ],
+    [
+     132400000,
+     0
+    ],
+    [
+     225000000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 4.48
+  },
+  {
+   "name": "At Tanf",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.50645,
+   "lon": 38.614884,
+   "elev_m": 710.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [
+    [
+     41350000,
+     0
+    ],
+    [
+     121100000,
+     0
+    ],
+    [
+     252900000,
+     0
+    ],
+    [
+     4875000,
+     0
+    ]
+   ],
+   "mag_var": 4.76
+  },
+  {
+   "name": "Prince Hassan",
+   "code": "OJPH",
+   "type": "Airbase",
+   "lat": 32.160735,
+   "lon": 37.149403,
+   "elev_m": 660.0,
+   "runways": [
+    "31",
+    "13"
+   ],
+   "rwy_heading_true": 132,
+   "frequencies_hz": [
+    [
+     41400000,
+     0
+    ],
+    [
+     122600000,
+     0
+    ],
+    [
+     252950000,
+     0
+    ],
+    [
+     4300000,
+     0
+    ]
+   ],
+   "mag_var": 4.59
+  },
+  {
+   "name": "King Abdullah II",
+   "code": "OJKA",
+   "type": "Airbase",
+   "lat": 32.00551,
+   "lon": 36.223695,
+   "elev_m": 700.0,
+   "runways": [
+    "13",
+    "31"
+   ],
+   "rwy_heading_true": 312,
+   "frequencies_hz": [
+    [
+     41450000,
+     0
+    ],
+    [
+     118400000,
+     0
+    ],
+    [
+     253000000,
+     0
+    ],
+    [
+     3900000,
+     0
+    ]
+   ],
+   "mag_var": 4.57
+  },
+  {
+   "name": "Herzliya",
+   "code": "LLHZ",
+   "type": "Airbase",
+   "lat": 32.179374,
+   "lon": 34.837941,
+   "elev_m": 36.0,
+   "runways": [
+    "10",
+    "28"
+   ],
+   "rwy_heading_true": 291,
+   "frequencies_hz": [
+    [
+     41500000,
+     0
+    ],
+    [
+     122200000,
+     0
+    ],
+    [
+     253050000,
+     0
+    ],
+    [
+     4600000,
+     0
+    ]
+   ],
+   "mag_var": 4.58
+  },
+  {
+   "name": "Marka",
+   "code": "OJAM",
+   "type": "Airbase",
+   "lat": 31.972763,
+   "lon": 35.991746,
+   "elev_m": 759.9,
+   "runways": [
+    "06",
+    "24"
+   ],
+   "rwy_heading_true": 246,
+   "frequencies_hz": [
+    [
+     41550000,
+     0
+    ],
+    [
+     118100000,
+     0
+    ],
+    [
+     253100000,
+     0
+    ],
+    [
+     3950000,
+     0
+    ]
+   ],
+   "mag_var": 4.57
+  },
+  {
+   "name": "Muwaffaq Salti",
+   "code": "OJMS",
+   "type": "Airbase",
+   "lat": 31.817617,
+   "lon": 36.778686,
+   "elev_m": 498.8,
+   "runways": [
+    "08",
+    "31",
+    "13",
+    "26"
+   ],
+   "rwy_heading_true": 261,
+   "frequencies_hz": [
+    [
+     41600000,
+     0
+    ],
+    [
+     120500000,
+     0
+    ],
+    [
+     253150000,
+     0
+    ],
+    [
+     4450000,
+     0
+    ]
+   ],
+   "mag_var": 4.55
+  },
+  {
+   "name": "HC01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.924215,
+   "lon": 33.603722,
+   "elev_m": 26.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.86
+  },
+  {
+   "name": "HC02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.830847,
+   "lon": 33.478191,
+   "elev_m": 92.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.84
+  },
+  {
+   "name": "HC03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.311947,
+   "lon": 33.290077,
+   "elev_m": 570.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.89
+  },
+  {
+   "name": "HC04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.267204,
+   "lon": 33.495894,
+   "elev_m": 303.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.9
+  },
+  {
+   "name": "HC05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.093867,
+   "lon": 33.88578,
+   "elev_m": 25.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.9
+  },
+  {
+   "name": "HC06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.084005,
+   "lon": 33.897191,
+   "elev_m": 35.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.89
+  },
+  {
+   "name": "Kahramanmaras",
+   "code": "LTCN",
+   "type": "Airbase",
+   "lat": 37.538483,
+   "lon": 36.952401,
+   "elev_m": 478.3,
+   "runways": [
+    "07",
+    "25"
+   ],
+   "rwy_heading_true": 256,
+   "frequencies_hz": [
+    [
+     38400000,
+     0
+    ],
+    [
+     118750000,
+     0
+    ],
+    [
+     225000000,
+     0
+    ],
+    [
+     3750000,
+     0
+    ]
+   ],
+   "mag_var": 5.38
+  },
+  {
+   "name": "HI08",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.961879,
+   "lon": 35.550067,
+   "elev_m": 382.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HI09",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.982102,
+   "lon": 35.514712,
+   "elev_m": 899.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HI01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.882232,
+   "lon": 35.718988,
+   "elev_m": 365.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.67
+  },
+  {
+   "name": "HI02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.937677,
+   "lon": 35.568728,
+   "elev_m": 244.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "Hatzerim",
+   "code": "LLHB",
+   "type": "Airbase",
+   "lat": 31.23881,
+   "lon": 34.65768,
+   "elev_m": 215.8,
+   "runways": [
+    "28R",
+    "10R",
+    "28L",
+    "10L"
+   ],
+   "rwy_heading_true": 107,
+   "frequencies_hz": [
+    [
+     41950000,
+     0
+    ],
+    [
+     128200000,
+     0
+    ],
+    [
+     259000000,
+     0
+    ],
+    [
+     4975000,
+     0
+    ]
+   ],
+   "mag_var": 4.47
+  },
+  {
+   "name": "HI03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.805606,
+   "lon": 35.401592,
+   "elev_m": 319.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HI05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.808126,
+   "lon": 35.425282,
+   "elev_m": 382.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HI06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.606246,
+   "lon": 34.973019,
+   "elev_m": 60.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.63
+  },
+  {
+   "name": "HI07",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.823077,
+   "lon": 35.436181,
+   "elev_m": 127.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HI11",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.994809,
+   "lon": 35.484072,
+   "elev_m": 715.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HI12",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.017099,
+   "lon": 35.704507,
+   "elev_m": 425.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.69
+  },
+  {
+   "name": "Kedem",
+   "code": "LL1A",
+   "type": "Airbase",
+   "lat": 31.260531,
+   "lon": 34.640461,
+   "elev_m": 194.9,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 107,
+   "frequencies_hz": [
+    [
+     41900000,
+     0
+    ],
+    [
+     119000000,
+     0
+    ],
+    [
+     256000000,
+     0
+    ],
+    [
+     3750000,
+     0
+    ]
+   ],
+   "mag_var": 4.48
+  },
+  {
+   "name": "HS02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.338551,
+   "lon": 36.074308,
+   "elev_m": 269.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.01
+  },
+  {
+   "name": "Chukurova",
+   "code": "LTDB",
+   "type": "Airbase",
+   "lat": 36.892733,
+   "lon": 35.069324,
+   "elev_m": 3.0,
+   "runways": [
+    "03L",
+    "21L",
+    "03R",
+    "21R"
+   ],
+   "rwy_heading_true": 214,
+   "frequencies_hz": [
+    [
+     38400000,
+     0
+    ],
+    [
+     120800000,
+     0
+    ],
+    [
+     245000000,
+     0
+    ],
+    [
+     4250000,
+     0
+    ]
+   ],
+   "mag_var": 5.2
+  },
+  {
+   "name": "Teyman",
+   "code": "LLBS",
+   "type": "Airbase",
+   "lat": 31.286974,
+   "lon": 34.722804,
+   "elev_m": 175.0,
+   "runways": [
+    "14",
+    "32"
+   ],
+   "rwy_heading_true": 319,
+   "frequencies_hz": [
+    [
+     42000000,
+     0
+    ],
+    [
+     123500000,
+     0
+    ],
+    [
+     255000000,
+     0
+    ],
+    [
+     3850000,
+     0
+    ]
+   ],
+   "mag_var": 4.48
+  },
+  {
+   "name": "HS05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.789131,
+   "lon": 37.724785,
+   "elev_m": 342.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.11
+  },
+  {
+   "name": "HS06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.27904,
+   "lon": 36.08532,
+   "elev_m": 855.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.73
+  },
+  {
+   "name": "HS08",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.644829,
+   "lon": 36.743643,
+   "elev_m": 580.9,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.92
+  },
+  {
+   "name": "HS09",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.060355,
+   "lon": 37.343139,
+   "elev_m": 373.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.14
+  },
+  {
+   "name": "HS10",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.050691,
+   "lon": 37.332313,
+   "elev_m": 373.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.14
+  },
+  {
+   "name": "HS11",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.386339,
+   "lon": 36.272711,
+   "elev_m": 718.1,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.74
+  },
+  {
+   "name": "HS19",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.415748,
+   "lon": 36.284515,
+   "elev_m": 670.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS18",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.610936,
+   "lon": 38.252986,
+   "elev_m": 488.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.93
+  },
+  {
+   "name": "HS17",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.627049,
+   "lon": 38.242949,
+   "elev_m": 570.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.93
+  },
+  {
+   "name": "HS16",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.98784,
+   "lon": 37.414272,
+   "elev_m": 441.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.13
+  },
+  {
+   "name": "HS15",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.394596,
+   "lon": 36.359739,
+   "elev_m": 655.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS14",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.455405,
+   "lon": 36.087091,
+   "elev_m": 951.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS13",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.74569,
+   "lon": 36.803543,
+   "elev_m": 782.4,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.8
+  },
+  {
+   "name": "HS12",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.429514,
+   "lon": 36.118745,
+   "elev_m": 805.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS25",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.457617,
+   "lon": 36.130844,
+   "elev_m": 887.6,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS24",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.444788,
+   "lon": 36.309884,
+   "elev_m": 657.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS23",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.181959,
+   "lon": 36.572013,
+   "elev_m": 675.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "HS22",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.707949,
+   "lon": 36.672864,
+   "elev_m": 955.5,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.79
+  },
+  {
+   "name": "HS21",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.411661,
+   "lon": 36.191734,
+   "elev_m": 765.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HS20",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.353465,
+   "lon": 36.484825,
+   "elev_m": 606.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.74
+  },
+  {
+   "name": "HI17",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.624007,
+   "lon": 35.379087,
+   "elev_m": 270.1,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.64
+  },
+  {
+   "name": "HI16",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.945547,
+   "lon": 35.204643,
+   "elev_m": 198.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.67
+  },
+  {
+   "name": "HI15",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.010471,
+   "lon": 35.662957,
+   "elev_m": 316.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.69
+  },
+  {
+   "name": "HI14",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.762867,
+   "lon": 35.302697,
+   "elev_m": 210.9,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.65
+  },
+  {
+   "name": "HI13",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.983324,
+   "lon": 35.72711,
+   "elev_m": 435.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.69
+  },
+  {
+   "name": "HT01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.848222,
+   "lon": 34.721373,
+   "elev_m": 15.6,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.17
+  },
+  {
+   "name": "HS33",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.035233,
+   "lon": 35.138647,
+   "elev_m": 33.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HMed10",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.207394,
+   "lon": 35.571165,
+   "elev_m": 118.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.71
+  },
+  {
+   "name": "HMed09",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.00429,
+   "lon": 34.059131,
+   "elev_m": 15.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.89
+  },
+  {
+   "name": "HMed08",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.343964,
+   "lon": 33.194806,
+   "elev_m": 37.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.89
+  },
+  {
+   "name": "HMed07",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.333284,
+   "lon": 33.324346,
+   "elev_m": 27.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.9
+  },
+  {
+   "name": "HMed06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.146529,
+   "lon": 36.753378,
+   "elev_m": 291.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.99
+  },
+  {
+   "name": "HMed05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.144324,
+   "lon": 33.353882,
+   "elev_m": 190.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.88
+  },
+  {
+   "name": "HMed04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.052941,
+   "lon": 35.278848,
+   "elev_m": 120.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.23
+  },
+  {
+   "name": "HMed03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.516699,
+   "lon": 35.791235,
+   "elev_m": 24.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.02
+  },
+  {
+   "name": "HMed02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.95595,
+   "lon": 38.989263,
+   "elev_m": 243.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.15
+  },
+  {
+   "name": "HMed01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.974999,
+   "lon": 33.847998,
+   "elev_m": 50.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.88
+  },
+  {
+   "name": "HMed00",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.576166,
+   "lon": 36.19892,
+   "elev_m": 62.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.19
+  },
+  {
+   "name": "HMed11",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.570588,
+   "lon": 35.846153,
+   "elev_m": 494.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.64
+  },
+  {
+   "name": "H_med_orig_08",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.892996,
+   "lon": 35.523027,
+   "elev_m": 51.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.8
+  },
+  {
+   "name": "H_med_orig_07",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.833474,
+   "lon": 34.986785,
+   "elev_m": 4.4,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "H_med_orig_06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.12802,
+   "lon": 33.378603,
+   "elev_m": 179.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.88
+  },
+  {
+   "name": "H_med_orig_05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.785536,
+   "lon": 34.980603,
+   "elev_m": 282.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.65
+  },
+  {
+   "name": "H_med_orig_04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.707989,
+   "lon": 32.981915,
+   "elev_m": 129.4,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.81
+  },
+  {
+   "name": "H_med_orig_03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.921449,
+   "lon": 33.604271,
+   "elev_m": 26.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.86
+  },
+  {
+   "name": "H_med_orig_02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.78798,
+   "lon": 32.44528,
+   "elev_m": 146.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.79
+  },
+  {
+   "name": "H_med_orig_01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.011605,
+   "lon": 35.352592,
+   "elev_m": 22.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.23
+  },
+  {
+   "name": "HStad06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.528229,
+   "lon": 36.298248,
+   "elev_m": 693.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.76
+  },
+  {
+   "name": "HStad05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.116772,
+   "lon": 36.761856,
+   "elev_m": 299.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.99
+  },
+  {
+   "name": "HStad04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.560507,
+   "lon": 35.744414,
+   "elev_m": 9.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.03
+  },
+  {
+   "name": "HStad03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.21602,
+   "lon": 37.156712,
+   "elev_m": 386.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.16
+  },
+  {
+   "name": "HStad02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.146097,
+   "lon": 33.3141,
+   "elev_m": 182.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.87
+  },
+  {
+   "name": "HStad01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.999064,
+   "lon": 35.329559,
+   "elev_m": 24.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.22
+  },
+  {
+   "name": "HS26",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.046853,
+   "lon": 39.608339,
+   "elev_m": 778.7,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HS42",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.746107,
+   "lon": 35.87959,
+   "elev_m": 366.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HL13",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.138224,
+   "lon": 35.504537,
+   "elev_m": 625.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HL12",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.173722,
+   "lon": 35.275311,
+   "elev_m": 380.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HS41",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.75794,
+   "lon": 35.897852,
+   "elev_m": 389.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HS35",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.804145,
+   "lon": 36.149846,
+   "elev_m": 1391.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.8
+  },
+  {
+   "name": "HL11",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.709881,
+   "lon": 35.966698,
+   "elev_m": 1412.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.78
+  },
+  {
+   "name": "HL10",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.264351,
+   "lon": 36.483222,
+   "elev_m": 1500.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.86
+  },
+  {
+   "name": "HL09",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.365203,
+   "lon": 36.512112,
+   "elev_m": 612.5,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.88
+  },
+  {
+   "name": "HL08",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.203768,
+   "lon": 35.353058,
+   "elev_m": 430.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.71
+  },
+  {
+   "name": "HL07",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.262178,
+   "lon": 35.418498,
+   "elev_m": 439.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "HS27",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.427553,
+   "lon": 35.934889,
+   "elev_m": 1523.5,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HL06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.305878,
+   "lon": 35.540964,
+   "elev_m": 360.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "HMed30",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.050695,
+   "lon": 37.38983,
+   "elev_m": 882.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.3
+  },
+  {
+   "name": "HMed29",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.338798,
+   "lon": 40.129427,
+   "elev_m": 219.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.04
+  },
+  {
+   "name": "HMed28",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.558056,
+   "lon": 38.278748,
+   "elev_m": 411.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.92
+  },
+  {
+   "name": "HMed27",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.960658,
+   "lon": 38.041776,
+   "elev_m": 348.7,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.14
+  },
+  {
+   "name": "HMed26",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.194001,
+   "lon": 37.097927,
+   "elev_m": 455.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.16
+  },
+  {
+   "name": "HMed25",
+   "code": "",
+   "type": "Airbase",
+   "lat": 31.719399,
+   "lon": 35.797812,
+   "elev_m": 772.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.54
+  },
+  {
+   "name": "HMed24",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.893458,
+   "lon": 35.567333,
+   "elev_m": 33.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.8
+  },
+  {
+   "name": "HMed23",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.692108,
+   "lon": 32.960268,
+   "elev_m": 100.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.8
+  },
+  {
+   "name": "HMed22",
+   "code": "",
+   "type": "Airbase",
+   "lat": 31.881649,
+   "lon": 36.00978,
+   "elev_m": 876.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "HMed21",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.455981,
+   "lon": 36.235228,
+   "elev_m": 698.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.75
+  },
+  {
+   "name": "HMed20",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.16534,
+   "lon": 34.845362,
+   "elev_m": 57.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.58
+  },
+  {
+   "name": "HMed19",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.82105,
+   "lon": 34.990642,
+   "elev_m": 16.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.66
+  },
+  {
+   "name": "HMed18",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.708162,
+   "lon": 35.302076,
+   "elev_m": 387.1,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.65
+  },
+  {
+   "name": "HMed17",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.523602,
+   "lon": 36.354867,
+   "elev_m": 675.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.76
+  },
+  {
+   "name": "HMed16",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.72074,
+   "lon": 36.732967,
+   "elev_m": 515.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.93
+  },
+  {
+   "name": "HMed15",
+   "code": "",
+   "type": "Airbase",
+   "lat": 36.206243,
+   "lon": 36.152401,
+   "elev_m": 92.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.13
+  },
+  {
+   "name": "HMed14",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.883778,
+   "lon": 35.886966,
+   "elev_m": 8.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "HMed13",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.181805,
+   "lon": 34.978768,
+   "elev_m": 72.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.58
+  },
+  {
+   "name": "HMed12",
+   "code": "",
+   "type": "Airbase",
+   "lat": 31.99319,
+   "lon": 35.890023,
+   "elev_m": 970.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.57
+  },
+  {
+   "name": "HOil05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.328835,
+   "lon": 40.105461,
+   "elev_m": 219.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.04
+  },
+  {
+   "name": "HOil04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.194105,
+   "lon": 40.081764,
+   "elev_m": 292.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.01
+  },
+  {
+   "name": "HOil03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.191099,
+   "lon": 39.90297,
+   "elev_m": 298.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.01
+  },
+  {
+   "name": "HOil02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.337805,
+   "lon": 39.76084,
+   "elev_m": 393.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.04
+  },
+  {
+   "name": "HOil01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.602758,
+   "lon": 37.901716,
+   "elev_m": 561.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.93
+  },
+  {
+   "name": "H_med_orig_09",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.02812,
+   "lon": 35.351901,
+   "elev_m": 30.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.23
+  },
+  {
+   "name": "HS34",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.927537,
+   "lon": 35.99203,
+   "elev_m": 333.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "HS04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 35.791042,
+   "lon": 37.726268,
+   "elev_m": 342.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.11
+  },
+  {
+   "name": "HS07",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.65768,
+   "lon": 38.289161,
+   "elev_m": 584.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.93
+  },
+  {
+   "name": "HI18",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.467857,
+   "lon": 35.023209,
+   "elev_m": 48.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.62
+  },
+  {
+   "name": "HS03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.669694,
+   "lon": 38.298284,
+   "elev_m": 596.3,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "HS36",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.234722,
+   "lon": 36.148784,
+   "elev_m": 745.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "HS28",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.27497,
+   "lon": 36.27019,
+   "elev_m": 733.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.73
+  },
+  {
+   "name": "HS29",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.251736,
+   "lon": 36.270972,
+   "elev_m": 917.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.73
+  },
+  {
+   "name": "HS30",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.28116,
+   "lon": 36.264183,
+   "elev_m": 775.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.73
+  },
+  {
+   "name": "HT02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.019719,
+   "lon": 35.34361,
+   "elev_m": 31.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.23
+  },
+  {
+   "name": "HI20",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.999346,
+   "lon": 35.407542,
+   "elev_m": 1144.4,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.68
+  },
+  {
+   "name": "HI26",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.084786,
+   "lon": 34.781245,
+   "elev_m": 15.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.57
+  },
+  {
+   "name": "HI25",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.182911,
+   "lon": 35.234251,
+   "elev_m": 115.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HI24",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.143485,
+   "lon": 34.815281,
+   "elev_m": 20.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.57
+  },
+  {
+   "name": "HI23",
+   "code": "",
+   "type": "Airbase",
+   "lat": 31.747503,
+   "lon": 34.935721,
+   "elev_m": 222.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.53
+  },
+  {
+   "name": "HI22",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.0876,
+   "lon": 34.919761,
+   "elev_m": 27.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.57
+  },
+  {
+   "name": "HI21",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.761123,
+   "lon": 35.400593,
+   "elev_m": 272.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.65
+  },
+  {
+   "name": "HJ04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.476518,
+   "lon": 36.063329,
+   "elev_m": 585.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.63
+  },
+  {
+   "name": "HJ03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.484175,
+   "lon": 36.065887,
+   "elev_m": 585.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.63
+  },
+  {
+   "name": "HJ02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.586732,
+   "lon": 35.924607,
+   "elev_m": 540.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.64
+  },
+  {
+   "name": "HJ01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.313847,
+   "lon": 38.702709,
+   "elev_m": 763.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.73
+  },
+  {
+   "name": "HL05",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.153759,
+   "lon": 35.196448,
+   "elev_m": 318.7,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HL04",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.132564,
+   "lon": 35.393307,
+   "elev_m": 792.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HL03",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.182843,
+   "lon": 35.495829,
+   "elev_m": 569.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.71
+  },
+  {
+   "name": "HL02",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.169388,
+   "lon": 35.187009,
+   "elev_m": 16.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.7
+  },
+  {
+   "name": "HL01",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.265524,
+   "lon": 35.216251,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.71
+  },
+  {
+   "name": "HS32",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.075858,
+   "lon": 36.144587,
+   "elev_m": 600.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.58
+  },
+  {
+   "name": "HS31",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.732974,
+   "lon": 36.509039,
+   "elev_m": 1086.2,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.79
+  },
+  {
+   "name": "HOil06",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.11399,
+   "lon": 36.106201,
+   "elev_m": 525.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.59
+  },
+  {
+   "name": "HS40",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.825222,
+   "lon": 35.996227,
+   "elev_m": 503.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.67
+  },
+  {
+   "name": "HS39",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.587032,
+   "lon": 35.399849,
+   "elev_m": 43.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.63
+  },
+  {
+   "name": "HS38",
+   "code": "",
+   "type": "Airbase",
+   "lat": 32.438261,
+   "lon": 36.019166,
+   "elev_m": 635.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.62
+  },
+  {
+   "name": "HS37",
+   "code": "",
+   "type": "Airbase",
+   "lat": 33.552185,
+   "lon": 36.447207,
+   "elev_m": 613.0,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 4.77
+  },
+  {
+   "name": "Gulechoba",
+   "code": "",
+   "type": "Airbase",
+   "lat": 38.012022,
+   "lon": 39.95472,
+   "elev_m": 776.0,
+   "runways": [
+    "19",
+    "01"
+   ],
+   "rwy_heading_true": 11,
+   "frequencies_hz": [],
+   "mag_var": 5.54
+  },
+  {
+   "name": "Diyarbakir",
+   "code": "LTCC",
+   "type": "Airbase",
+   "lat": 37.893339,
+   "lon": 40.198688,
+   "elev_m": 673.8,
+   "runways": [
+    "16R",
+    "34R",
+    "16L",
+    "34L"
+   ],
+   "rwy_heading_true": 342,
+   "frequencies_hz": [
+    [
+     38900000,
+     0
+    ],
+    [
+     132400000,
+     0
+    ],
+    [
+     225000000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 5.52
+  },
+  {
+   "name": "Konya",
+   "code": "LTAN",
+   "type": "Airbase",
+   "lat": 37.977748,
+   "lon": 32.561488,
+   "elev_m": 1038.6,
+   "runways": [
+    "19L",
+    "01L",
+    "19R",
+    "01R"
+   ],
+   "rwy_heading_true": 21,
+   "frequencies_hz": [
+    [
+     38900000,
+     0
+    ],
+    [
+     132400000,
+     0
+    ],
+    [
+     225000000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 5.2
+  },
+  {
+   "name": "Adiyaman",
+   "code": "LTCP",
+   "type": "Airbase",
+   "lat": 37.731261,
+   "lon": 38.468922,
+   "elev_m": 654.4,
+   "runways": [
+    "22",
+    "04"
+   ],
+   "rwy_heading_true": 50,
+   "frequencies_hz": [
+    [
+     41850000,
+     0
+    ],
+    [
+     121500000,
+     0
+    ],
+    [
+     243000000,
+     0
+    ],
+    [
+     5000000,
+     0
+    ]
+   ],
+   "mag_var": 5.45
+  },
+  {
+   "name": "Tel Nof",
+   "code": "LLEK",
+   "type": "Airbase",
+   "lat": 31.838354,
+   "lon": 34.832634,
+   "elev_m": 55.0,
+   "runways": [
+    "15",
+    "18",
+    "36",
+    "33",
+    "15",
+    "33"
+   ],
+   "rwy_heading_true": 333,
+   "frequencies_hz": [
+    [
+     39100000,
+     0
+    ],
+    [
+     128100000,
+     0
+    ],
+    [
+     250650000,
+     0
+    ],
+    [
+     4100000,
+     0
+    ]
+   ],
+   "mag_var": 4.54
+  },
+  {
+   "name": "Ben Gurion",
+   "code": "LLBG",
+   "type": "Airbase",
+   "lat": 32.006079,
+   "lon": 34.882423,
+   "elev_m": 27.6,
+   "runways": [
+    "30",
+    "21",
+    "03",
+    "26",
+    "08",
+    "12"
+   ],
+   "rwy_heading_true": 124,
+   "frequencies_hz": [
+    [
+     39150000,
+     0
+    ],
+    [
+     134600000,
+     0
+    ],
+    [
+     250700000,
+     0
+    ],
+    [
+     4125000,
+     0
+    ]
+   ],
+   "mag_var": 4.56
+  },
+  {
+   "name": "Hatzor",
+   "code": "LLHS",
+   "type": "Airbase",
+   "lat": 31.760397,
+   "lon": 34.725255,
+   "elev_m": 33.5,
+   "runways": [
+    "05",
+    "11",
+    "29",
+    "29",
+    "11",
+    "23"
+   ],
+   "rwy_heading_true": 237,
+   "frequencies_hz": [
+    [
+     39200000,
+     0
+    ],
+    [
+     125750000,
+     0
+    ],
+    [
+     250750000,
+     0
+    ],
+    [
+     4150000,
+     0
+    ]
+   ],
+   "mag_var": 4.53
+  },
+  {
+   "name": "Palmachim",
+   "code": "LLPL",
+   "type": "Airbase",
+   "lat": 31.902807,
+   "lon": 34.693438,
+   "elev_m": 13.8,
+   "runways": [
+    "21L",
+    "03L",
+    "21R",
+    "03R"
+   ],
+   "rwy_heading_true": 27,
+   "frequencies_hz": [
+    [
+     39250000,
+     0
+    ],
+    [
+     118250000,
+     0
+    ],
+    [
+     250800000,
+     0
+    ],
+    [
+     4175000,
+     0
+    ]
+   ],
+   "mag_var": 4.55
+  },
+  {
+   "name": "Sanliurfa Heliport",
+   "code": "",
+   "type": "Airbase",
+   "lat": 37.186493,
+   "lon": 38.791602,
+   "elev_m": 598.9,
+   "runways": [],
+   "rwy_heading_true": 0,
+   "frequencies_hz": [],
+   "mag_var": 5.36
+  },
+  {
+   "name": "T2",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.389768,
+   "lon": 40.153521,
+   "elev_m": 391.0,
+   "runways": [
+    "13",
+    "04",
+    "22",
+    "31"
+   ],
+   "rwy_heading_true": 310,
+   "frequencies_hz": [
+    [
+     42000000,
+     0
+    ],
+    [
+     123500000,
+     0
+    ],
+    [
+     255000000,
+     0
+    ],
+    [
+     3850000,
+     0
+    ]
+   ],
+   "mag_var": 4.88
+  },
+  {
+   "name": "T3",
+   "code": "",
+   "type": "Airbase",
+   "lat": 34.528957,
+   "lon": 38.729439,
+   "elev_m": 388.3,
+   "runways": [
+    "10",
+    "28"
+   ],
+   "rwy_heading_true": 282,
+   "frequencies_hz": [
+    [
+     40350000,
+     0
+    ],
+    [
+     119250000,
+     0
+    ],
+    [
+     251900000,
+     0
+    ],
+    [
+     4725000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  }
+ ]
+}

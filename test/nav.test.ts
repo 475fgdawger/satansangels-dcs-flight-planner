@@ -1,0 +1,118 @@
+import { describe, expect, it } from 'vitest'
+import raw from './fixtures/targets_syria.json'
+import { direct, inverse } from '../src/nav/geodesy'
+import { compass16, ddm, dms, duration, heading3, parseClock, parseLatLon } from '../src/nav/format'
+import { airfields, catalog, magVarAt, nearRef, parseMission, parseTacanFix, runwayPairs, tacanFix } from '../src/nav/mission'
+import { computeRows, defaultSettings, windTriangle, type Waypoint } from '../src/nav/plan'
+
+const m = parseMission(raw)
+
+describe('matches the bot target list (Syria export)', () => {
+  it.each(m.targets.map((t) => [t.name, t]))('%s TACAN fix', (_name, t) => {
+    expect(tacanFix(m, t)).toBe(t.tacan)
+  })
+
+  it.each(m.targets.map((t) => [t.name, t]))('%s DMS', (_name, t) => {
+    expect(dms(t)).toBe(t.latlon)
+  })
+
+  // Targets whose bot reference is a place (others reference a nearby target).
+  it.each(m.targets.filter((t) => / of (Aleppo|Latakia|Damascus)$|^at (Aleppo|Bassel Al-Assad|Minakh|Shayrat)$/.test(t.near))
+    .map((t) => [t.name, t]))('%s nearby reference', (_name, t) => {
+    expect(nearRef(m, t, t.mag_var)).toBe(t.near)
+  })
+})
+
+describe('geodesy', () => {
+  it('direct inverts inverse', () => {
+    const a = { lat: 37.015611, lon: 35.448194 }
+    const b = { lat: 37.617523, lon: 33.510843 }
+    const { az, nm } = inverse(a.lat, a.lon, b.lat, b.lon)
+    const back = direct(a.lat, a.lon, az, nm)
+    expect(back.lat).toBeCloseTo(b.lat, 7)
+    expect(back.lon).toBeCloseTo(b.lon, 7)
+  })
+})
+
+describe('formats', () => {
+  it('degrees and decimal minutes', () => {
+    expect(ddm({ lat: 36.298043, lon: 37.158964 })).toBe("N36°17.88' E037°09.54'")
+    expect(ddm({ lat: 36.999999, lon: -0.5 })).toBe("N37°00.00' W000°30.00'")
+  })
+  it('headings write 000 as 360', () => {
+    expect(heading3(0)).toBe('360')
+    expect(heading3(359.6)).toBe('360')
+    expect(heading3(5.2)).toBe('005')
+  })
+  it('compass points', () => {
+    expect(compass16(337.5)).toBe('NNW')
+    expect(compass16(359)).toBe('N')
+  })
+  it('durations and clock', () => {
+    expect(duration(14.25)).toBe('14:15')
+    expect(duration(75)).toBe('1:15:00')
+    expect(parseClock('1205')).toBe(12 * 3600 + 5 * 60)
+    expect(parseClock('25:00')).toBeNull()
+  })
+  it('parses typed coordinates', () => {
+    const want = { lat: 37.617523, lon: 33.510843 }
+    for (const text of [`N37°37'03" E033°30'39"`, 'N37 37.05 E033 30.65', '37.617523, 33.510843']) {
+      const p = parseLatLon(text)!
+      expect(p.lat).toBeCloseTo(want.lat, 3)
+      expect(p.lon).toBeCloseTo(want.lon, 3)
+    }
+    expect(parseLatLon('hello')).toBeNull()
+  })
+  it('parses a TACAN fix back to the target', () => {
+    const t1 = m.targets.find((t) => t.name === 'T-1')!
+    const p = parseTacanFix(m, 'DAN 287/99')!
+    expect(inverse(p.lat, p.lon, t1.lat, t1.lon).nm).toBeLessThan(1.5)
+    expect(parseTacanFix(m, 'XYZ 100/10')).toBeNull()
+  })
+})
+
+describe('mission data', () => {
+  it('drops helipads from the airfield list', () => {
+    const names = airfields(m).map((a) => a.name)
+    expect(names).toContain('Incirlik')
+    expect(names).toContain('Konya')
+    expect(names).not.toContain('HC01')
+  })
+  it('pairs runway ends', () => {
+    expect(runwayPairs(['23', '05'])).toEqual(['05/23'])
+    expect(runwayPairs(['19L', '01L', '19R', '01R'])).toEqual(['01L/19R', '01R/19L'])
+  })
+  it('does not list range targets twice', () => {
+    expect(catalog(m).filter((p) => p.name === 'T-1')).toHaveLength(1)
+  })
+  it('mag var at a known point is DCS value, between points is interpolated', () => {
+    expect(magVarAt(m, { lat: 37.015611, lon: 35.448194 })).toBe(5.23)
+    const mid = magVarAt(m, { lat: 37.3, lon: 34.5 })
+    expect(mid).toBeGreaterThan(5.1)
+    expect(mid).toBeLessThan(5.3)
+  })
+})
+
+describe('legs', () => {
+  it('wind triangle: direct headwind slows GS, crosswind adds WCA', () => {
+    expect(windTriangle(90, 400, 90, 50)).toEqual({ heading: 90, gs: 350 })
+    const x = windTriangle(360, 400, 90, 40)!
+    expect(x.heading).toBeCloseTo(5.74, 1)
+  })
+  it('computes time, distance and fuel along a route', () => {
+    const inc = airfields(m).find((a) => a.name === 'Incirlik')!
+    const t5 = m.targets.find((t) => t.name === 'T-5')!
+    const route: Waypoint[] = [
+      { id: 'a', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
+      { id: 'b', name: 'T-5', source: 'target', lat: t5.lat, lon: t5.lon },
+    ]
+    const s = { ...defaultSettings('F-4E', 43200), tas: 420, ff: 6000 }
+    const rows = computeRows(m, route, s)
+    const leg = rows[1].leg!
+    expect(leg.nm).toBeGreaterThan(90)
+    expect(leg.nm).toBeLessThan(95)
+    expect(leg.ete).toBeCloseTo((leg.nm / 420) * 60, 6)
+    expect(rows[1].fuelRemaining).toBeCloseTo(12000 - 600 - leg.ete * 100, 6)
+    expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)
+  })
+})
