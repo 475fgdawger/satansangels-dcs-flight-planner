@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, computeRows, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+import { AIRCRAFT, WAYPOINT_TAGS, computeRows, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
 
@@ -111,9 +111,8 @@ export function App() {
 
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} fuel={fuel} onChange={setSettings} />
-          <RoutePanel mission={mission} route={route} settings={settings} fuel={fuel}
-            onChange={setRoute} onSettings={setSettings} />
+          <SettingsPanel settings={settings} route={route} fuel={fuel} onChange={setSettings} />
+          <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
           <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} />
         </>
       )}
@@ -126,8 +125,8 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, fuel, onChange }:
-  { settings: PlanSettings; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, route, fuel, onChange }:
+  { settings: PlanSettings; route: Waypoint[]; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
   const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
@@ -205,7 +204,9 @@ function SettingsPanel({ settings: s, fuel, onChange }:
       </p>
       {fuel && (
         <p class="muted small">
-          Joker and bingo are fuel states at the target ({fuel.rtbNm.toFixed(0)} nm from base).
+          Joker and bingo are fuel states at {fuel.targetKind === 'auto'
+            ? <>{route[fuel.target].name}, the farthest point from base (mark a TGT or CAP to change it)</>
+            : <>the {fuel.targetKind} ({route[fuel.target].name})</>}, {fuel.rtbNm.toFixed(0)} nm from base.
           Bingo: the higher of {a.bingoFloor.toLocaleString('en-US')} lb and {Math.round(fuel.calc.rtbFuel)} lb to fly home at
           high cruise. Joker: {Math.round(fuel.calc.abLoiter)} lb for 1 min AB + {Math.round(fuel.calc.abEgress)} lb AB
           for the first 30 nm + {Math.round(fuel.calc.cruiseHome)} lb high cruise home.
@@ -220,9 +221,8 @@ function SettingsPanel({ settings: s, fuel, onChange }:
   )
 }
 
-function RoutePanel({ mission, route, settings, fuel, onChange, onSettings }:
-  { mission: MissionExport; route: Waypoint[]; settings: PlanSettings; fuel: FuelPlan | null;
-    onChange: (r: Waypoint[]) => void; onSettings: (s: PlanSettings) => void }) {
+function RoutePanel({ mission, route, settings, onChange }:
+  { mission: MissionExport; route: Waypoint[]; settings: PlanSettings; onChange: (r: Waypoint[]) => void }) {
   const phases = AIRCRAFT[settings.aircraft].phases
   const points = useMemo(() => catalog(mission), [mission])
   const byLabel = useMemo(() => new Map(points.map((p) => [optionLabel(p), p])), [points])
@@ -274,7 +274,7 @@ function RoutePanel({ mission, route, settings, fuel, onChange, onSettings }:
       {route.length > 0 && (
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Target or CAP station for joker/bingo">Target</th><th /></tr>
+            <tr><th>#</th><th>Name</th><th>From</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
@@ -297,10 +297,39 @@ function RoutePanel({ mission, route, settings, fuel, onChange, onSettings }:
                   onInput={(e) => update(i, { ff: optNum((e.target as HTMLInputElement).value) })} />}</td>
                 <td>{i > 0 && <input type="number" placeholder={String(settings.tas)} value={w.tas ?? ''}
                   onInput={(e) => update(i, { tas: optNum((e.target as HTMLInputElement).value) })} />}</td>
-                <td>{i < route.length - 1 && (
-                  <input type="radio" name="target" checked={fuel?.target === i}
-                    onChange={() => onSettings({ ...settings, targetId: w.id })} />
+                <td>{i > 0 && (
+                  <div class="loiter">
+                    <input type="checkbox" title="Loiter here" checked={w.loiter !== undefined}
+                      onChange={(e) => update(i, { loiter: (e.target as HTMLInputElement).checked ? { min: 10 } : undefined })} />
+                    {w.loiter && <>
+                      <input type="number" min="0" step="any" value={w.loiter.min || ''} title="Loiter minutes"
+                        onInput={(e) => update(i, { loiter: { ...w.loiter!, min: optNum((e.target as HTMLInputElement).value) ?? 0 } })} />
+                      <select value={w.loiter.phase ?? ''} title="Power while loitering"
+                        onChange={(e) => {
+                          const v = (e.target as HTMLSelectElement).value
+                          update(i, { loiter: { ...w.loiter!, phase: v === '' ? undefined : (v as PhaseId) } })
+                        }}>
+                        <option value="">Same as leg in</option>
+                        {phases.map((p) => <option value={p.id} title={p.note}>{p.label} ({p.ff.toLocaleString('en-US')})</option>)}
+                      </select>
+                    </>}
+                  </div>
                 )}</td>
+                <td>
+                  <div class="marks">
+                    {WAYPOINT_TAGS.map((tag) => (
+                      <label key={tag}>
+                        <input type="checkbox" checked={w.tags?.includes(tag) ?? false}
+                          onChange={(e) => {
+                            const on = (e.target as HTMLInputElement).checked
+                            const tags = WAYPOINT_TAGS.filter((t) => (t === tag ? on : w.tags?.includes(t)))
+                            update(i, { tags: tags.length ? tags : undefined })
+                          }} />
+                        {tag}
+                      </label>
+                    ))}
+                  </div>
+                </td>
                 <td class="actions">
                   <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>
                   <button type="button" title="Move down" onClick={() => move(i, 1)}>↓</button>

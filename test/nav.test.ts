@@ -142,6 +142,24 @@ describe('legs', () => {
     expect(rows[1].leg!.phase).toBeNull()
   })
 
+  it('loiter adds time and fuel at the waypoint, at its own phase or the leg in', () => {
+    const s = defaultSettings('F-4E', 43200)
+    const plain = computeRows(m, route, s)
+    const held = computeRows(m, [route[0], { ...route[1], phase: 'cruise-low', loiter: { min: 10 } }, route[2]], s)
+    const lo = held[1].loiter!
+    expect(lo.ff).toBe(8250)
+    expect(lo.fuel).toBeCloseTo(8250 * 10 / 60, 6)
+    expect(held[1].fuelAfter).toBeCloseTo(held[1].fuelRemaining - lo.fuel, 6)
+    expect(held[1].elapsedAfter).toBeCloseTo(held[1].elapsed + 10, 6)
+    expect(held[2].elapsed).toBeCloseTo(plain[2].elapsed + 10, 6)
+    expect(held[2].eta).toBeCloseTo(plain[2].eta! + 600, 6)
+    const hi = computeRows(m, [route[0], { ...route[1], loiter: { min: 6, phase: 'mil' } }], s)[1].loiter!
+    expect(hi.fuel).toBeCloseTo(13000 * 6 / 60, 6)
+    expect(computeRows(m, [route[0], { ...route[1], loiter: { min: 0 } }], s)[1].loiter).toBeNull()
+    expect(plain[1].loiter).toBeNull()
+    expect(plain[1].fuelAfter).toBe(plain[1].fuelRemaining)
+  })
+
   it('joker and bingo follow the squadron definitions', () => {
     const s = { ...defaultSettings('F-4E', 43200), tas: 460, abTas: 550 }
     const f = fuelPlan(route, s)!
@@ -152,6 +170,18 @@ describe('legs', () => {
     const joker = 65000 / 60 + (30 / 550) * 65000 + ((rtb - 30) / 460) * 4250
     expect(f.joker).toBeCloseTo(Math.max(joker, f.bingo), 6)
     expect(fuelPlan(route, { ...s, jokerOverride: 7000 })!.joker).toBe(7000)
+  })
+
+  it('the first TGT or CAP mark sets where joker and bingo are measured', () => {
+    const s = defaultSettings('F-4E', 0)
+    const four: Waypoint[] = [route[0], { ...route[0], id: 'ip', lat: inc.lat + 0.5 }, route[1], route[2]]
+    expect(fuelPlan(four, s)).toMatchObject({ target: 2, targetKind: 'auto' })
+    const cap = four.map((w) => (w.id === 'ip' ? { ...w, tags: ['IP', 'CAP'] as Waypoint['tags'] } : w))
+    expect(fuelPlan(cap, s)).toMatchObject({ target: 1, targetKind: 'CAP' })
+    const ipOnly = four.map((w) => (w.id === 'ip' ? { ...w, tags: ['IP'] as Waypoint['tags'] } : w))
+    expect(fuelPlan(ipOnly, { ...s, targetId: 'ip' })).toMatchObject({ target: 1, targetKind: 'auto' })
+    const tgt = ipOnly.map((w) => (w.id === 'b' ? { ...w, tags: ['TGT'] as Waypoint['tags'] } : w))
+    expect(fuelPlan(tgt, { ...s, targetId: 'ip' })).toMatchObject({ target: 2, targetKind: 'TGT' })
   })
 
   it('bingo never drops below the floor', () => {
