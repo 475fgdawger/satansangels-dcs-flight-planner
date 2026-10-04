@@ -43,6 +43,8 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
     id: 'F-4E',
     fuelLoads: [
       { label: 'Internal', lb: 12200 },
+      // 600 gal centerline tank at 6.5 lb/gal JP-4 = 3,900 lb.
+      { label: 'Centerline tank', lb: 16100 },
       { label: 'Centerline + outboard tanks', lb: 20800 },
     ],
     idleLbMin: 30,
