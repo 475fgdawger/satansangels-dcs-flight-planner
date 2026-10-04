@@ -184,6 +184,10 @@ describe('legs', () => {
     expect(fuelPlan(tgt, { ...s, targetId: 'ip' })).toMatchObject({ target: 2, targetKind: 'TGT' })
   })
 
+  it('F-4E fuel loads: internal, centerline tank, centerline + outboards', () => {
+    expect(AIRCRAFT['F-4E'].fuelLoads.map((l) => l.lb)).toEqual([12200, 16100, 20800])
+  })
+
   it('bingo never drops below the floor', () => {
     const near: Waypoint[] = [route[0], { ...route[0], id: 'x', lat: inc.lat + 0.1 }, { ...route[0], id: 'y' }]
     expect(fuelPlan(near, defaultSettings('F-4E', 0))!.bingo).toBe(AIRCRAFT['F-4E'].bingoFloor)
