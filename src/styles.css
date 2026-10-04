@@ -65,7 +65,8 @@ th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line
 th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 
 .route input, .route select { width: 100%; }
-.route td:nth-child(5) input, .route td:nth-child(6) input { max-width: 110px; }
+.route td:nth-child(6) input, .route td:nth-child(7) input { max-width: 110px; }
+.route input.elev { min-width: 64px; max-width: 80px; }
 .route .loiter { display: flex; gap: 4px; align-items: center; }
 .route .loiter input[type=checkbox] { width: auto; }
 .route .loiter input[type=number] { width: 60px; }
@@ -75,6 +76,36 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .route .marks input { width: auto; margin: 0; }
 .actions { white-space: nowrap; }
 .actions button { padding: 2px 8px; }
+
+/* Pop-up attack panel */
+.pp-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+@media (max-width: 800px) { .pp-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pp-pair { display: flex; gap: 4px; }
+.pp-pair input { min-width: 0; }
+.pp-pair select { width: auto !important; }
+.pp-card { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 800px) { .pp-card { grid-template-columns: 1fr; } }
+.pp-card li { border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; }
+.pp-ev { font-weight: 700; display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+.pp-n { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: currentColor; font-size: 11px; }
+.pp-n { background: #8a5a00; color: #fff; }
+.pp-row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.pp-row b { font-variant-numeric: tabular-nums; text-align: right; }
+.pp-row.key b { color: #8a5a00; }
+.pp-pic { display: block; width: 100%; height: auto; }
+.pp-pic text { font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; fill: currentColor; }
+.pp-pic text.lbl { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 15px; }
+.pp-pic text.dim { opacity: 0.7; font-size: 12px; }
+.pp-pic text.acc { fill: #8a5a00; }
+.pp-pic text.hd { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 2px; opacity: 0.7; }
+.pp-pic .path { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linejoin: round; }
+.pp-pic .dash { fill: none; stroke: currentColor; opacity: 0.6; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.pp-pic .ghost { fill: none; stroke: currentColor; opacity: 0.5; stroke-width: 1.5; stroke-dasharray: 2 4; }
+.pp-pic .gnd { stroke: currentColor; opacity: 0.6; stroke-width: 2; }
+.pp-pic .sep, .pp-pic .grid { stroke: currentColor; opacity: 0.3; stroke-width: 1; }
+.pp-pic .pt { fill: #fff; stroke: currentColor; stroke-width: 2; }
+.pp-pic .pt.acc { fill: #8a5a00; stroke: #8a5a00; }
+.pp-pic .tgt { fill: none; stroke: #8a5a00; stroke-width: 2.5; }
 
 /* Kneeboard pages: 768 x 1024 (3:4 portrait, the DCS kneeboard shape) */
 .kb-pages { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
@@ -125,6 +156,16 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-table tr.kb-loiter.bingo td { background: var(--bingo); }
 .kb-table tbody.joker td { background: var(--joker); }
 .kb-table tbody.bingo td { background: var(--bingo); }
+.kb-attack .pp-card { gap: 6px; margin: 8px 0 6px; }
+.kb-attack .pp-card li { border: 1.5px solid #000; border-radius: 0; padding: 4px 6px; }
+.kb-attack .pp-ev { font-size: 15px; }
+.kb-attack .pp-n { background: #000; }
+.kb-attack .pp-row { font-size: 12.5px; }
+.kb-attack .pp-row.key b, .kb-attack .pp-pic text.acc { color: #000; fill: #000; }
+.kb-attack .pp-row.key b { font-size: 14px; }
+.kb-attack .pp-pic .pt.acc, .kb-attack .pp-pic .tgt { fill: #000; stroke: #000; }
+.kb-attack .pp-pic .tgt { fill: none; }
+.kb-warn { border: 2px solid #000; padding: 4px 6px; font-weight: 700; font-size: 13px; margin-top: 4px; }
 .kb-foot { margin-top: auto; font-size: 11px; color: #333; border-top: 1px solid #000; padding-top: 4px; }
 
 @media print {

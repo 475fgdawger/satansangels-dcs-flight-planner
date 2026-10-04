@@ -35,7 +35,11 @@ export interface CatalogPoint extends LatLon {
   name: string
   kind: PointKind
   detail: string
+  /** Ground elevation, ft MSL, when the export has it. */
+  elevFt?: number
 }
+
+export const M_TO_FT = 3.28084
 
 const KIND_LABEL: Record<PointKind, string> = {
   airfield: 'Airfield',
@@ -52,25 +56,25 @@ export const kindLabel = (k: PointKind) => KIND_LABEL[k]
 export function catalog(m: MissionExport): CatalogPoint[] {
   const out: CatalogPoint[] = []
   for (const a of airfields(m)) {
-    out.push({ key: `airfield:${a.name}`, name: a.name, kind: 'airfield', lat: a.lat, lon: a.lon,
+    out.push({ key: `airfield:${a.name}`, name: a.name, kind: 'airfield', lat: a.lat, lon: a.lon, elevFt: a.elev_m * M_TO_FT,
       detail: [a.code, `RWY ${runwayPairs(a.runways).join(', ')}`].filter(Boolean).join(' · ') })
   }
   for (const t of m.tacans) {
-    out.push({ key: `tacan:${t.id}`, name: t.id, kind: 'tacan', lat: t.lat, lon: t.lon, detail: `TACAN ${t.chan}` })
+    out.push({ key: `tacan:${t.id}`, name: t.id, kind: 'tacan', lat: t.lat, lon: t.lon, elevFt: t.elev_ft, detail: `TACAN ${t.chan}` })
   }
   const targetNames = new Set(m.targets.map((t) => t.name))
   for (const t of m.targets) {
-    out.push({ key: `target:${t.name}`, name: t.name, kind: 'target', lat: t.lat, lon: t.lon, detail: `${t.section} · ${t.near}` })
+    out.push({ key: `target:${t.name}`, name: t.name, kind: 'target', lat: t.lat, lon: t.lon, elevFt: t.elev_ft, detail: `${t.section} · ${t.near}` })
   }
   for (const z of m.zones) {
     if (targetNames.has(z.name)) continue
-    out.push({ key: `zone:${z.name}`, name: z.name, kind: 'zone', lat: z.lat, lon: z.lon, detail: 'Mission zone' })
+    out.push({ key: `zone:${z.name}`, name: z.name, kind: 'zone', lat: z.lat, lon: z.lon, elevFt: z.elev_ft, detail: 'Mission zone' })
   }
   for (const l of m.labels) {
     out.push({ key: `label:${l.text}:${l.lat.toFixed(4)}`, name: l.text, kind: 'label', lat: l.lat, lon: l.lon, detail: 'Map label' })
   }
   for (const p of m.places) {
-    out.push({ key: `place:${p.name}`, name: p.name, kind: 'place', lat: p.lat, lon: p.lon, detail: 'Place' })
+    out.push({ key: `place:${p.name}`, name: p.name, kind: 'place', lat: p.lat, lon: p.lon, elevFt: p.elev_ft, detail: 'Place' })
   }
   return out
 }

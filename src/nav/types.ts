@@ -21,12 +21,15 @@ export interface Target {
   tacan: string
   near: string
   line: string
+  /** Ground elevation, ft MSL (optional; added by newer bot exports). */
+  elev_ft?: number
 }
 
 export interface NamedPoint {
   name: string
   lat: number
   lon: number
+  elev_ft?: number
 }
 
 export interface Label {
@@ -53,7 +56,7 @@ export interface MissionExport {
   mission: { name: string; file: string; theatre: string; date: string; start_time: number }
   built_utc: string
   mag_var: { source: string; fallback: number }
-  tacans: Tacan[]
+  tacans: (Tacan & { elev_ft?: number })[]
   targets: Target[]
   places: NamedPoint[]
   zones: NamedPoint[]
