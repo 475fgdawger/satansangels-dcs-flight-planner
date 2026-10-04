@@ -118,8 +118,8 @@ export interface PlanSettings {
   tas: number
   /** Default flight phase for legs. */
   phase: PhaseId
-  /** Takeoff time, seconds after midnight (mission local time). */
-  takeoff: number
+  /** Takeoff time, seconds after midnight (mission local time); unset = T/O and ETAs left blank. */
+  takeoff?: number
   /** Wind FROM, degrees true, and speed in kt. */
   windDir: number
   windKt: number
@@ -131,7 +131,7 @@ export interface PlanSettings {
   bingoOverride?: number
 }
 
-export function defaultSettings(aircraft: AircraftId, takeoff: number): PlanSettings {
+export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSettings {
   const a = AIRCRAFT[aircraft]
   return { aircraft, startFuel: a.fuelLoads[0].lb, taxiMin: 10, abTakeoffMin: 0.75, climbMin: 4, tas: a.tas,
     phase: a.phases[0].id, takeoff, windDir: 0, windKt: 0, abTas: a.abTas }
@@ -176,8 +176,8 @@ export interface Row {
   leg: Leg | null
   /** Minutes since takeoff at this waypoint. */
   elapsed: number
-  /** Seconds after midnight. */
-  eta: number
+  /** Seconds after midnight; null when no takeoff time is set. */
+  eta: number | null
   totalNm: number
   fuelRemaining: number
 }
@@ -203,7 +203,7 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
   const milFf = phaseOf(s.aircraft, 'mil').ff
   route.forEach((wp, i) => {
     if (i === 0) {
-      rows.push({ wp, leg: null, elapsed: 0, eta: s.takeoff, totalNm: 0, fuelRemaining: fuel })
+      rows.push({ wp, leg: null, elapsed: 0, eta: s.takeoff ?? null, totalNm: 0, fuelRemaining: fuel })
       return
     }
     const from = route[i - 1]
@@ -225,7 +225,7 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
       leg: { to: i, trueCourse: az, magCourse: norm360(az - magVar), magHeading: norm360(wind.heading - magVar),
         magVar, nm, tas, gs: wind.gs, ete, ff, phase, climbMin, fuelUsed },
       elapsed,
-      eta: s.takeoff + elapsed * 60,
+      eta: s.takeoff === undefined ? null : s.takeoff + elapsed * 60,
       totalNm,
       fuelRemaining: fuel,
     })

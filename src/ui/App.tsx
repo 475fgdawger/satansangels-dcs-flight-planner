@@ -50,7 +50,7 @@ export function App() {
       const m = parseMission(json)
       setMission(m)
       setRoute([])
-      setSettings((s) => s ? { ...s, takeoff: m.mission.start_time } : defaultSettings('F-4E', m.mission.start_time))
+      setSettings((s) => s ?? defaultSettings('F-4E'))
       setError(null)
     } catch (e) {
       setError((e as Error).message)
@@ -161,12 +161,14 @@ function SettingsPanel({ settings: s, fuel, onChange }:
         </label>
         <label class="field">
           <span>Takeoff</span>
-          <input type="text" value={clock(s.takeoff)}
+          <input type="text" value={s.takeoff === undefined ? '' : clock(s.takeoff)} placeholder="HH:MM"
             onChange={(e) => {
-              const t = parseClock((e.target as HTMLInputElement).value)
+              const v = (e.target as HTMLInputElement).value
+              if (v.trim() === '') set({ takeoff: undefined })
+              const t = parseClock(v)
               if (t !== null) set({ takeoff: t })
             }} />
-          <small>mission time</small>
+          <small>optional; blank leaves T/O and ETA blank</small>
         </label>
         <label class="field">
           <span>Fuel load</span>

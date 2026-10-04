@@ -128,6 +128,13 @@ describe('legs', () => {
     expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)
   })
 
+  it('leaves ETAs blank without a takeoff time', () => {
+    expect(computeRows(m, route, defaultSettings('F-4E')).map((r) => r.eta)).toEqual([null, null, null])
+    const rows = computeRows(m, route, defaultSettings('F-4E', 43200))
+    expect(rows[0].eta).toBe(43200)
+    expect(rows[1].eta).toBeCloseTo(43200 + rows[1].elapsed * 60, 6)
+  })
+
   it('a custom fuel flow overrides the leg phase', () => {
     const s = defaultSettings('F-4E', 43200)
     const rows = computeRows(m, [route[0], { ...route[1], phase: 'ab', ff: 5000 }], s)

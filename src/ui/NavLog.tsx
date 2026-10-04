@@ -24,7 +24,7 @@ export function NavLog({ mission, rows, settings: s, fuel }:
       <div class="navlog-head">
         <div>
           <h2>{mission.mission.name}</h2>
-          <div>{s.aircraft} · T/O {clock(s.takeoff)} · {Math.round(last.totalNm)} nm · {duration(last.elapsed)} enroute</div>
+          <div>{s.aircraft} · T/O {s.takeoff === undefined ? '______' : clock(s.takeoff)} · {Math.round(last.totalNm)} nm · {duration(last.elapsed)} enroute</div>
         </div>
         <div class="right">
           <div>Fuel {lb(s.startFuel)} lb{fuel && <> · Joker {lb(fuel.joker)} · Bingo {lb(fuel.bingo)} (at {rows[fuel.target].wp.name})</>}</div>
@@ -69,7 +69,7 @@ export function NavLog({ mission, rows, settings: s, fuel }:
                 <td class="num">{r.leg ? Math.round(r.leg.gs) : ''}</td>
                 <td>{r.leg ? powerLabel(r.leg, s) : ''}</td>
                 <td class="num">{r.leg ? duration(r.leg.ete) : ''}</td>
-                <td class="num">{clock(r.eta)}</td>
+                <td class="num">{r.eta === null ? '' : clock(r.eta)}</td>
                 <td class="num">{lb(r.fuelRemaining)}</td>
               </tr>
             )
