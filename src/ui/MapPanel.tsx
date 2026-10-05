@@ -245,11 +245,11 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     })
   }, [route, rows, mission])
 
-  // Frame the mission when it changes (the route if there is one).
+  // Frame the mission when a different one is loaded (the route if there is one); an Update keeps the view.
   useEffect(() => {
     const m = map.current
     if (!m) return
-    const key = `${mission.mission.file}|${mission.built_utc}`
+    const key = mission.mission.file
     if (fitted.current === key) return
     fit(route.length > 1 ? 'route' : 'mission')
     fitted.current = key

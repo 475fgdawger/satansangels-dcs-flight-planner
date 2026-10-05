@@ -10,6 +10,9 @@ radial/DME fix and coordinates for every waypoint.
    `targets_<mission>.json` file (the DCSServerBot targetlist export).
 2. Add waypoints: pick an airfield, mission zone, range target, TACAN station, map label or place, or
    type a TACAN fix (`DAN 287/99`) or coordinates (`N37 37.05 E033 30.65`, DMS or decimal also work).
+   On the map, click a target, airfield, TACAN, zone or label to add it, click open map for a waypoint
+   there, or drag a waypoint to move it. The map shows threat rings (approximate), TACAN DME rings and
+   the TACAN fix under the cursor.
 3. Set aircraft, takeoff time, fuel, TAS and wind. Per-leg TAS and fuel flow can be overridden.
 4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it.
    PNGs go in `Saved Games\DCS\Kneeboard\<aircraft>` (or `Saved Games\DCS\Kneeboard` for every aircraft).
