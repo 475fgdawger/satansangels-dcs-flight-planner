@@ -71,7 +71,7 @@ export function catalog(m: MissionExport): CatalogPoint[] {
     out.push({ key: `zone:${z.name}`, name: z.name, kind: 'zone', lat: z.lat, lon: z.lon, elevFt: z.elev_ft, detail: 'Mission zone' })
   }
   for (const l of m.labels) {
-    out.push({ key: `label:${l.text}:${l.lat.toFixed(4)}`, name: l.text, kind: 'label', lat: l.lat, lon: l.lon, detail: 'Map label' })
+    out.push({ key: `label:${l.text}:${l.lat.toFixed(4)}`, name: l.text, kind: 'label', lat: l.lat, lon: l.lon, elevFt: l.elev_ft, detail: 'Map label' })
   }
   for (const p of m.places) {
     out.push({ key: `place:${p.name}`, name: p.name, kind: 'place', lat: p.lat, lon: p.lon, elevFt: p.elev_ft, detail: 'Place' })
