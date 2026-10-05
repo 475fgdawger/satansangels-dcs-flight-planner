@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, WAYPOINT_TAGS, attackRun, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+import { AIRCRAFT, WAYPOINT_TAGS, attackRun, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
 import { PopupPanel } from './Popup'
@@ -11,6 +11,14 @@ import { defaultPopup, popupAttack } from '../nav/popup'
 import { lookupElevations } from '../nav/elevation'
 
 const STORAGE_KEY = 'flightplanner.v2'
+
+interface MissionEntry {
+  file: string
+  name: string
+  theatre: string
+  built_utc: string
+}
+
 
 interface Saved {
   mission: MissionExport
@@ -49,11 +57,22 @@ export function App() {
     if (mission && settings) save({ mission, route, settings })
   }, [mission, route, settings])
 
+  // Missions the bot has pushed to the site (public/data/missions, listed at build time).
+  const [missions, setMissions] = useState<MissionEntry[]>([])
+  useEffect(() => {
+    fetch('./data/missions/index.json')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list) => setMissions(Array.isArray(list) ? list : []))
+      .catch(() => setMissions([]))
+  }, [])
+
+  /** Loads an export. The same mission again (newer data) keeps the route and refreshes its elevations. */
   function applyMission(json: unknown) {
     try {
       const m = parseMission(json)
+      const same = mission?.mission.name === m.mission.name && mission?.mission.theatre === m.mission.theatre
       setMission(m)
-      setRoute([])
+      setRoute((r) => (same ? refreshElevations(m, r) : []))
       setSettings((s) => s ?? defaultSettings('F-4E'))
       setError(null)
     } catch (e) {
@@ -70,14 +89,17 @@ export function App() {
     }
   }
 
-  async function loadSample() {
+  async function loadMission(e: MissionEntry) {
     try {
-      const res = await fetch('./data/targets_syria.json')
+      const res = await fetch(`./data/missions/${encodeURIComponent(e.file)}`)
+      if (!res.ok) throw new Error()
       applyMission(await res.json())
     } catch {
-      setError('Could not load the Syria sample.')
+      setError(`Could not load ${e.name}.`)
     }
   }
+  const newer = mission ? missions.find((e) => e.name === mission.mission.name && e.theatre === mission.mission.theatre
+    && e.built_utc > mission.built_utc) : undefined
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
   const fuel = useMemo(() => (settings ? fuelPlan(route, settings) : null), [route, settings])
@@ -119,9 +141,26 @@ export function App() {
             <input type="file" accept=".json,application/json" hidden
               onChange={(e) => onFile((e.target as HTMLInputElement).files?.[0])} />
           </label>
-          <button type="button" onClick={loadSample}>Load Syria sample</button>
           <span class="muted">or drop <code>targets_*.json</code> here</span>
         </div>
+        {missions.length > 0 && (
+          <div class="row missions">
+            <span class="muted">Current missions:</span>
+            {missions.map((e) => (
+              <button type="button" key={e.file} onClick={() => loadMission(e)}
+                title={`Exported by the bot ${e.built_utc.replace('T', ' ')}`}>
+                {e.name} <span class="muted small">({e.theatre})</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {newer && (
+          <p class="notice">
+            Newer data for this mission from {newer.built_utc.replace('T', ' ')}.{' '}
+            <button type="button" onClick={() => loadMission(newer)}>Update</button>{' '}
+            <span class="muted small">Your route stays.</span>
+          </p>
+        )}
         {error && <p class="error">{error}</p>}
         {mission && (
           <p>

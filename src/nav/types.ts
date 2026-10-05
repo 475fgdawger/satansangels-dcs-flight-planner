@@ -36,6 +36,7 @@ export interface Label {
   text: string
   lat: number
   lon: number
+  elev_ft?: number
 }
 
 export interface Airbase {

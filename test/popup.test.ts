@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import raw from './fixtures/targets_syria.json'
 import { parseMission, airfields } from '../src/nav/mission'
-import { attackRun, defaultSettings, popupInputs, type Waypoint } from '../src/nav/plan'
+import { attackRun, defaultSettings, popupInputs, refreshElevations, type Waypoint } from '../src/nav/plan'
+import { catalog } from '../src/nav/mission'
 import { FT_NM, attackCard, defaultPopup, popupAttack, popupPicture, popupProblems, type PopupInputs } from '../src/nav/popup'
 import { lookupElevations } from '../src/nav/elevation'
 
@@ -110,5 +111,25 @@ describe('elevation lookup', () => {
   it('fails cleanly on a bad response', async () => {
     const fake = (async () => new Response('no', { status: 429 })) as typeof fetch
     await expect(lookupElevations([{ lat: 1, lon: 1 }], fake)).rejects.toThrow(/429/)
+  })
+})
+
+describe('bot elevations', () => {
+  const t1 = m.targets.find((t) => t.name === 'T-1')!
+  const withElev = { ...m, targets: m.targets.map((t) => (t.name === 'T-1' ? { ...t, elev_ft: 1234 } : t)) }
+
+  it('the catalog carries elev_ft from the export', () => {
+    expect(catalog(withElev).find((p) => p.key === 'target:T-1')!.elevFt).toBe(1234)
+    expect(catalog(m).find((p) => p.key === 'target:T-1')!.elevFt).toBeUndefined()
+  })
+
+  it('newer mission data replaces estimated elevations but never typed ones', () => {
+    const r: Waypoint[] = [
+      { id: '1', name: 'T-1', source: 'target', lat: t1.lat, lon: t1.lon, elevFt: 1200, elevSource: 'dem' },
+      { id: '2', name: 'T-1', source: 'target', lat: t1.lat, lon: t1.lon, elevFt: 999, elevSource: 'typed' },
+      { id: '3', name: 'WP', source: 'manual', lat: 36, lon: 37, elevFt: 50, elevSource: 'dem' },
+    ]
+    const out = refreshElevations(withElev, r)
+    expect(out.map((w) => [w.elevFt, w.elevSource])).toEqual([[1234, 'dcs'], [999, 'typed'], [50, 'dem']])
   })
 })

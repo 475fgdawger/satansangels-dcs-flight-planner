@@ -2,7 +2,7 @@
 // plus joker and bingo from the target waypoint.
 
 import { inverse, norm360 } from './geodesy'
-import { magVarAt } from './mission'
+import { catalog, magVarAt } from './mission'
 import type { LatLon, MissionExport } from './types'
 import { DEFAULT_INGRESS_AGL, type PopupInputs, type PopupSettings } from './popup'
 
@@ -384,4 +384,14 @@ export function popupInputs(run: AttackRun | null, p: PopupSettings): PopupInput
     ingressKt: p.ingressKt ?? run?.tas ?? NaN,
     hdg: p.hdg ?? (run ? Math.round(run.magCourse) || 360 : NaN),
   }
+}
+
+/** Waypoints sitting on a mission point take its DCS elevation, unless the crew typed one. */
+export function refreshElevations(m: MissionExport, route: Waypoint[]): Waypoint[] {
+  const pts = catalog(m).filter((p) => p.elevFt !== undefined)
+  return route.map((w) => {
+    if (w.elevSource === 'typed') return w
+    const hit = pts.find((p) => Math.abs(p.lat - w.lat) < 1e-5 && Math.abs(p.lon - w.lon) < 1e-5)
+    return hit ? { ...w, elevFt: Math.round(hit.elevFt!), elevSource: 'dcs' } : w
+  })
 }
