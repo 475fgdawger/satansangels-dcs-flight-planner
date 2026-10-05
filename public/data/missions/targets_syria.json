@@ -7,7 +7,7 @@
   "date": "2016-06-21 00:00:00",
   "start_time": 43200
  },
- "built_utc": "2026-10-04T21:15:20Z",
+ "built_utc": "2026-10-05T10:48:59Z",
  "mag_var": {
   "source": "DCS",
   "fallback": 5.0
@@ -18,14 +18,16 @@
    "chan": "21X",
    "lat": 37.015611,
    "lon": 35.448194,
-   "mag_var": 5.23
+   "mag_var": 5.23,
+   "elev_ft": 242
   },
   {
    "id": "KON",
    "chan": "88X",
    "lat": 37.999037,
    "lon": 32.564838,
-   "mag_var": 5.21
+   "mag_var": 5.21,
+   "elev_ft": 3407
   }
  ],
  "targets": [
@@ -40,7 +42,8 @@
    "latlon": "N37°37'03\" E033°30'39\"",
    "tacan": "DAN 287/99, KON 111/50",
    "near": "Karapinar West Range",
-   "line": "T-1, N37°37'03\" E033°30'39\", DAN 287/99, KON 111/50, Karapinar West Range"
+   "line": "T-1, N37°37'03\" E033°30'39\", DAN 287/99, KON 111/50, Karapinar West Range",
+   "elev_ft": 3263
   },
   {
    "name": "T-2",
@@ -53,7 +56,8 @@
    "latlon": "N37°34'55\" E033°30'34\"",
    "tacan": "DAN 285/99, KON 114/51",
    "near": "Karapinar West Range",
-   "line": "T-2, N37°34'55\" E033°30'34\", DAN 285/99, KON 114/51, Karapinar West Range"
+   "line": "T-2, N37°34'55\" E033°30'34\", DAN 285/99, KON 114/51, Karapinar West Range",
+   "elev_ft": 3264
   },
   {
    "name": "T-3",
@@ -66,7 +70,8 @@
    "latlon": "N37°36'05\" E033°30'38\"",
    "tacan": "DAN 286/99, KON 112/51",
    "near": "Karapinar West Range",
-   "line": "T-3, N37°36'05\" E033°30'38\", DAN 286/99, KON 112/51, Karapinar West Range"
+   "line": "T-3, N37°36'05\" E033°30'38\", DAN 286/99, KON 112/51, Karapinar West Range",
+   "elev_ft": 3278
   },
   {
    "name": "T-4",
@@ -79,7 +84,8 @@
    "latlon": "N37°36'10\" E033°42'14\"",
    "tacan": "DAN 288/91, KON 108/59",
    "near": "Karapinar West Range",
-   "line": "T-4, N37°36'10\" E033°42'14\", DAN 288/91, KON 108/59, Karapinar West Range"
+   "line": "T-4, N37°36'10\" E033°42'14\", DAN 288/91, KON 108/59, Karapinar West Range",
+   "elev_ft": 3269
   },
   {
    "name": "T-5",
@@ -92,7 +98,8 @@
    "latlon": "N37°36'23\" E033°38'35\"",
    "tacan": "DAN 288/93, KON 109/56",
    "near": "Karapinar West Range",
-   "line": "T-5, N37°36'23\" E033°38'35\", DAN 288/93, KON 109/56, Karapinar West Range"
+   "line": "T-5, N37°36'23\" E033°38'35\", DAN 288/93, KON 109/56, Karapinar West Range",
+   "elev_ft": 3264
   },
   {
    "name": "T-6",
@@ -105,7 +112,8 @@
    "latlon": "N37°35'22\" E033°34'24\"",
    "tacan": "DAN 286/96, KON 112/54",
    "near": "Karapinar West Range",
-   "line": "T-6, N37°35'22\" E033°34'24\", DAN 286/96, KON 112/54, Karapinar West Range"
+   "line": "T-6, N37°35'22\" E033°34'24\", DAN 286/96, KON 112/54, Karapinar West Range",
+   "elev_ft": 3249
   },
   {
    "name": "T-7",
@@ -118,7 +126,8 @@
    "latlon": "N37°34'33\" E033°42'18\"",
    "tacan": "DAN 287/90, KON 110/60",
    "near": "Karapinar West Range",
-   "line": "T-7, N37°34'33\" E033°42'18\", DAN 287/90, KON 110/60, Karapinar West Range"
+   "line": "T-7, N37°34'33\" E033°42'18\", DAN 287/90, KON 110/60, Karapinar West Range",
+   "elev_ft": 3235
   },
   {
    "name": "T-8",
@@ -131,7 +140,8 @@
    "latlon": "N37°36'14\" E033°49'05\"",
    "tacan": "DAN 290/86, KON 106/64",
    "near": "Karapinar West Range",
-   "line": "T-8, N37°36'14\" E033°49'05\", DAN 290/86, KON 106/64, Karapinar West Range"
+   "line": "T-8, N37°36'14\" E033°49'05\", DAN 290/86, KON 106/64, Karapinar West Range",
+   "elev_ft": 3322
   },
   {
    "name": "T-9",
@@ -144,7 +154,8 @@
    "latlon": "N37°34'21\" E033°44'51\"",
    "tacan": "DAN 288/88, KON 109/62",
    "near": "Karapinar West Range",
-   "line": "T-9, N37°34'21\" E033°44'51\", DAN 288/88, KON 109/62, Karapinar West Range"
+   "line": "T-9, N37°34'21\" E033°44'51\", DAN 288/88, KON 109/62, Karapinar West Range",
+   "elev_ft": 3272
   },
   {
    "name": "T-10",
@@ -157,7 +168,8 @@
    "latlon": "N37°34'33\" E033°48'17\"",
    "tacan": "DAN 288/86, KON 108/64",
    "near": "Karapinar West Range",
-   "line": "T-10, N37°34'33\" E033°48'17\", DAN 288/86, KON 108/64, Karapinar West Range"
+   "line": "T-10, N37°34'33\" E033°48'17\", DAN 288/86, KON 108/64, Karapinar West Range",
+   "elev_ft": 3303
   },
   {
    "name": "Aleppo SA-2",
@@ -170,7 +182,8 @@
    "latlon": "N36°17'53\" E037°09'32\"",
    "tacan": "DAN 112/93, KON 108/243",
    "near": "8 nm NNW of Aleppo",
-   "line": "Aleppo SA-2, N36°17'53\" E037°09'32\", DAN 112/93, KON 108/243, 8 nm NNW of Aleppo"
+   "line": "Aleppo SA-2, N36°17'53\" E037°09'32\", DAN 112/93, KON 108/243, 8 nm NNW of Aleppo",
+   "elev_ft": 1594
   },
   {
    "name": "Latakia SA-2",
@@ -183,7 +196,8 @@
    "latlon": "N35°31'58\" E035°49'06\"",
    "tacan": "DAN 163/91, KON 127/215",
    "near": "1 nm E of Latakia",
-   "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 163/91, KON 127/215, 1 nm E of Latakia"
+   "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 163/91, KON 127/215, 1 nm E of Latakia",
+   "elev_ft": 69
   },
   {
    "name": "Aleppo EWR",
@@ -196,7 +210,8 @@
    "latlon": "N36°10'45\" E037°13'39\"",
    "tacan": "DAN 114/100, KON 109/249",
    "near": "at Aleppo",
-   "line": "Aleppo EWR, N36°10'45\" E037°13'39\", DAN 114/100, KON 109/249, at Aleppo"
+   "line": "Aleppo EWR, N36°10'45\" E037°13'39\", DAN 114/100, KON 109/249, at Aleppo",
+   "elev_ft": 1254
   },
   {
    "name": "Bassel Al-Assad EWR",
@@ -209,7 +224,8 @@
    "latlon": "N35°24'07\" E035°56'49\"",
    "tacan": "DAN 161/100, KON 127/225",
    "near": "at Bassel Al-Assad",
-   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, at Bassel Al-Assad"
+   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, at Bassel Al-Assad",
+   "elev_ft": 94
   },
   {
    "name": "Damascus EWR",
@@ -222,7 +238,8 @@
    "latlon": "N33°25'38\" E036°31'20\"",
    "tacan": "DAN 161/221, KON 138/335",
    "near": "1 nm NNE of Damascus",
-   "line": "Damascus EWR, N33°25'38\" E036°31'20\", DAN 161/221, KON 138/335, 1 nm NNE of Damascus"
+   "line": "Damascus EWR, N33°25'38\" E036°31'20\", DAN 161/221, KON 138/335, 1 nm NNE of Damascus",
+   "elev_ft": 2008
   },
   {
    "name": "Minakh EWR",
@@ -235,7 +252,8 @@
    "latlon": "N36°31'22\" E037°02'23\"",
    "tacan": "DAN 105/82, KON 106/232",
    "near": "at Minakh",
-   "line": "Minakh EWR, N36°31'22\" E037°02'23\", DAN 105/82, KON 106/232, at Minakh"
+   "line": "Minakh EWR, N36°31'22\" E037°02'23\", DAN 105/82, KON 106/232, at Minakh",
+   "elev_ft": 1614
   },
   {
    "name": "Shayrat EWR",
@@ -248,7 +266,8 @@
    "latlon": "N34°29'30\" E036°54'31\"",
    "tacan": "DAN 149/167, KON 128/298",
    "near": "at Shayrat",
-   "line": "Shayrat EWR, N34°29'30\" E036°54'31\", DAN 149/167, KON 128/298, at Shayrat"
+   "line": "Shayrat EWR, N34°29'30\" E036°54'31\", DAN 149/167, KON 128/298, at Shayrat",
+   "elev_ft": 2638
   },
   {
    "name": "Aleppo Fire Can 1-1",
@@ -261,7 +280,8 @@
    "latlon": "N36°10'59\" E037°12'01\"",
    "tacan": "DAN 115/98, KON 109/248",
    "near": "1 nm W of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-1, N36°10'59\" E037°12'01\", DAN 115/98, KON 109/248, 1 nm W of Aleppo EWR"
+   "line": "Aleppo Fire Can 1-1, N36°10'59\" E037°12'01\", DAN 115/98, KON 109/248, 1 nm W of Aleppo EWR",
+   "elev_ft": 1284
   },
   {
    "name": "Aleppo Fire Can 1-2",
@@ -274,7 +294,8 @@
    "latlon": "N36°10'33\" E037°12'35\"",
    "tacan": "DAN 115/99, KON 109/248",
    "near": "1 nm WSW of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-2, N36°10'33\" E037°12'35\", DAN 115/99, KON 109/248, 1 nm WSW of Aleppo EWR"
+   "line": "Aleppo Fire Can 1-2, N36°10'33\" E037°12'35\", DAN 115/99, KON 109/248, 1 nm WSW of Aleppo EWR",
+   "elev_ft": 1244
   },
   {
    "name": "Aleppo Fire Can 1-3",
@@ -287,7 +308,8 @@
    "latlon": "N36°10'36\" E037°15'04\"",
    "tacan": "DAN 114/101, KON 109/250",
    "near": "1 nm E of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-3, N36°10'36\" E037°15'04\", DAN 114/101, KON 109/250, 1 nm E of Aleppo EWR"
+   "line": "Aleppo Fire Can 1-3, N36°10'36\" E037°15'04\", DAN 114/101, KON 109/250, 1 nm E of Aleppo EWR",
+   "elev_ft": 1208
   },
   {
    "name": "Latakia Fire Can 1-4",
@@ -300,7 +322,8 @@
    "latlon": "N35°32'21\" E035°48'53\"",
    "tacan": "DAN 163/90, KON 127/215",
    "near": "at Latakia SA-2",
-   "line": "Latakia Fire Can 1-4, N35°32'21\" E035°48'53\", DAN 163/90, KON 127/215, at Latakia SA-2"
+   "line": "Latakia Fire Can 1-4, N35°32'21\" E035°48'53\", DAN 163/90, KON 127/215, at Latakia SA-2",
+   "elev_ft": 96
   },
   {
    "name": "Latakia Fire Can 1-5",
@@ -313,7 +336,8 @@
    "latlon": "N35°30'44\" E035°49'55\"",
    "tacan": "DAN 163/92, KON 127/217",
    "near": "1 nm SSE of Latakia SA-2",
-   "line": "Latakia Fire Can 1-5, N35°30'44\" E035°49'55\", DAN 163/92, KON 127/217, 1 nm SSE of Latakia SA-2"
+   "line": "Latakia Fire Can 1-5, N35°30'44\" E035°49'55\", DAN 163/92, KON 127/217, 1 nm SSE of Latakia SA-2",
+   "elev_ft": 27
   },
   {
    "name": "Latakia Fire Can 1-6",
@@ -326,7 +350,8 @@
    "latlon": "N35°29'54\" E035°49'44\"",
    "tacan": "DAN 163/93, KON 127/217",
    "near": "3 nm SE of Latakia",
-   "line": "Latakia Fire Can 1-6, N35°29'54\" E035°49'44\", DAN 163/93, KON 127/217, 3 nm SE of Latakia"
+   "line": "Latakia Fire Can 1-6, N35°29'54\" E035°49'44\", DAN 163/93, KON 127/217, 3 nm SE of Latakia",
+   "elev_ft": 25
   },
   {
    "name": "Latakia Fire Can 1-7",
@@ -339,7 +364,8 @@
    "latlon": "N35°31'34\" E035°50'21\"",
    "tacan": "DAN 163/91, KON 127/216",
    "near": "1 nm ESE of Latakia SA-2",
-   "line": "Latakia Fire Can 1-7, N35°31'34\" E035°50'21\", DAN 163/91, KON 127/216, 1 nm ESE of Latakia SA-2"
+   "line": "Latakia Fire Can 1-7, N35°31'34\" E035°50'21\", DAN 163/91, KON 127/216, 1 nm ESE of Latakia SA-2",
+   "elev_ft": 19
   },
   {
    "name": "Minakh Fire Can 1",
@@ -352,7 +378,8 @@
    "latlon": "N36°31'29\" E037°02'30\"",
    "tacan": "DAN 105/82, KON 106/232",
    "near": "at Minakh EWR",
-   "line": "Minakh Fire Can 1, N36°31'29\" E037°02'30\", DAN 105/82, KON 106/232, at Minakh EWR"
+   "line": "Minakh Fire Can 1, N36°31'29\" E037°02'30\", DAN 105/82, KON 106/232, at Minakh EWR",
+   "elev_ft": 1614
   },
   {
    "name": "Minakh Fire Can 2",
@@ -365,308 +392,368 @@
    "latlon": "N36°31'58\" E037°02'55\"",
    "tacan": "DAN 105/82, KON 106/232",
    "near": "1 nm NNE of Minakh EWR",
-   "line": "Minakh Fire Can 2, N36°31'58\" E037°02'55\", DAN 105/82, KON 106/232, 1 nm NNE of Minakh EWR"
+   "line": "Minakh Fire Can 2, N36°31'58\" E037°02'55\", DAN 105/82, KON 106/232, 1 nm NNE of Minakh EWR",
+   "elev_ft": 1578
   }
  ],
  "places": [
   {
    "name": "Aleppo",
    "lat": 36.1807,
-   "lon": 37.2273
+   "lon": 37.2273,
+   "elev_ft": 1254
   },
   {
    "name": "Minakh",
    "lat": 36.5228,
-   "lon": 37.0398
+   "lon": 37.0398,
+   "elev_ft": 1614
   },
   {
    "name": "Latakia",
    "lat": 35.5317,
-   "lon": 35.7901
+   "lon": 35.7901,
+   "elev_ft": 79
   },
   {
    "name": "Bassel Al-Assad",
    "lat": 35.4019,
-   "lon": 35.9468
+   "lon": 35.9468,
+   "elev_ft": 94
   },
   {
    "name": "Incirlik",
    "lat": 37.002,
-   "lon": 35.4259
+   "lon": 35.4259,
+   "elev_ft": 191
   },
   {
    "name": "Konya",
    "lat": 37.979,
-   "lon": 32.5619
+   "lon": 32.5619,
+   "elev_ft": 3407
   },
   {
    "name": "Karapinar",
    "lat": 37.7154,
-   "lon": 33.55
+   "lon": 33.55,
+   "elev_ft": 3237
   },
   {
    "name": "Hatay",
    "lat": 36.3627,
-   "lon": 36.2822
+   "lon": 36.2822,
+   "elev_ft": 228
   },
   {
    "name": "Gaziantep",
    "lat": 36.9472,
-   "lon": 37.4786
+   "lon": 37.4786,
+   "elev_ft": 2234
   },
   {
    "name": "Damascus",
    "lat": 33.4108,
-   "lon": 36.5155
+   "lon": 36.5155,
+   "elev_ft": 2008
   },
   {
    "name": "Adana",
    "lat": 36.9822,
-   "lon": 35.2803
+   "lon": 35.2803,
+   "elev_ft": 56
   },
   {
    "name": "Jableh",
    "lat": 35.3622,
-   "lon": 35.9272
+   "lon": 35.9272,
+   "elev_ft": 56
   },
   {
    "name": "Tartus",
    "lat": 34.8896,
-   "lon": 35.8866
+   "lon": 35.8866,
+   "elev_ft": 33
   },
   {
    "name": "Homs",
    "lat": 34.7324,
-   "lon": 36.7137
+   "lon": 36.7137,
+   "elev_ft": 1638
   },
   {
    "name": "Shayrat",
    "lat": 34.4944,
-   "lon": 36.9014
+   "lon": 36.9014,
+   "elev_ft": 2638
   },
   {
    "name": "Hama",
    "lat": 35.1318,
-   "lon": 36.7578
+   "lon": 36.7578,
+   "elev_ft": 851
   },
   {
    "name": "Idlib",
    "lat": 35.9306,
-   "lon": 36.6339
+   "lon": 36.6339,
+   "elev_ft": 1439
   },
   {
    "name": "Abu al-Duhur",
    "lat": 35.7317,
-   "lon": 37.0972
+   "lon": 37.0972,
+   "elev_ft": 820
   },
   {
    "name": "Taftanaz",
    "lat": 35.9747,
-   "lon": 36.7819
+   "lon": 36.7819,
+   "elev_ft": 1020
   },
   {
    "name": "Kuweires",
    "lat": 36.1856,
-   "lon": 37.5997
+   "lon": 37.5997,
+   "elev_ft": 1186
   },
   {
    "name": "Kilis",
    "lat": 36.7184,
-   "lon": 37.1212
+   "lon": 37.1212,
+   "elev_ft": 2183
   },
   {
    "name": "Iskenderun",
    "lat": 36.5872,
-   "lon": 36.1735
+   "lon": 36.1735,
+   "elev_ft": 32
   }
  ],
  "zones": [
   {
    "name": "REDAIR",
    "lat": 36.305924,
-   "lon": 35.34751
+   "lon": 35.34751,
+   "elev_ft": 0
   },
   {
    "name": "Karapinar Weapons Range West",
    "lat": 37.594959,
-   "lon": 33.633465
+   "lon": 33.633465,
+   "elev_ft": 3263
   },
   {
    "name": "Karapinar Weapons Range East",
    "lat": 37.526387,
-   "lon": 33.761966
+   "lon": 33.761966,
+   "elev_ft": 3271
   },
   {
    "name": "Incirlik Offshore Range",
    "lat": 36.408657,
-   "lon": 35.055395
+   "lon": 35.055395,
+   "elev_ft": 0
   },
   {
    "name": "T-1",
    "lat": 37.617523,
-   "lon": 33.510843
+   "lon": 33.510843,
+   "elev_ft": 3263
   },
   {
    "name": "T-2",
    "lat": 37.58197,
-   "lon": 33.50942
+   "lon": 33.50942,
+   "elev_ft": 3264
   },
   {
    "name": "T-3",
    "lat": 37.601265,
-   "lon": 33.510606
+   "lon": 33.510606,
+   "elev_ft": 3278
   },
   {
    "name": "T-4",
    "lat": 37.602724,
-   "lon": 33.703923
+   "lon": 33.703923,
+   "elev_ft": 3269
   },
   {
    "name": "T-5",
    "lat": 37.606407,
-   "lon": 33.643025
+   "lon": 33.643025,
+   "elev_ft": 3264
   },
   {
    "name": "T-6",
    "lat": 37.589443,
-   "lon": 33.573443
+   "lon": 33.573443,
+   "elev_ft": 3249
   },
   {
    "name": "T-7",
    "lat": 37.575707,
-   "lon": 33.705057
+   "lon": 33.705057,
+   "elev_ft": 3235
   },
   {
    "name": "T-8",
    "lat": 37.60392,
-   "lon": 33.818026
+   "lon": 33.818026,
+   "elev_ft": 3322
   },
   {
    "name": "T-9",
    "lat": 37.572565,
-   "lon": 33.747498
+   "lon": 33.747498,
+   "elev_ft": 3272
   },
   {
    "name": "T-10",
    "lat": 37.575764,
-   "lon": 33.804755
+   "lon": 33.804755,
+   "elev_ft": 3303
   },
   {
    "name": "DAN24042",
    "lat": 36.636102,
-   "lon": 34.713812
+   "lon": 34.713812,
+   "elev_ft": 0
   },
   {
    "name": "Incirlik Radar",
    "lat": 37.002315,
-   "lon": 35.427842
+   "lon": 35.427842,
+   "elev_ft": 192
   },
   {
    "name": "Konya Radar",
    "lat": 37.977334,
-   "lon": 32.557217
+   "lon": 32.557217,
+   "elev_ft": 3407
   },
   {
    "name": "KON14546",
    "lat": 37.603039,
-   "lon": 33.395035
+   "lon": 33.395035,
+   "elev_ft": 3286
   },
   {
    "name": "DAN30075",
    "lat": 37.601353,
-   "lon": 34.063925
+   "lon": 34.063925,
+   "elev_ft": 3331
   },
   {
    "name": "DAN28050",
    "lat": 37.105183,
-   "lon": 34.395056
+   "lon": 34.395056,
+   "elev_ft": 6358
   },
   {
    "name": "KON13530",
    "lat": 37.664032,
-   "lon": 33.042488
+   "lon": 33.042488,
+   "elev_ft": 3267
   },
   {
    "name": "INCIRLIK05IP",
    "lat": 36.978816,
-   "lon": 35.387488
+   "lon": 35.387488,
+   "elev_ft": 93
   },
   {
    "name": "INCIRLIK23IP",
    "lat": 37.031179,
-   "lon": 35.474327
+   "lon": 35.474327,
+   "elev_ft": 364
   },
   {
    "name": "KONYA01LIP",
    "lat": 37.948416,
-   "lon": 32.547746
+   "lon": 32.547746,
+   "elev_ft": 3337
   },
   {
    "name": "SHELL",
    "lat": 37.162266,
-   "lon": 36.312889
+   "lon": 36.312889,
+   "elev_ft": 1489
   },
   {
    "name": "ARCO",
    "lat": 37.886507,
-   "lon": 33.947359
+   "lon": 33.947359,
+   "elev_ft": 3533
   }
  ],
  "labels": [
   {
    "text": "Weapons Range South",
    "lat": 36.733703,
-   "lon": 35.572339
+   "lon": 35.572339,
+   "elev_ft": 23
   },
   {
    "text": "WRS Strafe Pit",
    "lat": 36.673436,
-   "lon": 35.660204
+   "lon": 35.660204,
+   "elev_ft": 0
   },
   {
    "text": "Truck Convoy Target",
    "lat": 36.703038,
-   "lon": 35.580162
+   "lon": 35.580162,
+   "elev_ft": 33
   },
   {
    "text": "Bomb Range",
    "lat": 36.721708,
-   "lon": 35.590705
+   "lon": 35.590705,
+   "elev_ft": 17
   },
   {
    "text": "Incirlik Offshore",
    "lat": 36.533641,
-   "lon": 34.878065
+   "lon": 34.878065,
+   "elev_ft": 0
   },
   {
    "text": "SHELL Tanker",
    "lat": 37.075316,
-   "lon": 36.379448
+   "lon": 36.379448,
+   "elev_ft": 2835
   },
   {
    "text": "Karapinar East",
    "lat": 37.525461,
-   "lon": 33.732274
+   "lon": 33.732274,
+   "elev_ft": 3249
   },
   {
    "text": "Karapinar West",
    "lat": 37.586134,
-   "lon": 33.553751
+   "lon": 33.553751,
+   "elev_ft": 3234
   },
   {
    "text": "ARCO Tanker",
    "lat": 38.083511,
-   "lon": 33.915145
+   "lon": 33.915145,
+   "elev_ft": 3638
   },
   {
    "text": "KON 145/46 nm",
    "lat": 37.600064,
-   "lon": 33.392241
+   "lon": 33.392241,
+   "elev_ft": 3286
   },
   {
    "text": "Karapinar West",
    "lat": 37.553113,
-   "lon": 33.641065
+   "lon": 33.641065,
+   "elev_ft": 3251
   }
  ],
  "airbases": [
