@@ -52,6 +52,33 @@ export interface Airbase {
   mag_var: number
 }
 
+/**
+ * A mission editor drawing (draw layers: Red, Blue, Neutral, Common, Author). Added by newer bot
+ * exports. points are the outline in lat/lon; a circle has radius_m instead. Colors are DCS
+ * "0xRRGGBBAA" strings.
+ */
+export interface Drawing {
+  layer: string
+  layer_visible: boolean
+  name?: string
+  type: 'Line' | 'Polygon' | 'TextBox' | 'Icon' | string
+  /** lineMode (segment, segments, free) or polygonMode (rect, circle, oval, arrow, free). */
+  mode?: string
+  closed: boolean
+  color?: string
+  fill?: string
+  thickness?: number
+  style?: string
+  text?: string
+  font_size?: number
+  angle?: number
+  file?: string
+  radius_m?: number
+  lat: number
+  lon: number
+  points: [number, number][]
+}
+
 export interface MissionExport {
   schema: number
   mission: { name: string; file: string; theatre: string; date: string; start_time: number }
@@ -62,6 +89,8 @@ export interface MissionExport {
   places: NamedPoint[]
   zones: NamedPoint[]
   labels: Label[]
+  /** Mission editor drawings; missing from older exports. */
+  drawings?: Drawing[]
   airbases: Airbase[]
 }
 

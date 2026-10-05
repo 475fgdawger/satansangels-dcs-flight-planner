@@ -70,3 +70,31 @@ export function legMidpoint(a: LatLon, b: LatLon): LatLon {
   const { az, nm } = inverse(a.lat, a.lon, b.lat, b.lon)
   return direct(a.lat, a.lon, az, nm / 2)
 }
+
+/** DCS "0xRRGGBBAA" as a CSS color and opacity; null when missing or malformed. */
+export function dcsColor(s: string | undefined): { css: string; opacity: number } | null {
+  const m = s?.trim().match(/^0x([0-9a-f]{6})([0-9a-f]{2})?$/i)
+  if (!m) return null
+  return { css: `#${m[1].toLowerCase()}`, opacity: m[2] === undefined ? 1 : parseInt(m[2], 16) / 255 }
+}
+
+/** Leaflet dash pattern for a DCS line style (solid, dash, dot, dot2, strongDash, ...). */
+export function dashFor(style: string | undefined, weight: number): string | undefined {
+  const s = (style ?? 'solid').toLowerCase()
+  if (s === 'solid' || s === '') return undefined
+  if (s.includes('dot')) return `1 ${weight * 2.5}`
+  return `${weight * 4} ${weight * 3}`
+}
+
+/** DCS line thickness (editor pixels, often 8-16) as a map stroke width. */
+export const strokeFor = (thickness: number | undefined) => Math.min(6, Math.max(1.5, (thickness ?? 4) / 3))
+
+/** Draw layers in the export, in order, with whether each starts switched on (Red off: we fly blue). */
+export function drawingLayers(drawings: { layer: string; layer_visible: boolean }[] | undefined): { name: string; on: boolean }[] {
+  const out: { name: string; on: boolean }[] = []
+  for (const d of drawings ?? []) {
+    if (out.some((l) => l.name === d.layer)) continue
+    out.push({ name: d.layer, on: d.layer_visible && d.layer.toLowerCase() !== 'red' })
+  }
+  return out
+}

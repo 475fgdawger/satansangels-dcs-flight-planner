@@ -212,3 +212,6 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .map-wp.tag-cap { background: #6a1b9a; border-color: #fff; color: #fff; }
 .map-wp.tag-ep { background: #2e7d32; border-color: #fff; color: #fff; }
 .map-wp.tag-tgt { background: #c62828; border-color: #fff; color: #fff; border-radius: 3px; }
+.map-drawtext { position: relative; }
+.map-drawtext span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-weight: 700;
+  font-family: system-ui, sans-serif; line-height: 1.2; text-align: center; text-shadow: 0 0 3px rgba(255, 255, 255, 0.8); }
