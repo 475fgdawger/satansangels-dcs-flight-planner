@@ -5,7 +5,8 @@ import type { LatLon, MissionExport, Target } from '../nav/types'
 import { ddm, heading3 } from '../nav/format'
 import { airfields, magVarAt, nearRef, runwayPairs, tacanFix, M_TO_FT, type PointKind } from '../nav/mission'
 import type { Row, Waypoint } from '../nav/plan'
-import { boundsOf, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
+import { boundsOf, drawingLayers, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
+import { drawingLayer } from './drawings'
 
 const NM = 1852
 const PREFS_KEY = 'flightplanner.map.v1'
@@ -78,6 +79,9 @@ export function MapPanel({ mission, route, rows, onRoute }: {
   const el = useRef<HTMLDivElement>(null)
   const map = useRef<L.Map | null>(null)
   const groups = useRef<Record<OverlayId, L.LayerGroup> | null>(null)
+  const layersCtl = useRef<L.Control.Layers | null>(null)
+  // One overlay per mission editor draw layer; replaced when the mission changes.
+  const drawGroups = useRef<L.LayerGroup[]>([])
   // Leaflet handlers outlive renders, so they read the latest route and callback from here.
   const live = useRef({ mission, route, onRoute })
   live.current = { mission, route, onRoute }
@@ -92,8 +96,8 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     bases[prefs.base].addTo(m)
     const g = Object.fromEntries(Object.keys(OVERLAYS).map((k) => [k, L.layerGroup()])) as Record<OverlayId, L.LayerGroup>
     for (const id of prefs.on) g[id]?.addTo(m)
-    L.control.layers(bases, Object.fromEntries(Object.entries(OVERLAYS).map(([k, label]) => [label, g[k as OverlayId]])),
-      { position: 'topright' }).addTo(m)
+    layersCtl.current = L.control.layers(bases,
+      Object.fromEntries(Object.entries(OVERLAYS).map(([k, label]) => [label, g[k as OverlayId]])), { position: 'topright' }).addTo(m)
     L.control.scale({ position: 'bottomright', imperial: true, metric: false }).addTo(m)
 
     const remember = () => {
@@ -135,6 +139,8 @@ export function MapPanel({ mission, route, rows, onRoute }: {
       m.remove()
       map.current = null
       groups.current = null
+      layersCtl.current = null
+      drawGroups.current = []
     }
   }, [])
 
@@ -197,7 +203,30 @@ export function MapPanel({ mission, route, rows, onRoute }: {
       { name: z.name, kind: 'zone', detail: 'Mission zone', lat: z.lat, lon: z.lon, elevFt: z.elev_ft }).addTo(g.zones)
     }
 
-    for (const l of mission.labels) {
+    // Mission editor drawings, one overlay per draw layer. They include the text boxes, so the
+    // plain map labels are only drawn for older exports without drawings.
+    for (const dg of drawGroups.current) {
+      m.removeLayer(dg)
+      layersCtl.current?.removeLayer(dg)
+    }
+    drawGroups.current = drawingLayers(mission.drawings).map(({ name, on }) => {
+      const dg = L.layerGroup()
+      for (const d of mission.drawings!) {
+        if (d.layer !== name) continue
+        const layer = drawingLayer(d)
+        if (!layer) continue
+        // Text boxes are named places (ranges, tankers), so they can be added to the route like labels.
+        const text = d.type === 'TextBox' ? (d.text ?? '').split(/\r?\n/)[0].trim() : ''
+        if (text) addable(layer, { name: text, kind: 'label', detail: `Drawing (${name} layer)`, lat: d.lat, lon: d.lon })
+        layer.addTo(dg)
+      }
+      layersCtl.current?.addOverlay(dg, `Drawings: ${esc(name)}`)
+      if (on) dg.addTo(m)
+      return dg
+    })
+    const hasDrawings = (mission.drawings?.length ?? 0) > 0
+
+    for (const l of hasDrawings ? [] : mission.labels) {
       addable(L.marker([l.lat, l.lon], { icon: L.divIcon({ className: 'map-label', iconSize: [0, 0],
         html: `<span>${esc(l.text)}</span>` }) }),
       { name: l.text, kind: 'label', detail: 'Map label', lat: l.lat, lon: l.lon }).addTo(g.labels)
