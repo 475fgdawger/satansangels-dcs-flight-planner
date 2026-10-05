@@ -6,6 +6,7 @@ import { AIRCRAFT, WAYPOINT_TAGS, attackRun, computeRows, popupInputs, defaultSe
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
 import { PopupPanel } from './Popup'
+import { MapPanel } from './MapPanel'
 import { defaultPopup, popupAttack } from '../nav/popup'
 import { lookupElevations } from '../nav/elevation'
 
@@ -134,6 +135,7 @@ export function App() {
         <>
           <SettingsPanel settings={settings} route={route} fuel={fuel} onChange={setSettings} />
           <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
+          <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
           <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} />
         </>

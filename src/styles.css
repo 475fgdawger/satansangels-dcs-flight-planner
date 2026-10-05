@@ -178,3 +178,34 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
   .kb-page * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 .route input[type=radio] { width: auto; }
+
+/* Map panel */
+.map-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.map-head h2 { margin: 0; }
+.map { height: 600px; border: 1px solid var(--line); border-radius: 6px; background: #dfe3e6; }
+@media (max-width: 700px) { .map { height: 440px; } }
+.map .leaflet-control-layers label { font-size: 13px; }
+.map-readout { background: rgba(255, 255, 255, 0.9); padding: 2px 8px; border-radius: 4px; font: 12px ui-monospace, Consolas, monospace; }
+.map-pop { display: flex; flex-direction: column; gap: 2px; font-size: 13px; min-width: 190px; }
+.map-pop .mono { font-family: ui-monospace, Consolas, monospace; }
+.map-pop button { margin-top: 6px; padding: 3px 8px; font-size: 13px; }
+.map-af { display: grid; place-items: center; font-size: 10px; opacity: 0.85; color: #fff; background: #1f4e79; border: 1.5px solid #fff;
+  border-radius: 50%; box-shadow: 0 0 2px rgba(0, 0, 0, 0.6); }
+.map-tacan, .map-label, .map-leg { position: relative; }
+.map-tacan-sym { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; background: #fff; border: 2px solid #1f4e79;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+.map-tacan-id { position: absolute; left: 10px; top: -9px; white-space: nowrap; font: 700 12px system-ui, sans-serif; color: #1f4e79;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
+.map-label span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font: italic 600 12px system-ui, sans-serif;
+  color: #37474f; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
+.map-leg span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font: 700 12px ui-monospace, Consolas, monospace;
+  color: #fff; background: #d81b60; padding: 1px 5px; border-radius: 3px; }
+.map-dme { background: transparent; border: none; box-shadow: none; color: #1f4e79; font-size: 11px; font-weight: 700; padding: 0;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+.map-dme::before { display: none; }
+.map-wp { display: grid; place-items: center; background: #fff; border: 2.5px solid #d81b60; border-radius: 50%; color: #d81b60;
+  font: 700 12px system-ui, sans-serif; box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); }
+.map-wp.tag-ip { background: #1565c0; border-color: #fff; color: #fff; }
+.map-wp.tag-cap { background: #6a1b9a; border-color: #fff; color: #fff; }
+.map-wp.tag-ep { background: #2e7d32; border-color: #fff; color: #fff; }
+.map-wp.tag-tgt { background: #c62828; border-color: #fff; color: #fff; border-radius: 3px; }
