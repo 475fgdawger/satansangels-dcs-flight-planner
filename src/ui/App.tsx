@@ -9,6 +9,7 @@ import { PopupPanel } from './Popup'
 import { MapPanel } from './MapPanel'
 import { defaultPopup, popupAttack } from '../nav/popup'
 import { lookupElevations } from '../nav/elevation'
+import { decodePlan, encodePlan, planFromHash, SHARE_KEY } from '../nav/share'
 
 const STORAGE_KEY = 'flightplanner.v2'
 
@@ -65,6 +66,49 @@ export function App() {
       .then((list) => setMissions(Array.isArray(list) ? list : []))
       .catch(() => setMissions([]))
   }, [])
+
+  // A shared link (#plan=...) opens that plan, loading its mission from the site when needed.
+  const [shareMsg, setShareMsg] = useState<string | null>(null)
+  useEffect(() => {
+    const text = planFromHash(location.hash)
+    if (!text) return
+    history.replaceState(null, '', location.pathname + location.search)
+    ;(async () => {
+      const plan = await decodePlan(text)
+      if (!plan) { setError('That share link is damaged or from a newer version of the planner.'); return }
+      if (route.length > 0 && !confirm(`Open the shared plan for ${plan.mission.name}? It replaces your current route.`)) return
+      let m = mission
+      if (!m || m.mission.name !== plan.mission.name || m.mission.theatre !== plan.mission.theatre) {
+        try {
+          const list: MissionEntry[] = await (await fetch('./data/missions/index.json')).json()
+          const e = list.find((x) => x.name === plan.mission.name && x.theatre === plan.mission.theatre)
+          if (!e) throw new Error()
+          m = parseMission(await (await fetch(`./data/missions/${encodeURIComponent(e.file)}`)).json())
+        } catch {
+          setError(`The shared plan is for ${plan.mission.name} (${plan.mission.theatre}), which isn't on the site. `
+            + 'Open its target list JSON, then open the link again.')
+          return
+        }
+      }
+      setMission(m)
+      setRoute(refreshElevations(m, plan.route))
+      setSettings(plan.settings)
+      setError(null)
+      setShareMsg(`Opened a shared plan for ${plan.mission.name}.`)
+    })()
+  }, [])
+
+  async function copyShareLink() {
+    if (!mission || !settings) return
+    const text = await encodePlan({ v: 1, mission: { name: mission.mission.name, theatre: mission.mission.theatre }, route, settings })
+    const url = `${location.origin}${location.pathname}#${SHARE_KEY}=${text}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setShareMsg('Link copied. Anyone who opens it gets this route, settings and kneeboard.')
+    } catch {
+      window.prompt('Copy this link:', url)
+    }
+  }
 
   /** Loads an export. The same mission again (newer data) keeps the route and refreshes its elevations. */
   function applyMission(json: unknown) {
@@ -152,6 +196,12 @@ export function App() {
                 {e.name} <span class="muted small">({e.theatre})</span>
               </button>
             ))}
+          </div>
+        )}
+        {mission && route.length > 0 && (
+          <div class="row">
+            <button type="button" onClick={copyShareLink}>Copy share link</button>
+            {shareMsg && <span class="muted small">{shareMsg}</span>}
           </div>
         )}
         {newer && (
