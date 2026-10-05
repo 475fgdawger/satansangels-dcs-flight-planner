@@ -17,6 +17,8 @@ radial/DME fix and coordinates for every waypoint.
 4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it.
    PNGs go in `Saved Games\DCS\Kneeboard\<aircraft>` (or `Saved Games\DCS\Kneeboard` for every aircraft).
    The route is saved in the browser.
+5. **Copy share link** puts the route and settings in a link; anyone who opens it gets the same plan
+   (the mission loads from the site's Current missions).
 
 ## Mission data from the bot
 
