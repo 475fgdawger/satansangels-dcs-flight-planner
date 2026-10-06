@@ -249,7 +249,8 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .map-readout { background: rgba(255, 255, 255, 0.9); padding: 2px 8px; border-radius: 4px; font: 12px ui-monospace, Consolas, monospace; }
 .map-pop { display: flex; flex-direction: column; gap: 2px; font-size: 13px; min-width: 190px; }
 .map-pop .mono { font-family: ui-monospace, Consolas, monospace; }
-.map-pop button { margin-top: 6px; padding: 3px 8px; font-size: 13px; }
+.map-pop button { padding: 3px 8px; font-size: 13px; }
+.map-pop-actions { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; margin-top: 6px; }
 .map-af { display: grid; place-items: center; font-size: 10px; opacity: 0.85; color: #fff; background: #1f4e79; border: 1.5px solid #fff;
   border-radius: 50%; box-shadow: 0 0 2px rgba(0, 0, 0, 0.6); }
 .map-tacan, .map-label, .map-leg { position: relative; }

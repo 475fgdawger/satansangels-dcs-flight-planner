@@ -5,7 +5,7 @@ import type { LatLon, MissionExport, Target } from '../nav/types'
 import { ddm, heading3 } from '../nav/format'
 import { airfields, magVarAt, nearRef, runwayPairs, tacanFix, M_TO_FT, type PointKind } from '../nav/mission'
 import type { Row, Waypoint } from '../nav/plan'
-import { boundsOf, drawingLayers, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
+import { boundsOf, drawingLayers, insertIndex, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
 import { drawingLayer } from './drawings'
 
 const NM = 1852
@@ -125,11 +125,10 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     m.on('click', (e: L.LeafletMouseEvent) => {
       const p = { lat: e.latlng.lat, lon: e.latlng.lng }
       const n = live.current.route.length + 1
+      const wp = (): Waypoint => ({ id: newId(), name: `WP${n}`, source: 'manual', ...p })
       L.popup().setLatLng(e.latlng)
-        .setContent(pointPopup(live.current.mission, { name: `WP${n}`, detail: 'Map point', ...p }, 'Add waypoint here', () => {
-          addWaypoint({ id: newId(), name: `WP${n}`, source: 'manual', ...p })
-          m.closePopup()
-        }))
+        .setContent(pointPopup(live.current.mission, { name: `WP${n}`, detail: 'Map point', ...p },
+          addActions(p, wp, 'Add waypoint', 'Insert waypoint')))
         .openOn(m)
     })
 
@@ -144,9 +143,20 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     }
   }, [])
 
-  function addWaypoint(wp: Waypoint) {
+  function addWaypoint(wp: Waypoint, at?: number) {
     const { route: r, onRoute: set } = live.current
-    set([...r, wp])
+    set(at === undefined ? [...r, wp] : [...r.slice(0, at), wp, ...r.slice(at)])
+  }
+
+  // Add appends to the route; Insert puts the point into the leg it lengthens least (once there is a leg).
+  function addActions(p: LatLon, wp: () => Waypoint, add: string, insert: string): PopupAction[] {
+    const r = live.current.route
+    const at = insertIndex(r, p)
+    const done = (i?: number) => () => { addWaypoint(wp(), i); map.current?.closePopup() }
+    const last = r.length - 1
+    const actions: PopupAction[] = [{ label: add, title: last < 0 ? 'Start the route' : `After ${last} ${r[last].name}`, run: done() }]
+    if (at !== null) actions.push({ label: insert, title: `Between ${at - 1} ${r[at - 1].name} and ${at} ${r[at].name}`, run: done(at) })
+    return actions
   }
 
   // Mission layers.
@@ -156,11 +166,9 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     for (const id of ['threats', 'targets', 'airfields', 'tacans', 'tacanRings', 'zones', 'labels'] as OverlayId[]) g[id].clearLayers()
 
     const addable = (layer: L.Layer, p: { name: string; detail: string; kind: PointKind } & LatLon & { elevFt?: number }) => {
-      layer.bindPopup(() => pointPopup(mission, p, 'Add to route', () => {
-        addWaypoint({ id: newId(), name: p.name, source: p.kind, lat: p.lat, lon: p.lon,
-          ...(p.elevFt === undefined ? {} : { elevFt: Math.round(p.elevFt), elevSource: 'dcs' as const }) })
-        m.closePopup()
-      }))
+      layer.bindPopup(() => pointPopup(mission, p, addActions(p, () => ({ id: newId(), name: p.name, source: p.kind,
+        lat: p.lat, lon: p.lon, ...(p.elevFt === undefined ? {} : { elevFt: Math.round(p.elevFt), elevSource: 'dcs' as const }) }),
+      'Add to route', 'Insert in route')))
       return layer
     }
 
@@ -303,15 +311,17 @@ export function MapPanel({ mission, route, rows, onRoute }: {
       </div>
       <div ref={el} class="map" />
       <p class="muted small">
-        Click a target, airfield, TACAN, zone or label to add it to the route, or click open map for a waypoint there.
+        Click a target, airfield, TACAN, zone or label, or open map for a new waypoint, then Add (to the end of the route) or Insert (into the leg it fits best).
         Drag a numbered waypoint to move it. Threat rings are approximate maximum ranges, for awareness only.
       </p>
     </section>
   )
 }
 
+interface PopupAction { label: string; title?: string; run: () => void }
+
 function pointPopup(mission: MissionExport, p: { name: string; detail: string } & LatLon & { elevFt?: number },
-  action: string, onAction: () => void): HTMLElement {
+  actions: PopupAction[]): HTMLElement {
   const div = document.createElement('div')
   div.className = 'map-pop'
   const near = nearRef(mission, p, magVarAt(mission, p))
@@ -319,16 +329,24 @@ function pointPopup(mission: MissionExport, p: { name: string; detail: string } 
     + `<div class="mono">${esc(tacanFix(mission, p))}</div><div class="mono">${esc(ddm(p))}</div>`
     + (near ? `<div class="muted">${esc(near)}</div>` : '')
     + (p.elevFt === undefined ? '' : `<div class="muted">Elev ${Math.round(p.elevFt).toLocaleString('en-US')} ft</div>`)
-  const btn = document.createElement('button')
-  btn.type = 'button'
-  btn.textContent = action
-  btn.addEventListener('click', (e) => { e.stopPropagation(); onAction() })
-  div.appendChild(btn)
+  const row = document.createElement('div')
+  row.className = 'map-pop-actions'
+  for (const a of actions) {
+    const btn = document.createElement('button')
+    btn.type = 'button'
+    btn.textContent = a.label
+    const hint = document.createElement('span')
+    hint.className = 'muted'
+    hint.textContent = a.title ?? ''
+    row.append(btn, hint)
+    btn.addEventListener('click', (e) => { e.stopPropagation(); a.run() })
+  }
+  div.appendChild(row)
   return div
 }
 
 function waypointPopup(mission: MissionExport, w: Waypoint, i: number, onRemove: () => void): HTMLElement {
   const detail = [w.tags?.join(' '), w.elevFt === undefined ? '' : `Elev ${w.elevFt.toLocaleString('en-US')} ft${w.elevSource === 'dem' ? ' ≈' : ''}`]
     .filter(Boolean).join(' · ')
-  return pointPopup(mission, { name: `${i} ${w.name}`, detail: detail || 'Waypoint', lat: w.lat, lon: w.lon }, 'Remove from route', onRemove)
+  return pointPopup(mission, { name: `${i} ${w.name}`, detail: detail || 'Waypoint', lat: w.lat, lon: w.lon }, [{ label: 'Remove from route', run: onRemove }])
 }

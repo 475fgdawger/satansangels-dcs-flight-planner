@@ -71,6 +71,21 @@ export function legMidpoint(a: LatLon, b: LatLon): LatLon {
   return direct(a.lat, a.lon, az, nm / 2)
 }
 
+/**
+ * Where a new point goes when inserted into a route: the index in front of which it lands, picked as the
+ * leg it lengthens least (A -> P -> B against A -> B). Null when there's no leg yet.
+ */
+export function insertIndex(route: LatLon[], p: LatLon): number | null {
+  let best: number | null = null, bestCost = Infinity
+  for (let i = 1; i < route.length; i++) {
+    const a = route[i - 1], b = route[i]
+    const cost = inverse(a.lat, a.lon, p.lat, p.lon).nm + inverse(p.lat, p.lon, b.lat, b.lon).nm
+      - inverse(a.lat, a.lon, b.lat, b.lon).nm
+    if (cost < bestCost - 1e-9) { bestCost = cost; best = i }
+  }
+  return best
+}
+
 /** DCS "0xRRGGBBAA" as a CSS color and opacity; null when missing or malformed. */
 export function dcsColor(s: string | undefined): { css: string; opacity: number } | null {
   const m = s?.trim().match(/^0x([0-9a-f]{6})([0-9a-f]{2})?$/i)
