@@ -15,7 +15,9 @@ radial/DME fix and coordinates for every waypoint.
    the TACAN fix under the cursor, plus the mission editor's drawings (one overlay per draw layer) when
    the bot export includes them.
 3. Set aircraft, takeoff time, fuel, TAS and wind. Per-leg TAS and fuel flow can be overridden.
-4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it.
+4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it. With two or more
+   waypoints a route map page follows the nav log: north-up chart with leg courses, threat rings, TACANs, airfields and
+   the mission drawings.
    PNGs go in `Saved Games\DCS\Kneeboard\<aircraft>` (or `Saved Games\DCS\Kneeboard` for every aircraft).
    The route is saved in the browser.
 5. **Copy share link** puts the route and settings in a link; anyone who opens it gets the same plan

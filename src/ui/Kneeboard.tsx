@@ -6,6 +6,7 @@ import { altAgl, altMsl, departureFuel, phaseOf, type AttackRun, type Waypoint, 
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
+import { routeChart } from '../nav/chart'
 
 // DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
@@ -51,8 +52,13 @@ export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
       const { toJpeg, toPng } = await import('html-to-image')
       const opts = { pixelRatio: EXPORT_SCALE, width: PAGE_W, height: PAGE_H, backgroundColor: '#ffffff' }
       const images = []
-      // PNG for the DCS kneeboard folder; JPEG inside the PDF keeps the file small.
-      for (const el of els) images.push(kind === 'png' ? await toPng(el, opts) : await toJpeg(el, { ...opts, quality: 0.92 }))
+      const restore = inlineSvgStyles(els)
+      try {
+        // PNG for the DCS kneeboard folder; JPEG inside the PDF keeps the file small.
+        for (const el of els) images.push(kind === 'png' ? await toPng(el, opts) : await toJpeg(el, { ...opts, quality: 0.92 }))
+      } finally {
+        restore()
+      }
       if (kind === 'png') {
         images.forEach((url, i) => download(url, `${fileBase}_${i + 1}.png`))
       } else {
@@ -85,6 +91,7 @@ export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
           <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
+        {rows.length > 1 && <MapPage mission={mission} rows={rows} />}
         {run && attack && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
       </div>
     </section>
@@ -190,6 +197,34 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
   )
 }
 
+// The chart fills the page between the header lines and the legend.
+const CHART_W = PAGE_W - 44
+const CHART_H = 862
+
+/** The route on a north-up chart, after the nav log pages. */
+function MapPage({ mission, rows }: { mission: MissionExport; rows: Row[] }) {
+  const chart = routeChart(mission, rows, { width: CHART_W, height: CHART_H })
+  const last = rows[rows.length - 1]
+  return (
+    <div class="kb-page kb-map">
+      <div class="kb-title">
+        <span>{mission.mission.name}</span>
+        <span class="kb-pageno">ROUTE MAP</span>
+      </div>
+      <div class="kb-line">
+        <span>{rows[0].wp.name} to {last.wp.name}</span>
+        <span><b>{Math.round(last.totalNm)}</b> nm</span>
+        <span>Legs <b>MC°</b> magnetic, <b>nm</b></span>
+      </div>
+      <svg class="kb-chart" viewBox={`0 0 ${CHART_W} ${CHART_H}`} dangerouslySetInnerHTML={{ __html: chart.svg }} />
+      <div class="kb-foot">
+        ○ waypoint · ■ TGT · ● IP/CAP/EP · ▲ SAM/AAA with approx. max range ring · □ target/range · ⬡ TACAN · ⊖ airfield ·
+        grey = mission drawings
+      </div>
+    </div>
+  )
+}
+
 /** The pop-up attack card and picture as its own kneeboard page. */
 function AttackPage({ mission, rows, run, attack }: { mission: MissionExport; rows: Row[]; run: AttackRun; attack: PopupResult }) {
   const tgt = rows[run.tgt].wp
@@ -236,6 +271,28 @@ function AltCell({ wp }: { wp: Waypoint }) {
 function powerLabel(leg: NonNullable<Row['leg']>, s: PlanSettings): string {
   const main = leg.phase ? leg.phase.short : `${Math.round(leg.ff)}`
   return leg.climbMin > 0 ? `${phaseOf(s.aircraft, 'mil').short}/${main}` : main
+}
+
+// html-to-image loses stylesheet rules on SVG shapes (they export as solid black), so the
+// pictures' computed styles are written onto each shape for the capture and removed after.
+const SVG_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linejoin', 'opacity',
+  'paint-order', 'font-family', 'font-size', 'font-weight', 'font-style', 'letter-spacing']
+
+function inlineSvgStyles(pages: HTMLElement[]): () => void {
+  const saved: [Element, string | null][] = []
+  for (const page of pages) {
+    for (const node of Array.from(page.querySelectorAll('svg *'))) {
+      const cs = getComputedStyle(node)
+      saved.push([node, node.getAttribute('style')])
+      ;(node as SVGElement).style.cssText += SVG_PROPS.map((k) => `${k}:${cs.getPropertyValue(k)}`).join(';')
+    }
+  }
+  return () => {
+    for (const [node, style] of saved) {
+      if (style === null) node.removeAttribute('style')
+      else node.setAttribute('style', style)
+    }
+  }
 }
 
 function download(url: string, name: string) {
