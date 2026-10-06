@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import raw from './fixtures/targets_syria.json'
-import { parseMission } from '../src/nav/mission'
+import { parseMission, tacanFixFrom } from '../src/nav/mission'
+import { direct } from '../src/nav/geodesy'
 import { computeRows, defaultSettings, type Waypoint } from '../src/nav/plan'
-import { routeChart } from '../src/nav/chart'
+import { legStrip } from '../src/nav/chart'
 
 const m = parseMission(raw)
 const af = (name: string) => m.airbases.find((a) => a.name === name)!
@@ -19,56 +20,68 @@ const route: Waypoint[] = [
   wp('f', 'Incirlik', af('Incirlik')),
 ]
 const rows = computeRows(m, route, defaultSettings('F-4E'))
-const W = 724, H = 862
+const W = 724, H = 764
 
-describe('kneeboard route chart', () => {
-  const chart = routeChart(m, rows, { width: W, height: H })
+/** Centres of the waypoint marks, in drawing order. */
+const marks = (svg: string) => [...svg.matchAll(/<rect class="ch-wp[^"]*" x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"/g)]
+  .map((mk) => ({ x: Number(mk[1]) + Number(mk[3]) / 2, y: Number(mk[2]) + Number(mk[4]) / 2 }))
 
-  const marks = [...chart.svg.matchAll(/<rect class="ch-wp( ch-fill)?" x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"/g)]
-
-  it('keeps every waypoint on the page, inside the margin, with the return to base sharing the first mark', () => {
-    expect(marks).toHaveLength(route.length - 1)
-    expect(chart.svg).toContain('>0/5<')
-    for (const mk of marks) {
-      const x = Number(mk[2]) + Number(mk[4]) / 2, y = Number(mk[3]) + Number(mk[5]) / 2
-      expect(x).toBeGreaterThan(W * 0.08)
-      expect(x).toBeLessThan(W * 0.92)
-      expect(y).toBeGreaterThan(H * 0.08)
-      expect(y).toBeLessThan(H * 0.92)
-    }
+describe('kneeboard leg strip', () => {
+  it.each([1, 2, 3, 4, 5])('leg into %i runs straight up the middle of the page', (to) => {
+    const { svg } = legStrip(m, rows, to, { width: W, height: H })
+    const line = /class="ch-route" x1="([\d.-]+)" y1="([\d.-]+)" x2="([\d.-]+)" y2="([\d.-]+)"/.exec(svg)!
+    const [x1, y1, x2, y2] = line.slice(1).map(Number)
+    expect(x1).toBeCloseTo(W / 2, 0)
+    expect(x2).toBeCloseTo(W / 2, 0)
+    expect(y1).toBeGreaterThan(y2) // from at the bottom, to at the top
+    expect(y1).toBeLessThanOrEqual(H - 60)
+    expect(y2).toBeGreaterThanOrEqual(60)
   })
 
-  it('draws the target filled and square, and labels each leg with course and distance', () => {
-    expect(marks.filter((mk) => mk[1] && !chart.svg.includes(`x="${mk[2]}" y="${mk[3]}" width="${mk[4]}" height="${mk[5]}" rx`))).toHaveLength(1)
-    const legs = [...chart.svg.matchAll(/class="ch-leg"[^>]*>(\d{3})° (\d+)</g)]
-    expect(legs.length).toBeGreaterThanOrEqual(3)
-    for (const l of legs) expect(rows.some((x) => x.leg && Math.round(x.leg.nm) === Number(l[2]))).toBe(true)
+  it('ticks show distance to go and the TACAN fix at that point', () => {
+    const to = 5
+    const leg = rows[to].leg!
+    const strip = legStrip(m, rows, to, { width: W, height: H })
+    expect(strip.tickNm).toBe(15)
+    const togo = [...strip.svg.matchAll(/class="ch-togo"[^>]*>(\d+)</g)].map((x) => Number(x[1]))
+    expect(togo).toEqual([15, 30, 45, 60].map((d) => Math.round(leg.nm - d)))
+    // First checkpoint: 15 nm out of EP, from the station nearest the leg.
+    const fixes = [...strip.svg.matchAll(/class="ch-fix"[^>]*>([^<]+)</g)].map((x) => x[1])
+    expect(fixes).toHaveLength(togo.length)
+    const dan = m.tacans.find((t) => t.id === 'DAN')!
+    expect(fixes[0]).toBe(tacanFixFrom(dan, direct(route[4].lat, route[4].lon, leg.trueCourse, 15)))
   })
 
-  it('does not repeat a mark that is already the name', () => {
-    expect(chart.svg).not.toContain('IP IP')
-    expect(chart.svg).toContain('Fire Can 1-1 TGT')
+  it('draws the return to base on the first mark, the target square, and no "IP IP"', () => {
+    expect(legStrip(m, rows, 1, { width: W, height: H }).svg).toContain('>0/5<')
+    expect(legStrip(m, rows, 2, { width: W, height: H }).svg).not.toContain('IP IP')
+    const target = legStrip(m, rows, 3, { width: W, height: H }).svg
+    expect(target).toContain('Fire Can 1-1 TGT')
+    expect(target).toMatch(/<rect class="ch-wp ch-fill" x="[\d.-]+" y="[\d.-]+" width="[\d.]+" height="20"\/>/)
   })
 
-  it('shows the SA-2 ring at its range, scaled to the chart', () => {
-    const rings = [...chart.svg.matchAll(/class="ch-threat"[^>]*r="([\d.]+)"/g)].map((x) => Number(x[1]))
-    expect(rings.some((r) => Math.abs(r * chart.nmPerPx - 24) < 0.1)).toBe(true)
+  it('turns true north with the course', () => {
+    // Leg 1 is flown about 127 magnetic / 132 true: north points up and to the left.
+    const { svg } = legStrip(m, rows, 1, { width: W, height: H })
+    const turn = Number(/rotate\(([-\d.]+) /.exec(svg)![1])
+    expect(turn).toBeCloseTo(-rows[1].leg!.trueCourse, -1)
   })
 
-  it('has a round scale bar and true-north arrow', () => {
-    expect([1, 2, 5, 10, 20, 25, 50, 100, 200, 500]).toContain(chart.scaleNm)
-    expect(chart.svg).toContain(`${chart.scaleNm} nm`)
-    expect(chart.svg).toContain('TRUE N')
+  it('shows the SA-2 ring at its range on the attack leg', () => {
+    const strip = legStrip(m, rows, 3, { width: W, height: H })
+    const rings = [...strip.svg.matchAll(/class="ch-threat"[^>]*r="([\d.]+)"/g)].map((x) => Number(x[1]))
+    expect(rings.some((r) => Math.abs(r * strip.nmPerPx - 24) < 0.1)).toBe(true)
+  })
+
+  it('keeps a short leg wide enough to see around it', () => {
+    const short = computeRows(m, [route[0], { ...route[0], id: 'z', lat: route[0].lat + 0.05 }], defaultSettings('F-4E'))
+    const strip = legStrip(m, short, 1, { width: W, height: H })
+    expect(strip.nmPerPx * W).toBeGreaterThanOrEqual(24)
+    expect(marks(strip.svg).length).toBeGreaterThanOrEqual(1)
   })
 
   it('escapes names', () => {
     const odd = computeRows(m, [route[0], { ...route[1], name: 'A<b>&"c' }], defaultSettings('F-4E'))
-    const svg = routeChart(m, odd, { width: W, height: H }).svg
-    expect(svg).not.toContain('A<b>')
-  })
-
-  it('gives a one-waypoint route a sensible area', () => {
-    const one = routeChart(m, rows.slice(0, 1), { width: W, height: H })
-    expect(one.nmPerPx * W).toBeGreaterThanOrEqual(30)
+    expect(legStrip(m, odd, 1, { width: W, height: H }).svg).not.toContain('A<b>')
   })
 })
