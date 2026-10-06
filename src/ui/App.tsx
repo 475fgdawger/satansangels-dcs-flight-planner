@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, WAYPOINT_TAGS, attackRun, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+import { AIRCRAFT, WAYPOINT_TAGS, altAgl, altMsl, attackRun, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
 import { PopupPanel } from './Popup'
@@ -388,7 +388,7 @@ function RoutePanel({ mission, route, settings, onChange }:
       {route.length > 0 && (
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
+            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
@@ -402,6 +402,22 @@ function RoutePanel({ mission, route, settings, onChange }:
                     const v = optElev((e.target as HTMLInputElement).value)
                     update(i, { elevFt: v, elevSource: v === undefined ? undefined : 'typed' })
                   }} />{w.elevSource === 'dem' && <span class="muted small" title={elevTitle(w)}> ≈</span>}</td>
+                <td>
+                  <div class="alt">
+                    <input type="number" step="any" value={w.alt?.ft ?? ''} title={altTitle(w)}
+                      onInput={(e) => {
+                        const ft = optElev((e.target as HTMLInputElement).value)
+                        update(i, { alt: ft === undefined && !w.alt ? undefined : { ref: w.alt?.ref ?? 'msl', ft } })
+                      }} />
+                    {(['msl', 'agl'] as const).map((ref) => (
+                      <label key={ref}>
+                        <input type="radio" name={`alt-${w.id}`} checked={(w.alt?.ref ?? 'msl') === ref}
+                          onChange={() => update(i, { alt: { ...w.alt, ref } })} />
+                        {ref.toUpperCase()}
+                      </label>
+                    ))}
+                  </div>
+                </td>
                 <td>{i > 0 && (
                   <select value={w.phase ?? ''} disabled={w.ff !== undefined}
                     onChange={(e) => {
@@ -467,6 +483,13 @@ function RoutePanel({ mission, route, settings, onChange }:
       )}
     </section>
   )
+}
+
+function altTitle(w: Waypoint) {
+  if (w.alt?.ft === undefined) return 'Planned altitude, ft'
+  const other = w.alt.ref === 'msl' ? altAgl(w) : altMsl(w)
+  const otherRef = w.alt.ref === 'msl' ? 'AGL' : 'MSL'
+  return other === undefined ? `Needs the waypoint elevation for ${otherRef}` : `${Math.round(other).toLocaleString('en-US')} ft ${otherRef}`
 }
 
 function elevTitle(w: Waypoint) {

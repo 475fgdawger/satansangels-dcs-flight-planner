@@ -2,7 +2,7 @@ import { useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import { departureFuel, phaseOf, type AttackRun, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
+import { altAgl, altMsl, departureFuel, phaseOf, type AttackRun, type Waypoint, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
@@ -131,7 +131,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
       <table class="kb-table">
         <thead>
           <tr>
-            <th>#</th><th>WAYPOINT</th><th class="n">MC</th><th class="n">MH</th><th class="n">DIST</th><th>PWR</th><th class="n">ETE</th><th class="n">ETA</th><th class="n">FUEL</th>
+            <th>#</th><th>WAYPOINT</th><th class="n">MC</th><th class="n">MH</th><th class="n">DIST</th><th class="n">ALT</th><th>PWR</th><th class="n">ETE</th><th class="n">ETA</th><th class="n">FUEL</th>
           </tr>
         </thead>
         {rows.map((r, k) => {
@@ -149,6 +149,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
                 <td class="n">{r.leg ? heading3(r.leg.magCourse) : ''}</td>
                 <td class="n">{r.leg ? heading3(r.leg.magHeading) : ''}</td>
                 <td class="n">{r.leg ? r.leg.nm.toFixed(1) : ''}</td>
+                <td class="n kb-alt"><AltCell wp={r.wp} /></td>
                 <td>{r.leg ? powerLabel(r.leg, s) : ''}</td>
                 <td class="n">{r.leg ? duration(r.leg.ete) : ''}</td>
                 <td class="n">{r.eta === null ? '' : clock(r.eta)}</td>
@@ -156,7 +157,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
               </tr>
               <tr class="kb-sub">
                 <td />
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <span class="kb-tacan">{tacanFix(mission, r.wp)}</span>
                   <span>INS {ddm(r.wp)}</span>
                   <span class="kb-dms">{dms(r.wp)}</span>
@@ -166,7 +167,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
               {r.loiter && (
                 <tr class={`kb-loiter ${lowFuel(r.fuelAfter)}`}>
                   <td />
-                  <td colSpan={5}>
+                  <td colSpan={6}>
                     <b>LOITER {duration(r.loiter.min)}</b>
                     <span>{r.loiter.phase ? r.loiter.phase.short : `${Math.round(r.loiter.ff)} lb/hr`}</span>
                     <span>{lb(r.loiter.fuel)} lb</span>
@@ -182,7 +183,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
       </table>
 
       <div class="kb-foot">
-        MC/MH magnetic · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
+        MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
         leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
       </div>
     </div>
@@ -213,6 +214,22 @@ function AttackPage({ mission, rows, run, attack }: { mission: MissionExport; ro
       <AttackPicture attack={attack} />
       <div class="kb-foot">Nil wind · action right drawn, left is the mirror image · ranges are ground distance to the target</div>
     </div>
+  )
+}
+
+/** The altitude as typed, with the other reference (MSL or AGL) below it when the elevation is known. */
+function AltCell({ wp }: { wp: Waypoint }) {
+  const ft = wp.alt?.ft
+  if (ft === undefined) return null
+  const ref = wp.alt!.ref
+  const other = ref === 'msl' ? altAgl(wp) : altMsl(wp)
+  const approx = wp.elevSource === 'dem' ? '≈' : ''
+  const n = (v: number) => Math.round(v).toLocaleString('en-US')
+  return (
+    <>
+      {n(ft)}<small>{ref.toUpperCase()}</small>
+      {other !== undefined && <div class="kb-alt2">{approx}{n(other)} {ref === 'msl' ? 'AGL' : 'MSL'}</div>}
+    </>
   )
 }
 

@@ -119,6 +119,26 @@ export interface Waypoint extends LatLon {
   elevFt?: number
   /** Where elevFt came from: the DCS export, a real-world terrain lookup, or typed by the crew. */
   elevSource?: 'dcs' | 'dem' | 'typed'
+  /** Planned altitude at this waypoint, ft, as typed: above sea level or above the ground. */
+  alt?: { ft?: number; ref: AltRef }
+}
+
+export type AltRef = 'msl' | 'agl'
+
+/** The planned altitude as ft MSL; an AGL altitude needs the waypoint's elevation. */
+export function altMsl(wp: Waypoint): number | undefined {
+  const ft = wp.alt?.ft
+  if (ft === undefined) return undefined
+  if (wp.alt!.ref === 'msl') return ft
+  return wp.elevFt === undefined ? undefined : ft + wp.elevFt
+}
+
+/** The planned altitude as ft above the ground; an MSL altitude needs the waypoint's elevation. */
+export function altAgl(wp: Waypoint): number | undefined {
+  const ft = wp.alt?.ft
+  if (ft === undefined) return undefined
+  if (wp.alt!.ref === 'agl') return ft
+  return wp.elevFt === undefined ? undefined : ft - wp.elevFt
 }
 
 export interface PlanSettings {
