@@ -1,0 +1,10 @@
+{
+ "schema": 1,
+ "north": 45.97,
+ "west": 36.84,
+ "step": 0.01,
+ "rows": 488,
+ "cols": 870,
+ "theatre": "Caucasus",
+ "built_utc": "2026-10-06T12:00:46Z"
+}
