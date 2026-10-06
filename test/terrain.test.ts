@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { contourInterval, decodeTerrain, heightAt, maxElevationNear, shadeTerrain, terrainFile, type TerrainMeta } from '../src/nav/terrain'
+import { CONTOUR, contourInterval, decodeTerrain, heightAt, INDEX_CONTOUR, maxElevationNear, shadeTerrain, SHORE, terrainFile, tint,
+  WATER, type TerrainMeta } from '../src/nav/terrain'
 
 const meta: TerrainMeta = { schema: 1, north: 37, west: 36, step: 0.01, rows: 3, cols: 3 }
 /** RGBA as a canvas reads the bot's PNG: R * 256 + G - 32768 metres. */
@@ -52,24 +53,40 @@ describe('terrain shading', () => {
   // North-up page over the grid, 0.5 cell per pixel.
   const ll = (x: number, y: number) => ({ lat: 37 - (y / H) * 0.2, lon: 36 + (x / W) * 0.2 })
   const s = shadeTerrain(g, ll, W, H, (0.2 * 60 * Math.cos((37 * Math.PI) / 180)) / W, 0)
-  const grey = (x: number, y: number) => s.pixels[(y * W + x) * 4]
+  const px = (x: number, y: number) => Array.from(s.pixels.slice((y * W + x) * 4, (y * W + x) * 4 + 3))
 
-  it('leaves the sea white and draws the coastline', () => {
-    expect(grey(2, 20)).toBe(255)
-    const row = Array.from({ length: W }, (_, x) => grey(x, 20))
-    expect(row.slice(10, 16).some((v) => v <= 100)).toBe(true)
+  it('colours the sea blue and draws the coastline', () => {
+    expect(px(2, 20)).toEqual([...WATER])
+    const row = Array.from({ length: W }, (_, x) => px(x, 20).join())
+    expect(row.slice(10, 16)).toContain(SHORE.join())
   })
 
-  it('shades a slope facing away from the north-west light darker than flat ground would be', () => {
+  it('tints low ground green and high ground brown, shaded by the slope', () => {
+    const isContour = (c: number[]) => c.join() === CONTOUR.join() || c.join() === INDEX_CONTOUR.join()
+    const low = [15, 16, 17, 18].map((x) => px(x, 20)).filter((c) => !isContour(c))
+    expect(low.length).toBeGreaterThan(0)
+    for (const [r, g2, b] of low) { expect(g2).toBeGreaterThan(r); expect(g2).toBeGreaterThan(b) }
+    const [r2, g3] = px(38, 20)
+    expect(r2).toBeGreaterThan(g3)
     // Rising to the east, so the ground faces west: it catches the north-west light, but not head on.
-    const land = grey(30, 20)
-    expect(land).toBeLessThan(255)
-    expect(land).toBeGreaterThan(120)
+    expect(px(30, 20)[0]).toBeLessThan(255)
   })
 
-  it('reports the contour interval and draws contours across the slope', () => {
+  it('reports the contour interval and draws brown contours across the slope', () => {
     expect(s.contourFt).toBeGreaterThanOrEqual(500)
-    const row = Array.from({ length: W }, (_, x) => grey(x, 30))
-    expect(row.filter((v) => v === 150 || v === 95).length).toBeGreaterThan(2)
+    const row = Array.from({ length: W }, (_, x) => px(x, 30).join())
+    expect(row.filter((v) => v === CONTOUR.join() || v === INDEX_CONTOUR.join()).length).toBeGreaterThan(2)
+  })
+})
+
+describe('elevation tints', () => {
+  it('runs from green at sea level to brown on high ground', () => {
+    const [r0, g0] = tint(0)
+    expect(g0).toBeGreaterThan(r0)
+    const [r1, g1, b1] = tint(12000)
+    expect(r1).toBeGreaterThan(g1)
+    expect(g1).toBeGreaterThan(b1)
+    expect(tint(500)[1]).toBeGreaterThan(tint(0)[1] - 1)
+    expect(tint(99999)).toEqual(tint(15000))
   })
 })

@@ -82,10 +82,43 @@ export interface Shading {
   contourFt: number
 }
 
+// Sectional / TPC style colours. Elevation tints run green through tan to brown (ft MSL, interpolated
+// between stops); water is pale blue with a darker shoreline; contours are brown, index contours darker.
+type RGB = readonly [number, number, number]
+export const TINTS: readonly (readonly [number, RGB])[] = [
+  [0, [190, 219, 168]],
+  [1000, [212, 228, 176]],
+  [2000, [232, 233, 186]],
+  [3000, [240, 226, 178]],
+  [5000, [233, 207, 158]],
+  [7000, [221, 186, 140]],
+  [9000, [204, 163, 120]],
+  [12000, [182, 139, 103]],
+  [15000, [160, 120, 92]],
+]
+export const WATER: RGB = [182, 216, 240]
+export const SHORE: RGB = [70, 130, 190]
+export const CONTOUR: RGB = [176, 135, 92]
+export const INDEX_CONTOUR: RGB = [128, 86, 50]
+
+/** Elevation tint for a height in feet. */
+export function tint(ft: number): RGB {
+  if (ft <= TINTS[0][0]) return TINTS[0][1]
+  for (let i = 1; i < TINTS.length; i++) {
+    const [f1, c1] = TINTS[i]
+    if (ft <= f1) {
+      const [f0, c0] = TINTS[i - 1]
+      const t = (ft - f0) / (f1 - f0)
+      return [0, 1, 2].map((k) => c0[k] + (c1[k] - c0[k]) * t) as unknown as RGB
+    }
+  }
+  return TINTS[TINTS.length - 1][1]
+}
+
 /**
- * Grey hill shading with contours for a chart page. ll maps a page pixel to lat/lon; turn is how far true
- * north is rotated clockwise on the page (radians), so the light still comes from the north-west; nmPerPx
- * gives the slope. Sea (0 m and below) and anything off the grid stay white.
+ * Chart-style terrain for a page: elevation tints with hill shading and contours. ll maps a page pixel to
+ * lat/lon; turn is how far true north is rotated clockwise on the page (radians), so the light still comes
+ * from the north-west; nmPerPx gives the slope. Sea (0 m and below) is water blue; off the grid stays white.
  */
 export function shadeTerrain(g: TerrainGrid, ll: (x: number, y: number) => LatLon, width: number, height: number,
   nmPerPx: number, turn: number): Shading {
@@ -115,7 +148,7 @@ export function shadeTerrain(g: TerrainGrid, ll: (x: number, y: number) => LatLo
     for (let x = 0; x < width; x++) {
       const i = y * width + x
       const v = hs[i]
-      let grey = 255
+      let rgb: RGB = [255, 255, 255]
       if (v > 0) {
         const at = (xx: number, yy: number) => {
           const w = hs[Math.min(height - 1, Math.max(0, yy)) * width + Math.min(width - 1, Math.max(0, xx))]
@@ -124,21 +157,22 @@ export function shadeTerrain(g: TerrainGrid, ll: (x: number, y: number) => LatLo
         const dzdx = ((at(x + 1, y) - at(x - 1, y)) / (2 * metresPerPx)) * ex
         const dzdy = ((at(x, y + 1) - at(x, y - 1)) / (2 * metresPerPx)) * ex
         const shade = Math.max(0, (-dzdx * lx - dzdy * ly + lz) / Math.hypot(dzdx, dzdy, 1))
-        // Flat ground a light grey, slopes away from the light darker, higher ground a touch darker.
-        grey = (255 - (0.9 - shade) * 110) * (1 - 0.12 * Math.min(1, v / 3000))
+        // Flat ground keeps its tint; slopes away from the light darker, slopes towards it a little lighter.
+        const f = 1 + (shade - Math.SQRT1_2) * 0.55
+        rgb = tint(v * FT).map((c) => c * f) as unknown as RGB
         const b = band(v)
         const right = x + 1 < width ? hs[i + 1] : v, down = y + 1 < height ? hs[i + width] : v
         const edge = (w: number) => !Number.isNaN(w) && (w <= 0 || band(w) !== b)
         if (edge(right) || edge(down)) {
           const level = Math.max(b, band(Math.max(0, right)), band(Math.max(0, down)))
-          grey = level % 5 === 0 ? 95 : 150
+          rgb = level % 5 === 0 ? INDEX_CONTOUR : CONTOUR
         }
       } else if (!Number.isNaN(v) && v <= 0) {
         // Coastline: sea next to land.
         const right = x + 1 < width ? hs[i + 1] : v, down = y + 1 < height ? hs[i + width] : v
-        if (right > 0 || down > 0) grey = 95
+        rgb = right > 0 || down > 0 ? SHORE : WATER
       }
-      out[i * 4] = out[i * 4 + 1] = out[i * 4 + 2] = Math.round(Math.min(255, Math.max(0, grey)))
+      for (let k = 0; k < 3; k++) out[i * 4 + k] = Math.round(Math.min(255, Math.max(0, rgb[k])))
       out[i * 4 + 3] = 255
     }
   }
