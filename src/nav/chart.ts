@@ -4,6 +4,7 @@
 // rings, targets, airfields, TACANs and the mission editor drawings. Drawn as SVG (no map tiles), so
 // it prints and exports like the rest of the kneeboard.
 
+import { heading3 } from './format'
 import { direct, inverse } from './geodesy'
 import { airfields, fixStations, tacanFixFrom } from './mission'
 import { dcsColor, threatRing } from './map'
@@ -81,6 +82,16 @@ class Labels {
   }
   reserve(x0: number, y0: number, x1: number, y1: number) {
     this.boxes.push({ x0, y0, x1, y1 })
+  }
+  /** The first of the boxes that is on the page and clear of everything placed, reserved; or null. */
+  placeBox(candidates: { x0: number; y0: number; x1: number; y1: number }[]) {
+    for (const b of candidates) {
+      if (b.x0 < 2 || b.y0 < 2 || b.x1 > this.w - 2 || b.y1 > this.h - 2) continue
+      if (this.boxes.some((o) => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0)) continue
+      this.boxes.push(b)
+      return b
+    }
+    return null
   }
   /** Try the label at each offset in turn; returns where it fits, or null. */
   place(x: number, y: number, text: string, size: number, offsets: [number, number, Anchor][]) {
@@ -168,6 +179,19 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
     const name = `${wp.name}${extra.length ? ` ${extra.join('/')}` : ''}`
     const lab = labels.place(p.x, p.y, name, own ? 15 : 12, AROUND(half + 5))
     if (lab) text.push(`<text class="${own ? 'ch-wpl' : 'ch-pl'}" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
+  }
+
+  // Magnetic heading and leg distance boxed beside the start of the leg, where the turn onto it is flown.
+  const mh = `MH ${heading3(leg.magHeading)}°`, dist = `${leg.nm.toFixed(1)} nm`
+  const bw = Math.max(mh.length * 19 * 0.6, dist.length * 15 * 0.58) + 14, bh = 46
+  const box = labels.placeBox([pa.y - 22, pa.y - 70, pa.y + 18].flatMap((bottom) => [
+    { x0: pa.x + 16, y0: bottom - bh, x1: pa.x + 16 + bw, y1: bottom },
+    { x0: pa.x - 16 - bw, y0: bottom - bh, x1: pa.x - 16, y1: bottom },
+  ]))
+  if (box) {
+    top.push(`<rect class="ch-legbox" x="${f(box.x0)}" y="${f(box.y0)}" width="${f(bw)}" height="${bh}"/>`)
+    text.push(`<text class="ch-mh" x="${f(box.x0 + 7)}" y="${f(box.y0 + 20)}">${mh}</text>`,
+      `<text class="ch-dist" x="${f(box.x0 + 7)}" y="${f(box.y0 + 39)}">${dist}</text>`)
   }
 
   // Ticks along the leg: nm to go and time from the start of the leg on the left, a TACAN

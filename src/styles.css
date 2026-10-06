@@ -186,6 +186,9 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-chart .ch-gl { font-size: 10px; fill: #333; }
 .kb-chart .ch-route { fill: none; stroke: #000; stroke-width: 4; stroke-linejoin: round; }
 .kb-chart .ch-other { stroke: #000; stroke-width: 1.5; stroke-dasharray: 8 5; opacity: 0.6; }
+.kb-chart .ch-legbox { fill: #fff; stroke: #000; stroke-width: 2; }
+.kb-chart .ch-mh { font-size: 19px; font-weight: 700; stroke: none; }
+.kb-chart .ch-dist { font-size: 15px; font-weight: 700; stroke: none; }
 .kb-chart .ch-tick { stroke: #000; stroke-width: 2.5; }
 .kb-chart .ch-togo { font-size: 15px; font-weight: 700; }
 .kb-chart .ch-time { font-size: 11px; fill: #333; }
