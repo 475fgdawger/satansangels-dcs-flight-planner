@@ -2,7 +2,7 @@ import { useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import { altAgl, altMsl, departureFuel, phaseOf, type AttackRun, type Waypoint, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
+import { altAgl, altMsl, departureFuel, planTitle, phaseOf, type AttackRun, type Waypoint, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
@@ -20,12 +20,15 @@ const LOITER_ROW = 0.4
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
 /** The nav log as one or more kneeboard pages, with PNG and PDF export. */
-export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
+export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, attack }: {
   mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null
   run: AttackRun | null; attack: PopupResult | null
 }) {
   const pagesRef = useRef<HTMLDivElement>(null)
   const [busy, setBusy] = useState<string | null>(null)
+  // Every page heads with the mission name; the crew's title block replaces it.
+  const title = planTitle(exported.mission.name, s)
+  const mission = { ...exported, mission: { ...exported.mission, name: title } }
 
   if (rows.length === 0) {
     return <section class="panel no-print muted">Add waypoints to see the nav log.</section>
@@ -42,7 +45,7 @@ export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
     pages[pages.length - 1].rows.push(r)
     used += h
   })
-  const fileBase = `${mission.mission.theatre}_navlog`.replace(/[^A-Za-z0-9_-]+/g, '_')
+  const fileBase = `${s.title?.trim() || mission.mission.theatre}_navlog`.replace(/[^A-Za-z0-9_-]+/g, '_')
 
   async function exportAs(kind: 'png' | 'pdf') {
     const els = Array.from(pagesRef.current?.querySelectorAll<HTMLElement>('.kb-page') ?? [])
@@ -118,6 +121,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         <span class="kb-pageno">NAV LOG {page}/{pageCount}</span>
       </div>
       <div class="kb-line">
+        {s.callsign?.trim() && <span><b>{s.callsign.trim().toUpperCase()}</b></span>}
         <span><b>{s.aircraft}</b></span>
         <span>T/O <b>{s.takeoff === undefined ? '______' : clock(s.takeoff)}</b></span>
         <span><b>{Math.round(last.totalNm)}</b> nm</span>
