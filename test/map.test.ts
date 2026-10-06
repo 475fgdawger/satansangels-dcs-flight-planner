@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import raw from './fixtures/targets_syria.json'
 import { inverse } from '../src/nav/geodesy'
 import { parseMission } from '../src/nav/mission'
-import { boundsOf, dashFor, dcsColor, drawingLayers, legMidpoint, missionBounds, threatRing } from '../src/nav/map'
+import { boundsOf, dashFor, dcsColor, drawingLayers, insertIndex, legMidpoint, missionBounds, threatRing } from '../src/nav/map'
 
 const m = parseMission(raw)
 const target = (name: string) => m.targets.find((t) => t.name === name)!
@@ -55,5 +55,20 @@ describe('mission editor drawings', () => {
       { name: 'Blue', on: true }, { name: 'Red', on: false }, { name: 'Author', on: false }, { name: 'Common', on: true },
     ])
     expect(drawingLayers(undefined)).toEqual([])
+  })
+})
+
+describe('inserting a point into the route', () => {
+  const route = [{ lat: 37, lon: 35.4 }, { lat: 36.4, lon: 36.2 }, { lat: 36.4, lon: 36.8 }, { lat: 37, lon: 35.4 }]
+
+  it('picks the leg the point lengthens least', () => {
+    expect(insertIndex(route, { lat: 36.7, lon: 35.85 })).toBe(1)
+    expect(insertIndex(route, { lat: 36.35, lon: 36.5 })).toBe(2)
+    expect(insertIndex(route, { lat: 36.75, lon: 36.2 })).toBe(3)
+  })
+
+  it('has nowhere to insert without a leg', () => {
+    expect(insertIndex([], { lat: 36, lon: 36 })).toBeNull()
+    expect(insertIndex([route[0]], { lat: 36, lon: 36 })).toBeNull()
   })
 })
