@@ -119,6 +119,16 @@ export function App() {
   const currentPlan = (): SharedPlan | null => (mission && settings
     ? { v: 1, mission: { name: mission.mission.name, theatre: mission.mission.theatre }, route, settings } : null)
 
+  /** Starts over on the same mission: no waypoints, and flight settings back to defaults for the same aircraft. */
+  function newRoute() {
+    if (!settings) return
+    if (route.length > 0 && !confirm('Start a new route? This clears the waypoints, title and flight settings. Save the route first if you want to keep it.')) return
+    setRoute([])
+    setSettings(defaultSettings(settings.aircraft))
+    setShareMsg(null)
+    setError(null)
+  }
+
   async function copyShareLink() {
     const plan = currentPlan()
     if (!plan) return
@@ -221,9 +231,11 @@ export function App() {
             ))}
           </div>
         )}
-        {mission && route.length > 0 && (
+        {mission && settings && (
           <div class="row">
-            <button type="button" onClick={copyShareLink}>Copy share link</button>
+            <button type="button" onClick={newRoute}
+              title="Clear the waypoints, title and flight settings and start a new plan on this mission">New route</button>
+            {route.length > 0 && <button type="button" onClick={copyShareLink}>Copy share link</button>}
             {shareMsg && <span class="muted small">{shareMsg}</span>}
           </div>
         )}
