@@ -1,10 +1,11 @@
-// The kneeboard map page: a black-and-white chart of the route drawn as SVG, so it prints and
-// exports like the rest of the kneeboard (no map tiles to fetch). North-up on true north, scaled
-// to fit the route, with whatever the mission has around it: threat rings, targets, airfields,
-// TACANs and the mission editor drawings.
+// Kneeboard strip map: one page per leg, course up. The leg runs straight up the page from the
+// waypoint it starts at (bottom) to the one it ends at (top), with distance-to-go ticks, time and a
+// TACAN radial/DME checkpoint at each tick, and whatever the mission has either side of it: threat
+// rings, targets, airfields, TACANs and the mission editor drawings. Drawn as SVG (no map tiles), so
+// it prints and exports like the rest of the kneeboard.
 
-import { heading3 } from './format'
-import { airfields } from './mission'
+import { direct, inverse } from './geodesy'
+import { airfields, fixStations, tacanFixFrom } from './mission'
 import { dcsColor, threatRing } from './map'
 import type { Row } from './plan'
 import type { LatLon, MissionExport } from './types'
@@ -14,54 +15,61 @@ export interface ChartOptions {
   height: number
 }
 
-export interface Chart {
+export interface Strip {
   svg: string
   /** Nautical miles per pixel. */
   nmPerPx: number
-  /** Length of the scale bar, nm. */
-  scaleNm: number
+  /** Distance between ticks, nm. */
+  tickNm: number
 }
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
 const f = (n: number) => n.toFixed(1)
 const DEG = Math.PI / 180
-// Margin around the route, as a share of the page; the edges also carry the grid labels.
-const PAD = 0.09
-// A one-waypoint route still gets a useful area around it.
-const MIN_SPAN_NM = 30
+// Room above and below the leg for the waypoint marks and their labels.
+const END_PAD = 70
+// A short leg still shows this much either side of it.
+const MIN_WIDTH_NM = 24
 
-/** Projection centred on the route: equirectangular, scaled by cos(lat), which is fine at kneeboard scales. */
-function projection(points: LatLon[], w: number, h: number) {
-  let south = Infinity, north = -Infinity, west = Infinity, east = -Infinity
-  for (const p of points) {
-    south = Math.min(south, p.lat); north = Math.max(north, p.lat)
-    west = Math.min(west, p.lon); east = Math.max(east, p.lon)
-  }
-  const c = { lat: (south + north) / 2, lon: (west + east) / 2 }
+interface Projection {
+  xy: (p: LatLon) => { x: number; y: number }
+  nmPerPx: number
+  /** Clockwise screen rotation of true north from straight up, radians. */
+  turn: number
+}
+
+/**
+ * Course-up projection for the leg a -> b: a local flat plane (equirectangular, scaled by cos(lat)
+ * at the leg's middle, fine at kneeboard scales), turned so that a -> b points straight up.
+ */
+function courseUp(a: LatLon, b: LatLon, w: number, h: number): Projection {
+  const c = { lat: (a.lat + b.lat) / 2, lon: (a.lon + b.lon) / 2 }
   const k = Math.cos(c.lat * DEG)
-  const spanX = Math.max((east - west) * 60 * k, MIN_SPAN_NM)
-  const spanY = Math.max((north - south) * 60, MIN_SPAN_NM)
-  const nmPerPx = Math.max(spanX / (w * (1 - 2 * PAD)), spanY / (h * (1 - 2 * PAD)))
-  const xy = (p: LatLon) => ({ x: w / 2 + ((p.lon - c.lon) * 60 * k) / nmPerPx, y: h / 2 - ((p.lat - c.lat) * 60) / nmPerPx })
-  const ll = (x: number, y: number): LatLon => ({ lat: c.lat - ((y - h / 2) * nmPerPx) / 60, lon: c.lon + ((x - w / 2) * nmPerPx) / 60 / k })
-  return { xy, ll, nmPerPx }
+  const local = (p: LatLon) => ({ e: (p.lon - c.lon) * 60 * k, n: (p.lat - c.lat) * 60 })
+  const la = local(a), lb = local(b)
+  const len = Math.max(Math.hypot(lb.e - la.e, lb.n - la.n), 0.1)
+  const sin = (lb.e - la.e) / len, cos = (lb.n - la.n) / len
+  const nmPerPx = Math.max(len / (h - 2 * END_PAD), MIN_WIDTH_NM / w)
+  const xy = (p: LatLon) => {
+    const { e, n } = local(p)
+    return { x: w / 2 + (e * cos - n * sin) / nmPerPx, y: h / 2 - (e * sin + n * cos) / nmPerPx }
+  }
+  // Course up turns the chart left by the course, so north points at minus the course.
+  return { xy, nmPerPx, turn: -Math.atan2(sin, cos) }
 }
 
-/** A round scale bar length near a quarter of the page width. */
-function niceNm(target: number): number {
-  for (const n of [1, 2, 5, 10, 20, 25, 50, 100, 200]) if (n >= target * 0.7) return n
-  return 500
+/** A round tick spacing giving about six ticks along the leg. */
+function tickStep(nm: number): number {
+  for (const s of [1, 2, 5, 10, 15, 20, 25, 50]) if (nm / s <= 7) return s
+  return 100
 }
 
-/** Grid spacing in minutes that gives a handful of lines across the page. */
-function gridStep(spanDeg: number): number {
-  for (const m of [5, 10, 15, 20, 30, 60, 120]) if ((spanDeg * 60) / m <= 7) return m
-  return 300
+const mmss = (min: number) => {
+  const s = Math.round(min * 60)
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 }
 
-const latText = (deg: number) => `${deg < 0 ? 'S' : 'N'}${Math.floor(Math.abs(deg) + 1e-9)}°${pad2(Math.round((Math.abs(deg) % 1) * 60) % 60)}'`
-const lonText = (deg: number) => `${deg < 0 ? 'W' : 'E'}${String(Math.floor(Math.abs(deg) + 1e-9)).padStart(3, '0')}°${pad2(Math.round((Math.abs(deg) % 1) * 60) % 60)}'`
-const pad2 = (n: number) => String(n).padStart(2, '0')
+type Anchor = 'start' | 'middle' | 'end'
 
 /** Simple label placement: a label is dropped when it would overlap one already placed. */
 class Labels {
@@ -75,7 +83,7 @@ class Labels {
     this.boxes.push({ x0, y0, x1, y1 })
   }
   /** Try the label at each offset in turn; returns where it fits, or null. */
-  place(x: number, y: number, text: string, size: number, offsets: [number, number, 'start' | 'middle' | 'end'][]) {
+  place(x: number, y: number, text: string, size: number, offsets: [number, number, Anchor][]) {
     const tw = text.length * size * 0.58, th = size
     for (const [dx, dy, anchor] of offsets) {
       const lx = x + dx, ly = y + dy
@@ -90,71 +98,65 @@ class Labels {
   }
 }
 
-const AROUND = (d: number): [number, number, 'start' | 'middle' | 'end'][] =>
+const AROUND = (d: number): [number, number, Anchor][] =>
   [[d, 4, 'start'], [-d, 4, 'end'], [0, -d, 'middle'], [0, d + 9, 'middle'], [d, -d, 'start'], [-d, -d, 'end'], [d, d + 6, 'start'], [-d, d + 6, 'end']]
 
-/** The route chart for the kneeboard, as SVG markup for a width x height viewBox. */
-export function routeChart(m: MissionExport, rows: Row[], { width: w, height: h }: ChartOptions): Chart {
+/** The strip map for the leg ending at rows[to], as SVG markup for a width x height viewBox. */
+export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, height: h }: ChartOptions): Strip {
+  const leg = rows[to]?.leg
+  if (!leg || to < 1) throw new Error(`no leg into waypoint ${to}`)
   const route = rows.map((r) => r.wp)
-  const { xy, ll, nmPerPx } = projection(route, w, h)
+  const A = route[to - 1], B = route[to]
+  const { xy, nmPerPx, turn } = courseUp(A, B, w, h)
   const inView = (p: { x: number; y: number }, margin = 0) => p.x >= -margin && p.x <= w + margin && p.y >= -margin && p.y <= h + margin
   const labels = new Labels(w, h)
   const back: string[] = [], mid: string[] = [], top: string[] = [], text: string[] = []
+  const pa = xy(A), pb = xy(B)
 
-  // Lat/lon grid with edge labels.
-  const nw = ll(0, 0), se = ll(w, h)
-  const step = gridStep(Math.max(se.lon - nw.lon, nw.lat - se.lat)) / 60
-  for (let lat = Math.ceil(se.lat / step) * step; lat <= nw.lat; lat += step) {
-    const y = xy({ lat, lon: nw.lon }).y
-    back.push(`<line class="ch-grid" x1="0" y1="${f(y)}" x2="${w}" y2="${f(y)}"/>`)
-    text.push(`<text class="ch-gl" x="4" y="${f(y - 3)}">${latText(lat)}</text>`)
-    labels.block(30, y - 7, 28)
-  }
-  for (let lon = Math.ceil(nw.lon / step) * step; lon <= se.lon; lon += step) {
-    const x = xy({ lat: nw.lat, lon }).x
-    if (x > w - 60) continue
-    back.push(`<line class="ch-grid" x1="${f(x)}" y1="0" x2="${f(x)}" y2="${h}"/>`)
-    text.push(`<text class="ch-gl" x="${f(x + 3)}" y="12">${lonText(lon)}</text>`)
-    labels.block(x + 34, 8, 6)
-  }
-
-  // Keep labels out from under the north arrow and scale bar.
-  const scaleNm = niceNm((w / 4) * nmPerPx)
+  // Corner furniture first so nothing is labelled underneath it: true north arrow (top left)
+  // and the scale (bottom left).
+  const scaleNm = [100, 50, 25, 20, 10, 5, 2, 1].find((n) => n <= (w / 5) * nmPerPx) ?? 1
   const bar = scaleNm / nmPerPx
-  const bx = w - 16 - bar, by = h - 18
-  labels.reserve(bx - 8, by - 62, w, h)
+  labels.reserve(0, 0, 70, 78)
+  labels.reserve(0, h - 40, bar + 30, h)
+  const nx = 35, ny = 34
+  const furniture = [
+    `<rect class="ch-box" x="4" y="4" width="62" height="70"/>`,
+    `<g transform="rotate(${f(turn / DEG)} ${nx} ${ny})">`
+      + `<path class="ch-north" d="M${nx},${ny - 22} l7,20 l-7,-5 l-7,5 z"/><line class="ch-scale" x1="${nx}" y1="${ny - 2}" x2="${nx}" y2="${ny + 16}"/></g>`,
+    `<text class="ch-gl" x="${nx}" y="69" text-anchor="middle">TRUE N</text>`,
+    `<path class="ch-scale" d="M16,${h - 22} v6 h${f(bar)} v-6"/>`,
+    `<text class="ch-gl" x="16" y="${h - 26}">0</text>`,
+    `<text class="ch-gl" x="${f(16 + bar)}" y="${h - 26}" text-anchor="end">${scaleNm} nm</text>`,
+  ]
 
-  // Route first, so its labels win every overlap.
+  // This leg, heavy, and the rest of the route, light, so the turn at each end shows.
+  for (let i = 1; i < route.length; i++) {
+    if (i === to) continue
+    const p = xy(route[i - 1]), q = xy(route[i])
+    top.push(`<line class="ch-other" x1="${f(p.x)}" y1="${f(p.y)}" x2="${f(q.x)}" y2="${f(q.y)}"/>`)
+  }
+  top.push(`<line class="ch-route" x1="${f(pa.x)}" y1="${f(pa.y)}" x2="${f(pb.x)}" y2="${f(pb.y)}"/>`)
+  labels.reserve(pa.x - 5, pb.y, pa.x + 5, pa.y)
+
+  // Waypoint marks. A waypoint on top of another (the recovery base) shares its mark: "0/5".
   const pts = route.map(xy)
-  if (pts.length > 1) top.push(`<polyline class="ch-route" points="${pts.map((p) => `${f(p.x)},${f(p.y)}`).join(' ')}"/>`)
-  pts.forEach((p) => labels.block(p.x, p.y, 12))
-  rows.forEach((r, i) => {
-    if (!r.leg || i === 0) return
-    const a = pts[i - 1], b = pts[i]
-    const len = Math.hypot(b.x - a.x, b.y - a.y)
-    if (len < 60) return
-    // Label beside the middle of the leg, on the side away from the page centre.
-    const nx = -(b.y - a.y) / len, ny = (b.x - a.x) / len
-    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2
-    const s = (mx - w / 2) * nx + (my - h / 2) * ny >= 0 ? 1 : -1
-    const t = `${heading3(r.leg.magCourse)}° ${Math.round(r.leg.nm)}`
-    // Far enough out along the normal that the label's box clears the line, whatever the leg's angle.
-    const d = (t.length * 14 * 0.58) / 2 * Math.abs(nx) + 7 * Math.abs(ny) + 5
-    const at = labels.place(mx, my, t, 14, [[s * nx * d, s * ny * d + 5, 'middle'], [-s * nx * d, -s * ny * d + 5, 'middle']])
-    if (at) text.push(`<text class="ch-leg" x="${f(at.x)}" y="${f(at.y)}" text-anchor="middle">${t}</text>`)
-  })
-  // A waypoint on top of an earlier one (the recovery base) shares its mark: "0/5".
   const marks: { at: number; nums: number[] }[] = []
   pts.forEach((p, i) => {
     const same = marks.find((mk) => Math.hypot(pts[mk.at].x - p.x, pts[mk.at].y - p.y) < 4)
     if (same) same.nums.push(i)
     else marks.push({ at: i, nums: [i] })
   })
+  const ownLeg = (nums: number[]) => nums.includes(to) || nums.includes(to - 1)
+  // The leg's own ends first, so their labels win.
+  marks.sort((a, b) => Number(ownLeg(b.nums)) - Number(ownLeg(a.nums)))
   for (const { at, nums } of marks) {
     const p = pts[at]
+    if (!inView(p, 12)) continue
     const tags = [...new Set(nums.flatMap((i) => route[i].tags ?? []))]
     const num = nums.join('/')
     const r = 11, half = Math.max(r, num.length * 3.6 + 5)
+    const own = ownLeg(nums)
     top.push(tags.includes('TGT')
       ? `<rect class="ch-wp ch-fill" x="${f(p.x - half + 1)}" y="${f(p.y - 10)}" width="${f(2 * half - 2)}" height="20"/>`
       : `<rect class="ch-wp${tags.length ? ' ch-fill' : ''}" x="${f(p.x - half)}" y="${f(p.y - r)}" width="${f(2 * half)}" height="${2 * r}" rx="${r}"/>`)
@@ -164,8 +166,32 @@ export function routeChart(m: MissionExport, rows: Row[], { width: w, height: h 
     const wp = route[at]
     const extra = tags.filter((t) => t !== wp.name.trim().toUpperCase())
     const name = `${wp.name}${extra.length ? ` ${extra.join('/')}` : ''}`
-    const lab = labels.place(p.x, p.y, name, 13, AROUND(half + 4))
-    if (lab) text.push(`<text class="ch-wpl" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
+    const lab = labels.place(p.x, p.y, name, own ? 15 : 12, AROUND(half + 5))
+    if (lab) text.push(`<text class="${own ? 'ch-wpl' : 'ch-pl'}" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
+  }
+
+  // Ticks along the leg: nm to go and time from the start of the leg on the left, a TACAN
+  // radial/DME checkpoint on the right from the station nearest the leg.
+  const tickNm = tickStep(leg.nm)
+  const az = inverse(A.lat, A.lon, B.lat, B.lon).az
+  const toLeg = (s: LatLon) => inverse(s.lat, s.lon, A.lat, A.lon).nm + inverse(s.lat, s.lon, B.lat, B.lon).nm
+  const station = [...fixStations(m, { lat: (A.lat + B.lat) / 2, lon: (A.lon + B.lon) / 2 })].sort((s, t) => toLeg(s) - toLeg(t))[0]
+  for (let d = tickNm; d < leg.nm - tickNm * 0.3; d += tickNm) {
+    const y = pa.y + ((pb.y - pa.y) * d) / leg.nm
+    top.push(`<line class="ch-tick" x1="${f(pa.x - 9)}" y1="${f(y)}" x2="${f(pa.x + 9)}" y2="${f(y)}"/>`)
+    const togo = `${Math.round(leg.nm - d)}`
+    const at = labels.place(pa.x, y, togo, 15, [[-14, 5, 'end']])
+    if (at) {
+      text.push(`<text class="ch-togo" x="${f(at.x)}" y="${f(at.y)}" text-anchor="end">${togo}</text>`)
+      const t = `+${mmss((d / leg.gs) * 60)}`
+      const tt = labels.place(pa.x, y, t, 11, [[-14, 22, 'end']])
+      if (tt) text.push(`<text class="ch-time" x="${f(tt.x)}" y="${f(tt.y)}" text-anchor="end">${t}</text>`)
+    }
+    if (station) {
+      const fix = tacanFixFrom(station, direct(A.lat, A.lon, az, d))
+      const fa = labels.place(pa.x, y, fix, 12, [[14, 5, 'start']])
+      if (fa) text.push(`<text class="ch-fix" x="${f(fa.x)}" y="${f(fa.y)}">${esc(fix)}</text>`)
+    }
   }
 
   // Threat rings, then point symbols. Rings are clipped by the page; points off the page are skipped.
@@ -180,6 +206,7 @@ export function routeChart(m: MissionExport, rows: Row[], { width: w, height: h 
     if (ringLabels.some((q) => q.lab === lab && Math.hypot(q.x - c.x, q.y - c.y) < 2 * r + 40)) continue
     ringLabels.push({ lab, x: c.x, y: c.y })
     const at = labels.place(c.x, c.y + r, lab, 11, [[0, -4, 'middle'], [0, 12, 'middle']])
+      ?? labels.place(c.x, c.y - r, lab, 11, [[0, 14, 'middle'], [0, -4, 'middle']])
     if (at) text.push(`<text class="ch-ring" x="${f(at.x)}" y="${f(at.y)}" text-anchor="middle">${lab}</text>`)
   }
 
@@ -189,7 +216,9 @@ export function routeChart(m: MissionExport, rows: Row[], { width: w, height: h 
     const p = xy(a)
     if (!inView(p)) continue
     mid.push(`<circle class="ch-af" cx="${f(p.x)}" cy="${f(p.y)}" r="5"/>`)
-    const dx = Math.sin(a.rwy_heading_true * DEG) * 8, dy = -Math.cos(a.rwy_heading_true * DEG) * 8
+    // Runway on the page: its true heading turned with the chart.
+    const hdg = a.rwy_heading_true * DEG + turn
+    const dx = Math.sin(hdg) * 8, dy = -Math.cos(hdg) * 8
     mid.push(`<line class="ch-rwy" x1="${f(p.x - dx)}" y1="${f(p.y - dy)}" x2="${f(p.x + dx)}" y2="${f(p.y + dy)}"/>`)
     labels.block(p.x, p.y, 7)
     const at = labels.place(p.x, p.y, a.name, 11, AROUND(9))
@@ -219,23 +248,12 @@ export function routeChart(m: MissionExport, rows: Row[], { width: w, height: h 
     if (at) text.push(`<text class="ch-pl" x="${f(at.x)}" y="${f(at.y)}" text-anchor="${at.anchor}">${esc(t.name)}</text>`)
   }
 
-  // North arrow and scale bar, bottom right.
-  const furniture = [
-    `<rect class="ch-box" x="${f(bx - 8)}" y="${f(by - 62)}" width="${f(bar + 18)}" height="74"/>`,
-    `<path class="ch-north" d="M${f(w - 24)},${f(by - 54)} l7,20 l-7,-5 l-7,5 z"/>`,
-    `<text class="ch-gl" x="${f(w - 24)}" y="${f(by - 24)}" text-anchor="middle">TRUE N</text>`,
-    `<path class="ch-scale" d="M${f(bx)},${f(by - 6)} v6 h${f(bar)} v-6"/>`,
-    `<line class="ch-scale" x1="${f(bx + bar / 2)}" y1="${f(by - 3)}" x2="${f(bx + bar / 2)}" y2="${f(by)}"/>`,
-    `<text class="ch-gl" x="${f(bx)}" y="${f(by - 10)}">0</text>`,
-    `<text class="ch-gl" x="${f(bx + bar)}" y="${f(by - 10)}" text-anchor="end">${scaleNm} nm</text>`,
-  ]
-
   const svg = [
-    `<defs><clipPath id="ch-clip"><rect width="${w}" height="${h}"/></clipPath></defs>`,
-    `<g clip-path="url(#ch-clip)">`, ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
+    `<defs><clipPath id="ch-clip-${to}"><rect width="${w}" height="${h}"/></clipPath></defs>`,
+    `<g clip-path="url(#ch-clip-${to})">`, ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
     `<rect class="ch-frame" x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}"/>`,
   ].join('')
-  return { svg, nmPerPx, scaleNm }
+  return { svg, nmPerPx, tickNm }
 }
 
 /** Mission editor drawings on the visible layers (Red skipped, as on the map), in grey so the route stands out. */

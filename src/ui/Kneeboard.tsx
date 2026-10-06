@@ -6,7 +6,7 @@ import { altAgl, altMsl, departureFuel, phaseOf, type AttackRun, type Waypoint, 
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
-import { routeChart } from '../nav/chart'
+import { legStrip } from '../nav/chart'
 
 // DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
@@ -91,7 +91,7 @@ export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
           <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
-        {rows.length > 1 && <MapPage mission={mission} rows={rows} />}
+        {rows.map((r, i) => r.leg && i > 0 && <LegPage key={`leg${r.wp.id}`} mission={mission} rows={rows} to={i} settings={s} fuel={fuel} />)}
         {run && attack && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
       </div>
     </section>
@@ -197,29 +197,55 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
   )
 }
 
-// The chart fills the page between the header lines and the legend.
-const CHART_W = PAGE_W - 44
-const CHART_H = 862
+// The strip fills the page between the leg data and the from-waypoint line.
+const STRIP_W = PAGE_W - 44
+const STRIP_H = 764
 
-/** The route on a north-up chart, after the nav log pages. */
-function MapPage({ mission, rows }: { mission: MissionExport; rows: Row[] }) {
-  const chart = routeChart(mission, rows, { width: CHART_W, height: CHART_H })
-  const last = rows[rows.length - 1]
+/** One leg as a course-up strip map, with the numbers to fly it. Follows the nav log pages. */
+function LegPage({ mission, rows, to, settings: s, fuel }: {
+  mission: MissionExport; rows: Row[]; to: number; settings: PlanSettings; fuel: FuelPlan | null
+}) {
+  const r = rows[to], leg = r.leg!
+  const from = rows[to - 1]
+  const strip = legStrip(mission, rows, to, { width: STRIP_W, height: STRIP_H })
+  const lb = (n: number) => Math.round(n).toLocaleString('en-US')
+  const low = !fuel ? '' : r.fuelRemaining < fuel.bingo ? 'bingo' : r.fuelRemaining < fuel.joker ? 'joker' : ''
+  const tags = (w: Waypoint) => w.tags?.map((t) => <span key={t} class="tag">{t}</span>)
+  const fix = (w: Waypoint) => (
+    <>
+      <span class="kb-tacan">{tacanFix(mission, w)}</span> · INS {ddm(w)}
+      {w.elevFt !== undefined && <> · ELEV {lb(w.elevFt)}{w.elevSource === 'dem' ? '≈' : ''}</>}
+    </>
+  )
   return (
-    <div class="kb-page kb-map">
+    <div class="kb-page kb-leg">
       <div class="kb-title">
         <span>{mission.mission.name}</span>
-        <span class="kb-pageno">ROUTE MAP</span>
+        <span class="kb-pageno">LEG {to}/{rows.length - 1}</span>
       </div>
-      <div class="kb-line">
-        <span>{rows[0].wp.name} to {last.wp.name}</span>
-        <span><b>{Math.round(last.totalNm)}</b> nm</span>
-        <span>Legs <b>MC°</b> magnetic, <b>nm</b></span>
+      <div class="kb-legname">
+        <span>{to - 1} {from.wp.name}{tags(from.wp)}</span> <span class="kb-arrow">→</span> <span><b>{to} {r.wp.name}</b>{tags(r.wp)}</span>
       </div>
-      <svg class="kb-chart" viewBox={`0 0 ${CHART_W} ${CHART_H}`} dangerouslySetInnerHTML={{ __html: chart.svg }} />
+      <div class="kb-legdata">
+        <div><small>MC</small><b>{heading3(leg.magCourse)}°</b></div>
+        <div><small>MH</small><b>{heading3(leg.magHeading)}°</b></div>
+        <div><small>DIST</small><b>{leg.nm.toFixed(1)}</b></div>
+        <div><small>GS / TAS</small><b>{Math.round(leg.gs)}</b><i>/{Math.round(leg.tas)}</i></div>
+        <div><small>ETE</small><b>{duration(leg.ete)}</b></div>
+        <div><small>{r.eta === null ? 'ELAPSED' : 'ETA'}</small><b>{r.eta === null ? duration(r.elapsed) : clock(r.eta)}</b></div>
+        <div><small>ALT</small><b class="kb-alt"><AltCell wp={r.wp} /></b></div>
+        <div class={low}><small>FUEL AT {to}</small><b>{lb(r.fuelRemaining)}</b></div>
+      </div>
+      <div class="kb-strip"><small>TO {to}</small> {fix(r.wp)}</div>
+      {r.loiter && (
+        <div class="kb-strip"><small>LOITER</small> {duration(r.loiter.min)} {r.loiter.phase ? r.loiter.phase.short : `${lb(r.loiter.ff)} lb/hr`},
+          out with {lb(r.fuelAfter)} lb{s.takeoff === undefined ? '' : ` at ${clock(s.takeoff + r.elapsedAfter * 60)}`}</div>
+      )}
+      <svg class="kb-chart" viewBox={`0 0 ${STRIP_W} ${STRIP_H}`} dangerouslySetInnerHTML={{ __html: strip.svg }} />
+      <div class="kb-strip"><small>FROM {to - 1}</small> {fix(from.wp)}</div>
       <div class="kb-foot">
-        ○ waypoint · ■ TGT · ● IP/CAP/EP · ▲ SAM/AAA with approx. max range ring · □ target/range · ⬡ TACAN · ⊖ airfield ·
-        grey = mission drawings
+        Course up · ticks every {strip.tickNm} nm: nm to go and time from {from.wp.name} on the left, TACAN radial/DME on the right ·
+        ▲ SAM/AAA, dashed ring approx. max range · ⬡ TACAN · ⊖ airfield · grey = mission drawings
       </div>
     </div>
   )

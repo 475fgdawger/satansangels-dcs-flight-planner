@@ -184,12 +184,17 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-chart .ch-frame { fill: none; stroke: #000; stroke-width: 1.5; }
 .kb-chart .ch-grid { stroke: #000; stroke-width: 0.5; opacity: 0.25; }
 .kb-chart .ch-gl { font-size: 10px; fill: #333; }
-.kb-chart .ch-route { fill: none; stroke: #000; stroke-width: 3; stroke-linejoin: round; }
+.kb-chart .ch-route { fill: none; stroke: #000; stroke-width: 4; stroke-linejoin: round; }
+.kb-chart .ch-other { stroke: #000; stroke-width: 1.5; stroke-dasharray: 8 5; opacity: 0.6; }
+.kb-chart .ch-tick { stroke: #000; stroke-width: 2.5; }
+.kb-chart .ch-togo { font-size: 15px; font-weight: 700; }
+.kb-chart .ch-time { font-size: 11px; fill: #333; }
+.kb-chart .ch-fix { font-size: 12px; font-family: 'Consolas', 'Courier New', monospace; font-weight: 700; }
 .kb-chart .ch-wp { fill: #fff; stroke: #000; stroke-width: 2.5; }
 .kb-chart .ch-fill { fill: #000; }
 .kb-chart .ch-wpn { font-size: 12px; font-weight: 700; stroke: none; }
 .kb-chart .ch-wpn.inv { fill: #fff; }
-.kb-chart .ch-wpl { font-size: 13px; font-weight: 700; }
+.kb-chart .ch-wpl { font-size: 15px; font-weight: 700; }
 .kb-chart .ch-leg { font-size: 14px; font-weight: 700; font-family: 'Consolas', 'Courier New', monospace; }
 .kb-chart .ch-threat { fill: none; stroke: #000; stroke-width: 1.2; stroke-dasharray: 7 5; }
 .kb-chart .ch-ring { font-size: 11px; font-style: italic; }
@@ -207,6 +212,17 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-chart .ch-box { fill: #fff; stroke: #000; stroke-width: 1; }
 .kb-chart .ch-north { fill: #000; }
 .kb-chart .ch-scale { fill: none; stroke: #000; stroke-width: 2; }
+.kb-legname { font-size: 20px; margin: 8px 0 6px; }
+.kb-legname .kb-arrow { margin: 0 6px; }
+.kb-legdata { display: grid; grid-template-columns: repeat(8, auto); border: 2px solid #000; margin-bottom: 6px; }
+.kb-legdata > div { padding: 3px 6px; border-right: 1px solid #000; display: flex; flex-direction: column; }
+.kb-legdata > div:last-child { border-right: none; }
+.kb-legdata small { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #333; }
+.kb-legdata b { font-size: 20px; }
+.kb-legdata i { font-style: normal; font-size: 13px; }
+.kb-legdata .kb-alt { font-size: 17px; }
+.kb-legdata .joker { background: var(--joker); }
+.kb-legdata .bingo { background: var(--bingo); }
 .kb-warn { border: 2px solid #000; padding: 4px 6px; font-weight: 700; font-size: 13px; margin-top: 4px; }
 .kb-foot { margin-top: auto; font-size: 11px; color: #333; border-top: 1px solid #000; padding-top: 4px; }
 
