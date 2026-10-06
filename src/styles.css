@@ -270,3 +270,10 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .map-drawtext { position: relative; }
 .map-drawtext span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-weight: 700;
   font-family: system-ui, sans-serif; line-height: 1.2; text-align: center; text-shadow: 0 0 3px rgba(255, 255, 255, 0.8); }
+
+/* Title block and saved routes */
+.title-block { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); margin-bottom: 12px; }
+.library td { vertical-align: middle; }
+.library-actions { white-space: nowrap; text-align: right; }
+.library-actions button { margin-left: 4px; }
+.grid .span2 { grid-column: span 2; }

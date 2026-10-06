@@ -166,6 +166,15 @@ export interface PlanSettings {
   bingoOverride?: number
   /** Pop-up attack numbers; unset = defaults. */
   popup?: PopupSettings
+  /** Title block on the kneeboard pages; unset = the mission name. */
+  title?: string
+  /** Flight callsign for the title block, e.g. "Satan 1". */
+  callsign?: string
+}
+
+/** The title shown on the kneeboard pages. */
+export function planTitle(missionName: string, s: PlanSettings): string {
+  return s.title?.trim() || missionName
 }
 
 export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSettings {
