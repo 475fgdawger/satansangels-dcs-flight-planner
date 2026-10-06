@@ -4,14 +4,15 @@ import { loadTerrain } from './terrain'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, WAYPOINT_TAGS, altAgl, altMsl, attackRun, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
+import { AIRCRAFT, WAYPOINT_TAGS, altAgl, altMsl, attackRun, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
   type PlanSettings, type Waypoint } from '../nav/plan'
 import { Kneeboard } from './Kneeboard'
 import { PopupPanel } from './Popup'
 import { MapPanel } from './MapPanel'
 import { defaultPopup, popupAttack } from '../nav/popup'
 import { lookupElevations } from '../nav/elevation'
-import { decodePlan, encodePlan, planFromHash, SHARE_KEY } from '../nav/share'
+import { decodePlan, encodePlan, planFromHash, SHARE_KEY, type SharedPlan } from '../nav/share'
+import { LibraryPanel } from './Library'
 
 const STORAGE_KEY = 'flightplanner.v2'
 
@@ -79,7 +80,30 @@ export function App() {
       .catch(() => setMissions([]))
   }, [])
 
-  // A shared link (#plan=...) opens that plan, loading its mission from the site when needed.
+  /** Opens a shared or saved plan, loading its mission from the site when it isn't the one open. */
+  async function openPlan(plan: SharedPlan, what: string): Promise<boolean> {
+    if (route.length > 0 && !confirm(`Open ${what}? It replaces your current route.`)) return false
+    let m = mission
+    if (!m || m.mission.name !== plan.mission.name || m.mission.theatre !== plan.mission.theatre) {
+      try {
+        const list: MissionEntry[] = await (await fetch('./data/missions/index.json')).json()
+        const e = list.find((x) => x.name === plan.mission.name && x.theatre === plan.mission.theatre)
+        if (!e) throw new Error()
+        m = parseMission(await (await fetch(`./data/missions/${encodeURIComponent(e.file)}`)).json())
+      } catch {
+        setError(`That plan is for ${plan.mission.name} (${plan.mission.theatre}), which isn't on the site. `
+          + 'Open its target list JSON, then try again.')
+        return false
+      }
+    }
+    setMission(m)
+    setRoute(refreshElevations(m, plan.route))
+    setSettings(plan.settings)
+    setError(null)
+    return true
+  }
+
+  // A shared link (#plan=...) opens that plan.
   const [shareMsg, setShareMsg] = useState<string | null>(null)
   useEffect(() => {
     const text = planFromHash(location.hash)
@@ -88,31 +112,17 @@ export function App() {
     ;(async () => {
       const plan = await decodePlan(text)
       if (!plan) { setError('That share link is damaged or from a newer version of the planner.'); return }
-      if (route.length > 0 && !confirm(`Open the shared plan for ${plan.mission.name}? It replaces your current route.`)) return
-      let m = mission
-      if (!m || m.mission.name !== plan.mission.name || m.mission.theatre !== plan.mission.theatre) {
-        try {
-          const list: MissionEntry[] = await (await fetch('./data/missions/index.json')).json()
-          const e = list.find((x) => x.name === plan.mission.name && x.theatre === plan.mission.theatre)
-          if (!e) throw new Error()
-          m = parseMission(await (await fetch(`./data/missions/${encodeURIComponent(e.file)}`)).json())
-        } catch {
-          setError(`The shared plan is for ${plan.mission.name} (${plan.mission.theatre}), which isn't on the site. `
-            + 'Open its target list JSON, then open the link again.')
-          return
-        }
-      }
-      setMission(m)
-      setRoute(refreshElevations(m, plan.route))
-      setSettings(plan.settings)
-      setError(null)
-      setShareMsg(`Opened a shared plan for ${plan.mission.name}.`)
+      if (await openPlan(plan, `the shared plan for ${plan.mission.name}`)) setShareMsg(`Opened a shared plan for ${plan.mission.name}.`)
     })()
   }, [])
 
+  const currentPlan = (): SharedPlan | null => (mission && settings
+    ? { v: 1, mission: { name: mission.mission.name, theatre: mission.mission.theatre }, route, settings } : null)
+
   async function copyShareLink() {
-    if (!mission || !settings) return
-    const text = await encodePlan({ v: 1, mission: { name: mission.mission.name, theatre: mission.mission.theatre }, route, settings })
+    const plan = currentPlan()
+    if (!plan) return
+    const text = await encodePlan(plan)
     const url = `${location.origin}${location.pathname}#${SHARE_KEY}=${text}`
     try {
       await navigator.clipboard.writeText(url)
@@ -129,7 +139,8 @@ export function App() {
       const same = mission?.mission.name === m.mission.name && mission?.mission.theatre === m.mission.theatre
       setMission(m)
       setRoute((r) => (same ? refreshElevations(m, r) : []))
-      setSettings((s) => s ?? defaultSettings('F-4E'))
+      // A different mission starts a new plan, so its title goes too.
+      setSettings((s) => (s ? (same ? s : { ...s, title: undefined }) : defaultSettings('F-4E')))
       setError(null)
     } catch (e) {
       setError((e as Error).message)
@@ -232,9 +243,12 @@ export function App() {
         )}
       </section>
 
+      <LibraryPanel current={currentPlan()} defaultName={mission && settings ? planTitle(mission.mission.name, settings) : ''}
+        onOpen={(p, name) => openPlan(p, `"${name}"`)} />
+
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} route={route} fuel={fuel} onChange={setSettings} />
+          <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} onChange={setSettings} />
           <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
@@ -250,8 +264,8 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, route, fuel, onChange }:
-  { settings: PlanSettings; route: Waypoint[]; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
+  { settings: PlanSettings; missionName: string; route: Waypoint[]; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
   const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
@@ -274,12 +288,26 @@ function SettingsPanel({ settings: s, route, fuel, onChange }:
   return (
     <section class="panel no-print">
       <h2>Flight</h2>
+      <div class="grid title-block">
+        <label class="field">
+          <span>Title</span>
+          <input type="text" value={s.title ?? ''} placeholder={missionName}
+            onInput={(e) => set({ title: (e.target as HTMLInputElement).value || undefined })} />
+          <small>heads every kneeboard page; blank uses the mission name</small>
+        </label>
+        <label class="field">
+          <span>Callsign</span>
+          <input type="text" value={s.callsign ?? ''} placeholder="e.g. Satan 1"
+            onInput={(e) => set({ callsign: (e.target as HTMLInputElement).value || undefined })} />
+          <small>optional</small>
+        </label>
+      </div>
       <div class="grid">
         <label class="field">
           <span>Aircraft</span>
           <select value={s.aircraft}
             onChange={(e) => onChange({ ...defaultSettings((e.target as HTMLSelectElement).value as AircraftId, s.takeoff),
-              windDir: s.windDir, windKt: s.windKt, targetId: s.targetId })}>
+              windDir: s.windDir, windKt: s.windKt, targetId: s.targetId, title: s.title, callsign: s.callsign })}>
             {Object.keys(AIRCRAFT).map((id) => <option value={id}>{id}</option>)}
           </select>
         </label>
@@ -294,7 +322,7 @@ function SettingsPanel({ settings: s, route, fuel, onChange }:
             }} />
           <small>optional; blank leaves T/O and ETA blank</small>
         </label>
-        <label class="field">
+        <label class="field span2">
           <span>Fuel load</span>
           <select value={load ? String(load.lb) : 'custom'}
             onChange={(e) => {
@@ -310,7 +338,7 @@ function SettingsPanel({ settings: s, route, fuel, onChange }:
         {field('AB takeoff', 'abTakeoffMin', 'min, full AB to 400 kt')}
         {field('MIL climb', 'climbMin', 'min, start of first leg')}
         {field('Cruise TAS', 'tas', 'kt')}
-        <label class="field">
+        <label class="field span2">
           <span>Default phase</span>
           <select value={s.phase} onChange={(e) => set({ phase: (e.target as HTMLSelectElement).value as PhaseId })}>
             {a.phases.map((p) => <option value={p.id}>{p.label} ({p.ff.toLocaleString('en-US')} lb/hr)</option>)}
