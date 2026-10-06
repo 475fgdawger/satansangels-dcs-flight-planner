@@ -4,6 +4,7 @@
 // rings, targets, airfields, TACANs and the mission editor drawings. Drawn as SVG (no map tiles), so
 // it prints and exports like the rest of the kneeboard.
 
+import { heading3 } from './format'
 import { direct, inverse } from './geodesy'
 import { airfields, fixStations, tacanFixFrom } from './mission'
 import { dcsColor, threatRing } from './map'
@@ -31,8 +32,10 @@ const END_PAD = 70
 // A short leg still shows this much either side of it.
 const MIN_WIDTH_NM = 24
 
-interface Projection {
+export interface Projection {
   xy: (p: LatLon) => { x: number; y: number }
+  /** Inverse of xy: the lat/lon under a page point. */
+  ll: (x: number, y: number) => LatLon
   nmPerPx: number
   /** Clockwise screen rotation of true north from straight up, radians. */
   turn: number
@@ -54,8 +57,12 @@ function courseUp(a: LatLon, b: LatLon, w: number, h: number): Projection {
     const { e, n } = local(p)
     return { x: w / 2 + (e * cos - n * sin) / nmPerPx, y: h / 2 - (e * sin + n * cos) / nmPerPx }
   }
+  const ll = (x: number, y: number): LatLon => {
+    const u = (x - w / 2) * nmPerPx, v = (h / 2 - y) * nmPerPx
+    return { lat: c.lat + (-u * sin + v * cos) / 60, lon: c.lon + (u * cos + v * sin) / 60 / k }
+  }
   // Course up turns the chart left by the course, so north points at minus the course.
-  return { xy, nmPerPx, turn: -Math.atan2(sin, cos) }
+  return { xy, ll, nmPerPx, turn: -Math.atan2(sin, cos) }
 }
 
 /** A round tick spacing giving about six ticks along the leg. */
@@ -82,6 +89,16 @@ class Labels {
   reserve(x0: number, y0: number, x1: number, y1: number) {
     this.boxes.push({ x0, y0, x1, y1 })
   }
+  /** The first of the boxes that is on the page and clear of everything placed, reserved; or null. */
+  placeBox(candidates: { x0: number; y0: number; x1: number; y1: number }[]) {
+    for (const b of candidates) {
+      if (b.x0 < 2 || b.y0 < 2 || b.x1 > this.w - 2 || b.y1 > this.h - 2) continue
+      if (this.boxes.some((o) => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0)) continue
+      this.boxes.push(b)
+      return b
+    }
+    return null
+  }
   /** Try the label at each offset in turn; returns where it fits, or null. */
   place(x: number, y: number, text: string, size: number, offsets: [number, number, Anchor][]) {
     const tw = text.length * size * 0.58, th = size
@@ -101,8 +118,17 @@ class Labels {
 const AROUND = (d: number): [number, number, Anchor][] =>
   [[d, 4, 'start'], [-d, 4, 'end'], [0, -d, 'middle'], [0, d + 9, 'middle'], [d, -d, 'start'], [-d, -d, 'end'], [d, d + 6, 'start'], [-d, d + 6, 'end']]
 
-/** The strip map for the leg ending at rows[to], as SVG markup for a width x height viewBox. */
-export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, height: h }: ChartOptions): Strip {
+/** The page projection of the strip for the leg ending at rows[to] (for drawing a terrain background). */
+export function stripProjection(rows: Row[], to: number, { width, height }: ChartOptions): Projection {
+  return courseUp(rows[to - 1].wp, rows[to].wp, width, height)
+}
+
+/**
+ * The strip map for the leg ending at rows[to], as SVG markup for a width x height viewBox. background is
+ * an image (a data URL) drawn under everything, the size of the page: the terrain shading.
+ */
+export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, height: h }: ChartOptions,
+  background?: string): Strip {
   const leg = rows[to]?.leg
   if (!leg || to < 1) throw new Error(`no leg into waypoint ${to}`)
   const route = rows.map((r) => r.wp)
@@ -168,6 +194,19 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
     const name = `${wp.name}${extra.length ? ` ${extra.join('/')}` : ''}`
     const lab = labels.place(p.x, p.y, name, own ? 15 : 12, AROUND(half + 5))
     if (lab) text.push(`<text class="${own ? 'ch-wpl' : 'ch-pl'}" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
+  }
+
+  // Magnetic heading and leg distance boxed beside the start of the leg, where the turn onto it is flown.
+  const mh = `MH ${heading3(leg.magHeading)}°`, dist = `${leg.nm.toFixed(1)} nm`
+  const bw = Math.max(mh.length * 19 * 0.6, dist.length * 15 * 0.58) + 14, bh = 46
+  const box = labels.placeBox([pa.y - 22, pa.y - 70, pa.y + 18].flatMap((bottom) => [
+    { x0: pa.x + 16, y0: bottom - bh, x1: pa.x + 16 + bw, y1: bottom },
+    { x0: pa.x - 16 - bw, y0: bottom - bh, x1: pa.x - 16, y1: bottom },
+  ]))
+  if (box) {
+    top.push(`<rect class="ch-legbox" x="${f(box.x0)}" y="${f(box.y0)}" width="${f(bw)}" height="${bh}"/>`)
+    text.push(`<text class="ch-mh" x="${f(box.x0 + 7)}" y="${f(box.y0 + 20)}">${mh}</text>`,
+      `<text class="ch-dist" x="${f(box.x0 + 7)}" y="${f(box.y0 + 39)}">${dist}</text>`)
   }
 
   // Ticks along the leg: nm to go and time from the start of the leg on the left, a TACAN
@@ -250,7 +289,9 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
 
   const svg = [
     `<defs><clipPath id="ch-clip-${to}"><rect width="${w}" height="${h}"/></clipPath></defs>`,
-    `<g clip-path="url(#ch-clip-${to})">`, ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
+    `<g clip-path="url(#ch-clip-${to})">`,
+    ...(background ? [`<image href="${background}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"/>`] : []),
+    ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
     `<rect class="ch-frame" x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}"/>`,
   ].join('')
   return { svg, nmPerPx, tickNm }

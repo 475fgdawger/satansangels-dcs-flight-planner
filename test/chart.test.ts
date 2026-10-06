@@ -60,6 +60,16 @@ describe('kneeboard leg strip', () => {
     expect(target).toMatch(/<rect class="ch-wp ch-fill" x="[\d.-]+" y="[\d.-]+" width="[\d.]+" height="20"\/>/)
   })
 
+  it.each([1, 2, 3, 4, 5])('leg into %i has MH and distance boxed near its start', (to) => {
+    const { svg } = legStrip(m, rows, to, { width: W, height: H })
+    const leg = rows[to].leg!
+    const mh = new RegExp(`class="ch-mh" x="[\\d.-]+" y="([\\d.-]+)">MH ${String(Math.round(leg.magHeading) % 360 || 360).padStart(3, '0')}°<`).exec(svg)
+    expect(mh).not.toBeNull()
+    expect(svg).toContain(`>${leg.nm.toFixed(1)} nm<`)
+    const start = Number(/class="ch-route" x1="[\d.-]+" y1="([\d.-]+)"/.exec(svg)![1])
+    expect(Math.abs(Number(mh![1]) - start)).toBeLessThan(100)
+  })
+
   it('turns true north with the course', () => {
     // Leg 1 is flown about 127 magnetic / 132 true: north points up and to the left.
     const { svg } = legStrip(m, rows, 1, { width: W, height: H })
