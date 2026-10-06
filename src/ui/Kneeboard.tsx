@@ -1,4 +1,4 @@
-import { useRef, useState } from 'preact/hooks'
+import { useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
@@ -6,7 +6,9 @@ import { altAgl, altMsl, departureFuel, phaseOf, type AttackRun, type Waypoint, 
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
-import { legStrip } from '../nav/chart'
+import { legStrip, stripProjection } from '../nav/chart'
+import { maxElevationNear, shadeTerrain, type TerrainGrid } from '../nav/terrain'
+import { shadingImage } from './terrain'
 
 // DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
@@ -20,9 +22,9 @@ const LOITER_ROW = 0.4
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
 /** The nav log as one or more kneeboard pages, with PNG and PDF export. */
-export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
+export function Kneeboard({ mission, rows, settings: s, fuel, run, attack, terrain }: {
   mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null
-  run: AttackRun | null; attack: PopupResult | null
+  run: AttackRun | null; attack: PopupResult | null; terrain: TerrainGrid | null
 }) {
   const pagesRef = useRef<HTMLDivElement>(null)
   const [busy, setBusy] = useState<string | null>(null)
@@ -91,7 +93,7 @@ export function Kneeboard({ mission, rows, settings: s, fuel, run, attack }: {
           <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
-        {rows.map((r, i) => r.leg && i > 0 && <LegPage key={`leg${r.wp.id}`} mission={mission} rows={rows} to={i} settings={s} fuel={fuel} />)}
+        {rows.map((r, i) => r.leg && i > 0 && <LegPage key={`leg${r.wp.id}`} mission={mission} rows={rows} to={i} settings={s} fuel={fuel} terrain={terrain} />)}
         {run && attack && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
       </div>
     </section>
@@ -200,14 +202,26 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
 // The strip fills the page between the leg data and the from-waypoint line.
 const STRIP_W = PAGE_W - 44
 const STRIP_H = 764
+// Corridor either side of a leg for its highest-terrain figure.
+const TERRAIN_CLEAR_NM = 5
 
 /** One leg as a course-up strip map, with the numbers to fly it. Follows the nav log pages. */
-function LegPage({ mission, rows, to, settings: s, fuel }: {
+function LegPage({ mission, rows, to, settings: s, fuel, terrain }: {
   mission: MissionExport; rows: Row[]; to: number; settings: PlanSettings; fuel: FuelPlan | null
+  terrain: TerrainGrid | null
 }) {
   const r = rows[to], leg = r.leg!
   const from = rows[to - 1]
-  const strip = legStrip(mission, rows, to, { width: STRIP_W, height: STRIP_H })
+  const size = { width: STRIP_W, height: STRIP_H }
+  // Terrain only changes with the leg's ends, so moving other waypoints doesn't redraw it.
+  const ground = useMemo(() => {
+    if (!terrain) return null
+    const p = stripProjection(rows, to, size)
+    const shading = shadeTerrain(terrain, p.ll, STRIP_W, STRIP_H, p.nmPerPx, p.turn)
+    return { image: shadingImage(shading, STRIP_W, STRIP_H), contourFt: shading.contourFt,
+      maxFt: maxElevationNear(terrain, from.wp, r.wp, TERRAIN_CLEAR_NM) }
+  }, [terrain, from.wp.lat, from.wp.lon, r.wp.lat, r.wp.lon])
+  const strip = legStrip(mission, rows, to, size, ground?.image)
   const lb = (n: number) => Math.round(n).toLocaleString('en-US')
   const low = !fuel ? '' : r.fuelRemaining < fuel.bingo ? 'bingo' : r.fuelRemaining < fuel.joker ? 'joker' : ''
   const tags = (w: Waypoint) => w.tags?.map((t) => <span key={t} class="tag">{t}</span>)
@@ -235,6 +249,7 @@ function LegPage({ mission, rows, to, settings: s, fuel }: {
         <div><small>{r.eta === null ? 'ELAPSED' : 'ETA'}</small><b>{r.eta === null ? duration(r.elapsed) : clock(r.eta)}</b></div>
         <div><small>ALT</small><b class="kb-alt"><AltCell wp={r.wp} /></b></div>
         <div class={low}><small>FUEL AT {to}</small><b>{lb(r.fuelRemaining)}</b></div>
+        {ground?.maxFt != null && <div><small>TERR ±{TERRAIN_CLEAR_NM}</small><b>{lb(ground.maxFt)}</b></div>}
       </div>
       <div class="kb-strip"><small>TO {to}</small> {fix(r.wp)}</div>
       {r.loiter && (
@@ -245,7 +260,8 @@ function LegPage({ mission, rows, to, settings: s, fuel }: {
       <div class="kb-strip"><small>FROM {to - 1}</small> {fix(from.wp)}</div>
       <div class="kb-foot">
         Course up · ticks every {strip.tickNm} nm: nm to go and time from {from.wp.name} on the left, TACAN radial/DME on the right ·
-        ▲ SAM/AAA, dashed ring approx. max range · ⬡ TACAN · ⊖ airfield · grey = mission drawings
+        ▲ SAM/AAA, dashed ring approx. max range · ⬡ TACAN · ⊖ airfield · outlines = mission drawings
+        {ground && <> · DCS terrain, contours every {lb(ground.contourFt)} ft · TERR = highest ground within {TERRAIN_CLEAR_NM} nm of the leg</>}
       </div>
     </div>
   )

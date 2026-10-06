@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
+import type { TerrainGrid } from '../nav/terrain'
+import { loadTerrain } from './terrain'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
@@ -57,6 +59,16 @@ export function App() {
   useEffect(() => {
     if (mission && settings) save({ mission, route, settings })
   }, [mission, route, settings])
+
+  // DCS's terrain for the mission's theatre, for the strip maps; null until loaded or when there is none.
+  const theatre = mission?.mission.theatre ?? ''
+  const [terrain, setTerrain] = useState<TerrainGrid | null>(null)
+  useEffect(() => {
+    let live = true
+    setTerrain(null)
+    if (theatre) loadTerrain(theatre).then((g) => live && setTerrain(g)).catch(() => live && setTerrain(null))
+    return () => { live = false }
+  }, [theatre])
 
   // Missions the bot has pushed to the site (public/data/missions, listed at build time).
   const [missions, setMissions] = useState<MissionEntry[]>([])
@@ -226,7 +238,7 @@ export function App() {
           <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
-          <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} />
+          <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} terrain={terrain} />
         </>
       )}
     </>

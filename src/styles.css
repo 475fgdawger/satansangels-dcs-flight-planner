@@ -217,7 +217,7 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-chart .ch-scale { fill: none; stroke: #000; stroke-width: 2; }
 .kb-legname { font-size: 20px; margin: 8px 0 6px; }
 .kb-legname .kb-arrow { margin: 0 6px; }
-.kb-legdata { display: grid; grid-template-columns: repeat(8, auto); border: 2px solid #000; margin-bottom: 6px; }
+.kb-legdata { display: grid; grid-auto-flow: column; grid-auto-columns: auto; border: 2px solid #000; margin-bottom: 6px; }
 .kb-legdata > div { padding: 3px 6px; border-right: 1px solid #000; display: flex; flex-direction: column; }
 .kb-legdata > div:last-child { border-right: none; }
 .kb-legdata small { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #333; }
