@@ -386,6 +386,7 @@ function RoutePanel({ mission, route, settings, onChange }:
       </form>
       {hint && <p class="error">{hint}</p>}
       {route.length > 0 && (
+        <div class="route-wrap">
         <table class="route">
           <thead>
             <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
@@ -409,13 +410,15 @@ function RoutePanel({ mission, route, settings, onChange }:
                         const ft = optElev((e.target as HTMLInputElement).value)
                         update(i, { alt: ft === undefined && !w.alt ? undefined : { ref: w.alt?.ref ?? 'msl', ft } })
                       }} />
-                    {(['msl', 'agl'] as const).map((ref) => (
-                      <label key={ref}>
-                        <input type="radio" name={`alt-${w.id}`} checked={(w.alt?.ref ?? 'msl') === ref}
-                          onChange={() => update(i, { alt: { ...w.alt, ref } })} />
-                        {ref.toUpperCase()}
-                      </label>
-                    ))}
+                    <div class="stack">
+                      {(['msl', 'agl'] as const).map((ref) => (
+                        <label key={ref}>
+                          <input type="radio" name={`alt-${w.id}`} checked={(w.alt?.ref ?? 'msl') === ref}
+                            onChange={() => update(i, { alt: { ...w.alt, ref } })} />
+                          {ref.toUpperCase()}
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </td>
                 <td>{i > 0 && (
@@ -428,10 +431,10 @@ function RoutePanel({ mission, route, settings, onChange }:
                     {phases.map((p) => <option value={p.id} title={p.note}>{p.label} ({p.ff.toLocaleString('en-US')})</option>)}
                   </select>
                 )}</td>
-                <td>{i > 0 && <input type="number" value={w.ff ?? ''}
+                <td>{i > 0 && <input type="number" class="num" value={w.ff ?? ''}
                   placeholder={String(phaseOf(settings.aircraft, w.phase ?? settings.phase).ff)}
                   onInput={(e) => update(i, { ff: optNum((e.target as HTMLInputElement).value) })} />}</td>
-                <td>{i > 0 && <input type="number" placeholder={String(settings.tas)} value={w.tas ?? ''}
+                <td>{i > 0 && <input type="number" class="num" placeholder={String(settings.tas)} value={w.tas ?? ''}
                   onInput={(e) => update(i, { tas: optNum((e.target as HTMLInputElement).value) })} />}</td>
                 <td>{i > 0 && (
                   <div class="loiter">
@@ -466,15 +469,18 @@ function RoutePanel({ mission, route, settings, onChange }:
                     ))}
                   </div>
                 </td>
-                <td class="actions">
-                  <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>
-                  <button type="button" title="Move down" onClick={() => move(i, 1)}>↓</button>
-                  <button type="button" title="Remove" onClick={() => onChange(route.filter((_, j) => j !== i))}>✕</button>
+                <td>
+                  <div class="actions">
+                    <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>
+                    <button type="button" title="Move down" onClick={() => move(i, 1)}>↓</button>
+                    <button type="button" title="Remove" onClick={() => onChange(route.filter((_, j) => j !== i))}>✕</button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
       )}
       {route.length > 0 && (
         <div class="row">
