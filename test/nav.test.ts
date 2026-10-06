@@ -3,7 +3,7 @@ import raw from './fixtures/targets_syria.json'
 import { direct, inverse } from '../src/nav/geodesy'
 import { compass16, ddm, dms, duration, heading3, parseClock, parseLatLon } from '../src/nav/format'
 import { airfields, catalog, magVarAt, nearRef, parseMission, parseTacanFix, runwayPairs, tacanFix } from '../src/nav/mission'
-import { AIRCRAFT, computeRows, defaultSettings, departureFuel, fuelPlan, windTriangle, type Waypoint } from '../src/nav/plan'
+import { AIRCRAFT, altAgl, altMsl, computeRows, defaultSettings, departureFuel, fuelPlan, windTriangle, type Waypoint } from '../src/nav/plan'
 
 const m = parseMission(raw)
 
@@ -191,5 +191,26 @@ describe('legs', () => {
   it('bingo never drops below the floor', () => {
     const near: Waypoint[] = [route[0], { ...route[0], id: 'x', lat: inc.lat + 0.1 }, { ...route[0], id: 'y' }]
     expect(fuelPlan(near, defaultSettings('F-4E', 0))!.bingo).toBe(AIRCRAFT['F-4E'].bingoFloor)
+  })
+})
+
+describe('altitude', () => {
+  const wp = (alt: Waypoint['alt'], elevFt?: number): Waypoint => ({ id: 'a', name: 'A', source: 'manual', lat: 35, lon: 36, alt, elevFt })
+
+  it('MSL as typed, AGL from the elevation', () => {
+    expect(altMsl(wp({ ft: 5000, ref: 'msl' }, 1200))).toBe(5000)
+    expect(altAgl(wp({ ft: 5000, ref: 'msl' }, 1200))).toBe(3800)
+  })
+
+  it('AGL as typed, MSL from the elevation', () => {
+    expect(altAgl(wp({ ft: 500, ref: 'agl' }, 1220))).toBe(500)
+    expect(altMsl(wp({ ft: 500, ref: 'agl' }, 1220))).toBe(1720)
+  })
+
+  it('no elevation or no altitude leaves the conversion blank', () => {
+    expect(altMsl(wp({ ft: 500, ref: 'agl' }))).toBeUndefined()
+    expect(altAgl(wp({ ft: 500, ref: 'msl' }))).toBe(undefined)
+    expect(altMsl(wp({ ref: 'msl' }, 100))).toBeUndefined()
+    expect(altMsl(wp(undefined, 100))).toBeUndefined()
   })
 })
