@@ -199,8 +199,8 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-chart .ch-wpn.inv { fill: #fff; }
 .kb-chart .ch-wpl { font-size: 15px; font-weight: 700; }
 .kb-chart .ch-leg { font-size: 14px; font-weight: 700; font-family: 'Consolas', 'Courier New', monospace; }
-.kb-chart .ch-threat { fill: none; stroke: #000; stroke-width: 1.2; stroke-dasharray: 7 5; }
-.kb-chart .ch-ring { font-size: 11px; font-style: italic; }
+.kb-chart .ch-threat { fill: none; stroke: #d0021b; stroke-width: 1.8; stroke-dasharray: 7 5; }
+.kb-chart .ch-ring { font-size: 11px; font-style: italic; fill: #b0001a; }
 .kb-chart .ch-tg { fill: #000; }
 .kb-chart .ch-tg.open { fill: #fff; stroke: #000; stroke-width: 1.5; }
 .kb-chart .ch-af { fill: #fff; stroke: #000; stroke-width: 1.5; }
