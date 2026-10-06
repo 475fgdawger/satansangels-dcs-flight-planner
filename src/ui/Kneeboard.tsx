@@ -1,3 +1,4 @@
+import { Fragment } from 'preact'
 import { useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
@@ -94,8 +95,13 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
           <Page key={p} mission={mission} all={rows} rows={pg.rows} first={pg.first}
             page={p + 1} pageCount={pages.length} settings={s} fuel={fuel} />
         ))}
-        {rows.map((r, i) => r.leg && i > 0 && <LegPage key={`leg${r.wp.id}`} mission={mission} rows={rows} to={i} settings={s} fuel={fuel} />)}
-        {run && attack && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
+        {/* Leg pages in route order, with the pop-up attack card between the leg to the IP and the IP-to-target leg. */}
+        {rows.map((r, i) => r.leg && i > 0 && (
+          <Fragment key={`leg${r.wp.id}`}>
+            {run && attack && i === run.tgt && <AttackPage mission={mission} rows={rows} run={run} attack={attack} />}
+            <LegPage mission={mission} rows={rows} to={i} settings={s} fuel={fuel} />
+          </Fragment>
+        ))}
       </div>
     </section>
   )
