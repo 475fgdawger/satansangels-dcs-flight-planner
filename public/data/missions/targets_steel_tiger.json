@@ -1,0 +1,4409 @@
+{
+ "schema": 1,
+ "mission": {
+  "name": "Operation Steel Tiger",
+  "file": "Vietnam_Operation Steel Tiger_v2.miz",
+  "theatre": "Caucasus",
+  "date": "1965-07-01",
+  "start_time": 23400
+ },
+ "built_utc": "2026-10-06T12:00:25Z",
+ "mag_var": {
+  "source": "DCS",
+  "fallback": 6.0
+ },
+ "tacans": [
+  {
+   "id": "BTM",
+   "chan": "16X",
+   "lat": 41.610899,
+   "lon": 41.600419,
+   "mag_var": 4.64,
+   "elev_ft": 33
+  },
+  {
+   "id": "GTB",
+   "chan": "25X",
+   "lat": 41.670577,
+   "lon": 44.930298,
+   "mag_var": 4.96,
+   "elev_ft": 1588
+  }
+ ],
+ "targets": [
+  {
+   "name": "Alpha Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.533811,
+   "lon": 44.09399,
+   "mag_var": 5.13,
+   "latlon": "N42°32'02\" E044°05'38\"",
+   "tacan": "BTM 058/124, GTB 320/64",
+   "near": "27 nm NNE of LZ Stud",
+   "line": "Alpha Bridge, N42°32'02\" E044°05'38\", BTM 058/124, GTB 320/64, 27 nm NNE of LZ Stud",
+   "elev_ft": 4655
+  },
+  {
+   "name": "Bravo Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.287486,
+   "lon": 43.952532,
+   "mag_var": 5.05,
+   "latlon": "N42°17'15\" E043°57'09\"",
+   "tacan": "BTM 064/113, GTB 306/57",
+   "near": "11 nm N of LZ Stud",
+   "line": "Bravo Bridge, N42°17'15\" E043°57'09\", BTM 064/113, GTB 306/57, 11 nm N of LZ Stud",
+   "elev_ft": 2978
+  },
+  {
+   "name": "Charlie Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.230586,
+   "lon": 43.978429,
+   "mag_var": 5.04,
+   "latlon": "N42°13'50\" E043°58'42\"",
+   "tacan": "BTM 065/113, GTB 304/54",
+   "near": "8 nm NNE of LZ Stud",
+   "line": "Charlie Bridge, N42°13'50\" E043°58'42\", BTM 065/113, GTB 304/54, 8 nm NNE of LZ Stud",
+   "elev_ft": 2785
+  },
+  {
+   "name": "Delta Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.221019,
+   "lon": 43.979454,
+   "mag_var": 5.03,
+   "latlon": "N42°13'16\" E043°58'46\"",
+   "tacan": "BTM 066/113, GTB 303/54",
+   "near": "8 nm NNE of LZ Stud",
+   "line": "Delta Bridge, N42°13'16\" E043°58'46\", BTM 066/113, GTB 303/54, 8 nm NNE of LZ Stud",
+   "elev_ft": 2785
+  },
+  {
+   "name": "Echo Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.197272,
+   "lon": 43.959823,
+   "mag_var": 5.02,
+   "latlon": "N42°11'50\" E043°57'35\"",
+   "tacan": "BTM 066/111, GTB 301/54",
+   "near": "6 nm NNE of LZ Stud",
+   "line": "Echo Bridge, N42°11'50\" E043°57'35\", BTM 066/111, GTB 301/54, 6 nm NNE of LZ Stud",
+   "elev_ft": 2784
+  },
+  {
+   "name": "Foxtrot Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.191557,
+   "lon": 43.985996,
+   "mag_var": 5.02,
+   "latlon": "N42°11'30\" E043°59'10\"",
+   "tacan": "BTM 067/112, GTB 302/53",
+   "near": "6 nm NNE of LZ Stud",
+   "line": "Foxtrot Bridge, N42°11'30\" E043°59'10\", BTM 067/112, GTB 302/53, 6 nm NNE of LZ Stud",
+   "elev_ft": 2771
+  },
+  {
+   "name": "Golf One Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.162305,
+   "lon": 43.965975,
+   "mag_var": 5.01,
+   "latlon": "N42°09'44\" E043°57'58\"",
+   "tacan": "BTM 067/111, GTB 300/52",
+   "near": "4 nm NNE of LZ Stud",
+   "line": "Golf One Bridge, N42°09'44\" E043°57'58\", BTM 067/111, GTB 300/52, 4 nm NNE of LZ Stud",
+   "elev_ft": 2514
+  },
+  {
+   "name": "Golf Two Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.163249,
+   "lon": 43.967766,
+   "mag_var": 5.02,
+   "latlon": "N42°09'48\" E043°58'04\"",
+   "tacan": "BTM 067/111, GTB 300/52",
+   "near": "5 nm NNE of LZ Stud",
+   "line": "Golf Two Bridge, N42°09'48\" E043°58'04\", BTM 067/111, GTB 300/52, 5 nm NNE of LZ Stud",
+   "elev_ft": 2517
+  },
+  {
+   "name": "Hotel Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.154799,
+   "lon": 44.003496,
+   "mag_var": 5.02,
+   "latlon": "N42°09'17\" E044°00'13\"",
+   "tacan": "BTM 068/113, GTB 300/51",
+   "near": "5 nm NE of LZ Stud",
+   "line": "Hotel Bridge, N42°09'17\" E044°00'13\", BTM 068/113, GTB 300/51, 5 nm NE of LZ Stud",
+   "elev_ft": 2463
+  },
+  {
+   "name": "India Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.135885,
+   "lon": 43.982961,
+   "mag_var": 5.01,
+   "latlon": "N42°08'09\" E043°58'59\"",
+   "tacan": "BTM 068/111, GTB 299/51",
+   "near": "4 nm NE of LZ Stud",
+   "line": "India Bridge, N42°08'09\" E043°58'59\", BTM 068/111, GTB 299/51, 4 nm NE of LZ Stud",
+   "elev_ft": 2449
+  },
+  {
+   "name": "Juliet Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.09189,
+   "lon": 44.011954,
+   "mag_var": 5.0,
+   "latlon": "N42°05'31\" E044°00'43\"",
+   "tacan": "BTM 070/112, GTB 297/48",
+   "near": "4 nm E of LZ Stud",
+   "line": "Juliet Bridge, N42°05'31\" E044°00'43\", BTM 070/112, GTB 297/48, 4 nm E of LZ Stud",
+   "elev_ft": 2250
+  },
+  {
+   "name": "Kilo Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.055197,
+   "lon": 44.042502,
+   "mag_var": 4.99,
+   "latlon": "N42°03'19\" E044°02'33\"",
+   "tacan": "BTM 071/113, GTB 295/46",
+   "near": "6 nm ESE of LZ Stud",
+   "line": "Kilo Bridge, N42°03'19\" E044°02'33\", BTM 071/113, GTB 295/46, 6 nm ESE of LZ Stud",
+   "elev_ft": 2269
+  },
+  {
+   "name": "Lima Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.989619,
+   "lon": 44.090504,
+   "mag_var": 4.98,
+   "latlon": "N41°59'23\" E044°05'26\"",
+   "tacan": "BTM 073/114, GTB 292/42",
+   "near": "10 nm SE of LZ Stud",
+   "line": "Lima Bridge, N41°59'23\" E044°05'26\", BTM 073/114, GTB 292/42, 10 nm SE of LZ Stud",
+   "elev_ft": 1936
+  },
+  {
+   "name": "Mike Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.983965,
+   "lon": 44.088813,
+   "mag_var": 4.98,
+   "latlon": "N41°59'02\" E044°05'20\"",
+   "tacan": "BTM 073/114, GTB 292/42",
+   "near": "10 nm SE of LZ Stud",
+   "line": "Mike Bridge, N41°59'02\" E044°05'20\", BTM 073/114, GTB 292/42, 10 nm SE of LZ Stud",
+   "elev_ft": 1880
+  },
+  {
+   "name": "November Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.984484,
+   "lon": 44.101121,
+   "mag_var": 4.98,
+   "latlon": "N41°59'04\" E044°06'04\"",
+   "tacan": "BTM 073/114, GTB 292/42",
+   "near": "11 nm SE of LZ Stud",
+   "line": "November Bridge, N41°59'04\" E044°06'04\", BTM 073/114, GTB 292/42, 11 nm SE of LZ Stud",
+   "elev_ft": 1859
+  },
+  {
+   "name": "Oscar Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.989716,
+   "lon": 44.108741,
+   "mag_var": 4.98,
+   "latlon": "N41°59'23\" E044°06'31\"",
+   "tacan": "BTM 073/115, GTB 293/42",
+   "near": "11 nm ESE of LZ Stud",
+   "line": "Oscar Bridge, N41°59'23\" E044°06'31\", BTM 073/115, GTB 293/42, 11 nm ESE of LZ Stud",
+   "elev_ft": 1904
+  },
+  {
+   "name": "Papa Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.990998,
+   "lon": 44.110769,
+   "mag_var": 4.98,
+   "latlon": "N41°59'28\" E044°06'39\"",
+   "tacan": "BTM 073/115, GTB 293/41",
+   "near": "11 nm ESE of LZ Stud",
+   "line": "Papa Bridge, N41°59'28\" E044°06'39\", BTM 073/115, GTB 293/41, 11 nm ESE of LZ Stud",
+   "elev_ft": 1929
+  },
+  {
+   "name": "Quebec Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.962313,
+   "lon": 44.130519,
+   "mag_var": 4.97,
+   "latlon": "N41°57'44\" E044°07'50\"",
+   "tacan": "BTM 074/115, GTB 291/40",
+   "near": "13 nm SE of LZ Stud",
+   "line": "Quebec Bridge, N41°57'44\" E044°07'50\", BTM 074/115, GTB 291/40, 13 nm SE of LZ Stud",
+   "elev_ft": 1872
+  },
+  {
+   "name": "Romeo Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 41.97946,
+   "lon": 44.101284,
+   "mag_var": 4.98,
+   "latlon": "N41°58'46\" E044°06'05\"",
+   "tacan": "BTM 073/114, GTB 292/42",
+   "near": "11 nm SE of LZ Stud",
+   "line": "Romeo Bridge, N41°58'46\" E044°06'05\", BTM 073/114, GTB 292/42, 11 nm SE of LZ Stud",
+   "elev_ft": 1846
+  },
+  {
+   "name": "Sierra Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.463384,
+   "lon": 41.653174,
+   "mag_var": 4.86,
+   "latlon": "N42°27'48\" E041°39'11\"",
+   "tacan": "BTM 358/51, GTB 284/154",
+   "near": "38 nm NNW of Camp Evans",
+   "line": "Sierra Bridge, N42°27'48\" E041°39'11\", BTM 358/51, GTB 284/154, 38 nm NNW of Camp Evans",
+   "elev_ft": 46
+  },
+  {
+   "name": "Uniform Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.533467,
+   "lon": 41.791197,
+   "mag_var": 4.9,
+   "latlon": "N42°32'00\" E041°47'28\"",
+   "tacan": "BTM 004/56, GTB 286/149",
+   "near": "41 nm N of Camp Evans",
+   "line": "Uniform Bridge, N42°32'00\" E041°47'28\", BTM 004/56, GTB 286/149, 41 nm N of Camp Evans",
+   "elev_ft": 263
+  },
+  {
+   "name": "Victor Bridge",
+   "kind": "bridge",
+   "section": "Bridges",
+   "group": null,
+   "lat": 42.5828,
+   "lon": 41.851406,
+   "mag_var": 4.92,
+   "latlon": "N42°34'58\" E041°51'05\"",
+   "tacan": "BTM 006/59, GTB 288/148",
+   "near": "44 nm N of Camp Evans",
+   "line": "Victor Bridge, N42°34'58\" E041°51'05\", BTM 006/59, GTB 288/148, 44 nm N of Camp Evans",
+   "elev_ft": 402
+  },
+  {
+   "name": "HCSAM RED HCM SA2-1",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "HCSAM RED HCM SA2-1",
+   "lat": 42.347195,
+   "lon": 43.90732,
+   "mag_var": 5.06,
+   "latlon": "N42°20'50\" E043°54'26\"",
+   "tacan": "BTM 061/112, GTB 307/61",
+   "near": "15 nm N of LZ Stud",
+   "line": "HCSAM RED HCM SA2-1, N42°20'50\" E043°54'26\", BTM 061/112, GTB 307/61, 15 nm N of LZ Stud",
+   "elev_ft": 3430
+  },
+  {
+   "name": "HCSAM RED HCM SA2-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "HCSAM RED HCM SA2-2",
+   "lat": 41.96684,
+   "lon": 44.154562,
+   "mag_var": 4.98,
+   "latlon": "N41°58'01\" E044°09'16\"",
+   "tacan": "BTM 074/117, GTB 292/39",
+   "near": "1 nm ENE of Quebec Bridge",
+   "line": "HCSAM RED HCM SA2-2, N41°58'01\" E044°09'16\", BTM 074/117, GTB 292/39, 1 nm ENE of Quebec Bridge",
+   "elev_ft": 1842
+  },
+  {
+   "name": "NV_SAM RED 24",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED 24",
+   "lat": 42.586607,
+   "lon": 41.753733,
+   "mag_var": 4.91,
+   "latlon": "N42°35'12\" E041°45'13\"",
+   "tacan": "BTM 002/59, GTB 287/152",
+   "near": "45 nm N of Camp Evans",
+   "line": "NV_SAM RED 24, N42°35'12\" E041°45'13\", BTM 002/59, GTB 287/152, 45 nm N of Camp Evans",
+   "elev_ft": 241
+  },
+  {
+   "name": "NV_SAM RED 73",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED 73",
+   "lat": 44.971005,
+   "lon": 40.983387,
+   "mag_var": 5.47,
+   "latlon": "N44°58'16\" E040°59'00\"",
+   "tacan": "BTM 348/203, GTB 315/263",
+   "near": "91 nm E of Hanoi",
+   "line": "NV_SAM RED 73, N44°58'16\" E040°59'00\", BTM 348/203, GTB 315/263, 91 nm E of Hanoi",
+   "elev_ft": 797
+  },
+  {
+   "name": "NV_SAM RED 76",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED 76",
+   "lat": 44.22677,
+   "lon": 43.073863,
+   "mag_var": 5.52,
+   "latlon": "N44°13'36\" E043°04'26\"",
+   "tacan": "BTM 017/170, GTB 328/174",
+   "near": "90 nm NW of Udorn AB",
+   "line": "NV_SAM RED 76, N44°13'36\" E043°04'26\", BTM 017/170, GTB 328/174, 90 nm NW of Udorn AB",
+   "elev_ft": 1050
+  },
+  {
+   "name": "NV_SAM RED 79",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED 79",
+   "lat": 43.720258,
+   "lon": 43.985219,
+   "mag_var": 5.47,
+   "latlon": "N43°43'13\" E043°59'07\"",
+   "tacan": "BTM 034/165, GTB 337/130",
+   "near": "40 nm NW of Udorn AB",
+   "line": "NV_SAM RED 79, N43°43'13\" E043°59'07\", BTM 034/165, GTB 337/130, 40 nm NW of Udorn AB",
+   "elev_ft": 692
+  },
+  {
+   "name": "NV_SAM RED GelendSA2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED GelendSA2",
+   "lat": 44.57236,
+   "lon": 37.985422,
+   "mag_var": 4.92,
+   "latlon": "N44°34'20\" E037°59'08\"",
+   "tacan": "BTM 315/238, GTB 297/351",
+   "near": "29 nm ENE of Haiphong",
+   "line": "NV_SAM RED GelendSA2, N44°34'20\" E037°59'08\", BTM 315/238, GTB 297/351, 29 nm ENE of Haiphong",
+   "elev_ft": 32
+  },
+  {
+   "name": "NV_SAM RED GudautaSA2-1",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED GudautaSA2-1",
+   "lat": 43.114028,
+   "lon": 40.580212,
+   "mag_var": 4.91,
+   "latlon": "N43°06'50\" E040°34'49\"",
+   "tacan": "BTM 329/101, GTB 291/212",
+   "near": "94 nm NW of Camp Evans",
+   "line": "NV_SAM RED GudautaSA2-1, N43°06'50\" E040°34'49\", BTM 329/101, GTB 291/212, 94 nm NW of Camp Evans",
+   "elev_ft": 72
+  },
+  {
+   "name": "NV_SAM RED Krasno Center SA2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED Krasno Center SA2",
+   "lat": 45.08941,
+   "lon": 38.905971,
+   "mag_var": 5.19,
+   "latlon": "N45°05'22\" E038°54'21\"",
+   "tacan": "BTM 327/240, GTB 305/334",
+   "near": "10 nm S of Hanoi",
+   "line": "NV_SAM RED Krasno Center SA2, N45°05'22\" E038°54'21\", BTM 327/240, GTB 305/334, 10 nm S of Hanoi",
+   "elev_ft": 83
+  },
+  {
+   "name": "NV_SAM RED KrasnoPash SA2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED KrasnoPash SA2",
+   "lat": 45.047759,
+   "lon": 39.183233,
+   "mag_var": 5.22,
+   "latlon": "N45°02'52\" E039°11'00\"",
+   "tacan": "BTM 329/232, GTB 306/323",
+   "near": "18 nm SE of Hanoi",
+   "line": "NV_SAM RED KrasnoPash SA2, N45°02'52\" E039°11'00\", BTM 329/232, GTB 306/323, 18 nm SE of Hanoi",
+   "elev_ft": 104
+  },
+  {
+   "name": "NV_SAM RED NovoSA2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED NovoSA2",
+   "lat": 44.682874,
+   "lon": 37.761594,
+   "mag_var": 4.91,
+   "latlon": "N44°40'58\" E037°45'42\"",
+   "tacan": "BTM 314/250, GTB 297/363",
+   "near": "22 nm NE of Haiphong",
+   "line": "NV_SAM RED NovoSA2, N44°40'58\" E037°45'42\", BTM 314/250, GTB 297/363, 22 nm NE of Haiphong",
+   "elev_ft": 310
+  },
+  {
+   "name": "NV_SAM RED SukhumiSA2-1",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED SukhumiSA2-1",
+   "lat": 42.856241,
+   "lon": 41.135895,
+   "mag_var": 4.91,
+   "latlon": "N42°51'22\" E041°08'09\"",
+   "tacan": "BTM 340/78, GTB 289/183",
+   "near": "68 nm NNW of Camp Evans",
+   "line": "NV_SAM RED SukhumiSA2-1, N42°51'22\" E041°08'09\", BTM 340/78, GTB 289/183, 68 nm NNW of Camp Evans",
+   "elev_ft": 44
+  },
+  {
+   "name": "NV_SAM RED26",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM RED26",
+   "lat": 42.506123,
+   "lon": 41.628918,
+   "mag_var": 4.87,
+   "latlon": "N42°30'22\" E041°37'44\"",
+   "tacan": "BTM 357/54, GTB 285/156",
+   "near": "41 nm NNW of Camp Evans",
+   "line": "NV_SAM RED26, N42°30'22\" E041°37'44\", BTM 357/54, GTB 285/156, 41 nm NNW of Camp Evans",
+   "elev_ft": 39
+  },
+  {
+   "name": "NV_SAM REDSochiSA2-1",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "NV_SAM REDSochiSA2-1",
+   "lat": 43.433563,
+   "lon": 39.953927,
+   "mag_var": 4.91,
+   "latlon": "N43°26'01\" E039°57'14\"",
+   "tacan": "BTM 322/131, GTB 292/245",
+   "near": "119 nm SSE of Hanoi",
+   "line": "NV_SAM REDSochiSA2-1, N43°26'01\" E039°57'14\", BTM 322/131, GTB 292/245, 119 nm SSE of Hanoi",
+   "elev_ft": 104
+  },
+  {
+   "name": "SAM RED DragonSA2-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "SAM RED DragonSA2-2",
+   "lat": 42.46756,
+   "lon": 43.7502,
+   "mag_var": 5.08,
+   "latlon": "N42°28'03\" E043°45'01\"",
+   "tacan": "BTM 057/109, GTB 308/71",
+   "near": "23 nm NNW of LZ Stud",
+   "line": "SAM RED DragonSA2-2, N42°28'03\" E043°45'01\", BTM 057/109, GTB 308/71, 23 nm NNW of LZ Stud",
+   "elev_ft": 5643
+  },
+  {
+   "name": "Firecan D",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D",
+   "lat": 41.65135,
+   "lon": 42.464572,
+   "mag_var": 4.74,
+   "latlon": "N41°39'05\" E042°27'52\"",
+   "tacan": "BTM 082/39, GTB 265/111",
+   "near": "1 nm N of LZ Custer",
+   "line": "Firecan D, N41°39'05\" E042°27'52\", BTM 082/39, GTB 265/111, 1 nm N of LZ Custer",
+   "elev_ft": 5121
+  },
+  {
+   "name": "Firecan D-1",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D-1",
+   "lat": 42.001429,
+   "lon": 44.075101,
+   "mag_var": 4.98,
+   "latlon": "N42°00'05\" E044°04'30\"",
+   "tacan": "BTM 073/113, GTB 293/43",
+   "near": "1 nm NW of Lima Bridge",
+   "line": "Firecan D-1, N42°00'05\" E044°04'30\", BTM 073/113, GTB 293/43, 1 nm NW of Lima Bridge",
+   "elev_ft": 2116
+  },
+  {
+   "name": "Firecan D-13",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D-13",
+   "lat": 41.964762,
+   "lon": 44.157911,
+   "mag_var": 4.98,
+   "latlon": "N41°57'53\" E044°09'28\"",
+   "tacan": "BTM 074/117, GTB 292/39",
+   "near": "1 nm ENE of Quebec Bridge",
+   "line": "Firecan D-13, N41°57'53\" E044°09'28\", BTM 074/117, GTB 292/39, 1 nm ENE of Quebec Bridge",
+   "elev_ft": 1843
+  },
+  {
+   "name": "Firecan D-14",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D-14",
+   "lat": 42.085746,
+   "lon": 44.028428,
+   "mag_var": 5.0,
+   "latlon": "N42°05'09\" E044°01'42\"",
+   "tacan": "BTM 070/113, GTB 297/47",
+   "near": "1 nm ESE of Juliet Bridge",
+   "line": "Firecan D-14, N42°05'09\" E044°01'42\", BTM 070/113, GTB 297/47, 1 nm ESE of Juliet Bridge",
+   "elev_ft": 2206
+  },
+  {
+   "name": "Firecan D-2",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D-2",
+   "lat": 41.783246,
+   "lon": 43.819381,
+   "mag_var": 4.9,
+   "latlon": "N41°47'00\" E043°49'10\"",
+   "tacan": "BTM 079/100, GTB 273/50",
+   "near": "3 nm SSW of LZ Ace",
+   "line": "Firecan D-2, N41°47'00\" E043°49'10\", BTM 079/100, GTB 273/50, 3 nm SSW of LZ Ace",
+   "elev_ft": 6711
+  },
+  {
+   "name": "Firecan D-3",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Firecan D-3",
+   "lat": 42.573841,
+   "lon": 44.119426,
+   "mag_var": 5.14,
+   "latlon": "N42°34'26\" E044°07'10\"",
+   "tacan": "BTM 057/126, GTB 322/65",
+   "near": "30 nm NNE of LZ Stud",
+   "line": "Firecan D-3, N42°34'26\" E044°07'10\", BTM 057/126, GTB 322/65, 30 nm NNE of LZ Stud",
+   "elev_ft": 5678
+  },
+  {
+   "name": "NVAFirecanBattery",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "NVAFirecanBattery",
+   "lat": 45.462846,
+   "lon": 37.810028,
+   "mag_var": 5.11,
+   "latlon": "N45°27'46\" E037°48'36\"",
+   "tacan": "BTM 321/284, GTB 304/385",
+   "near": "47 nm W of Hanoi",
+   "line": "NVAFirecanBattery, N45°27'46\" E037°48'36\", BTM 321/284, GTB 304/385, 47 nm W of Hanoi",
+   "elev_ft": 16
+  },
+  {
+   "name": "Target Fire Can 1",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Target Fire Can 1",
+   "lat": 44.359216,
+   "lon": 38.512677,
+   "mag_var": 4.94,
+   "latlon": "N44°21'33\" E038°30'46\"",
+   "tacan": "BTM 317/214, GTB 297/325",
+   "near": "51 nm E of Haiphong",
+   "line": "Target Fire Can 1, N44°21'33\" E038°30'46\", BTM 317/214, GTB 297/325, 51 nm E of Haiphong",
+   "elev_ft": 11
+  },
+  {
+   "name": "Target Fire Can 1-1",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Target Fire Can 1-1",
+   "lat": 44.359335,
+   "lon": 38.529029,
+   "mag_var": 4.95,
+   "latlon": "N44°21'34\" E038°31'45\"",
+   "tacan": "BTM 317/213, GTB 297/325",
+   "near": "52 nm E of Haiphong",
+   "line": "Target Fire Can 1-1, N44°21'34\" E038°31'45\", BTM 317/213, GTB 297/325, 52 nm E of Haiphong",
+   "elev_ft": 13
+  },
+  {
+   "name": "Target Fire Can 1-2",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Target Fire Can 1-2",
+   "lat": 44.350858,
+   "lon": 38.571085,
+   "mag_var": 4.95,
+   "latlon": "N44°21'03\" E038°34'16\"",
+   "tacan": "BTM 317/212, GTB 297/323",
+   "near": "54 nm E of Haiphong",
+   "line": "Target Fire Can 1-2, N44°21'03\" E038°34'16\", BTM 317/212, GTB 297/323, 54 nm E of Haiphong",
+   "elev_ft": 21
+  },
+  {
+   "name": "Target Fire Can 1-3",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Target Fire Can 1-3",
+   "lat": 44.368106,
+   "lon": 38.549639,
+   "mag_var": 4.95,
+   "latlon": "N44°22'05\" E038°32'59\"",
+   "tacan": "BTM 317/213, GTB 297/324",
+   "near": "53 nm E of Haiphong",
+   "line": "Target Fire Can 1-3, N44°22'05\" E038°32'59\", BTM 317/213, GTB 297/324, 53 nm E of Haiphong",
+   "elev_ft": 98
+  },
+  {
+   "name": "Target Fire Can 1-4",
+   "kind": "AAA",
+   "section": "Air Defense (AAA)",
+   "group": "Target Fire Can 1-4",
+   "lat": 44.359415,
+   "lon": 38.510489,
+   "mag_var": 4.94,
+   "latlon": "N44°21'34\" E038°30'38\"",
+   "tacan": "BTM 317/214, GTB 297/325",
+   "near": "51 nm E of Haiphong",
+   "line": "Target Fire Can 1-4, N44°21'34\" E038°30'38\", BTM 317/214, GTB 297/325, 51 nm E of Haiphong",
+   "elev_ft": 9
+  }
+ ],
+ "places": [
+  {
+   "name": "Da Nang AB",
+   "lat": 41.56936,
+   "lon": 41.51485,
+   "elev_ft": 0
+  },
+  {
+   "name": "Ubon AB",
+   "lat": 41.685796,
+   "lon": 44.967127,
+   "elev_ft": 1594
+  },
+  {
+   "name": "Udorn AB",
+   "lat": 43.209428,
+   "lon": 44.589756,
+   "elev_ft": 1681
+  },
+  {
+   "name": "Hanoi",
+   "lat": 45.261856,
+   "lon": 38.887674,
+   "elev_ft": 64
+  },
+  {
+   "name": "Haiphong",
+   "lat": 44.481775,
+   "lon": 37.332672,
+   "elev_ft": 0
+  },
+  {
+   "name": "Khe Sanh CB",
+   "lat": 41.993304,
+   "lon": 43.628014,
+   "elev_ft": 2315
+  },
+  {
+   "name": "Camp Evans",
+   "lat": 41.841929,
+   "lon": 41.79792,
+   "elev_ft": 33
+  },
+  {
+   "name": "FSB Currahee",
+   "lat": 42.085259,
+   "lon": 43.413341,
+   "elev_ft": 1993
+  },
+  {
+   "name": "LZ Stud",
+   "lat": 42.097626,
+   "lon": 43.917445,
+   "elev_ft": 2311
+  },
+  {
+   "name": "LZ Peanuts",
+   "lat": 41.508565,
+   "lon": 41.711819,
+   "elev_ft": 228
+  },
+  {
+   "name": "LZ Custer",
+   "lat": 41.641861,
+   "lon": 42.461941,
+   "elev_ft": 4689
+  },
+  {
+   "name": "LZ Snoopy",
+   "lat": 41.630711,
+   "lon": 41.997004,
+   "elev_ft": 1654
+  },
+  {
+   "name": "LZ Ace",
+   "lat": 41.821264,
+   "lon": 43.845193,
+   "elev_ft": 4799
+  },
+  {
+   "name": "LZ Sally",
+   "lat": 41.516196,
+   "lon": 41.54215,
+   "elev_ft": 0
+  },
+  {
+   "name": "LZ Bayonet",
+   "lat": 41.639744,
+   "lon": 43.385187,
+   "elev_ft": 6198
+  }
+ ],
+ "zones": [
+  {
+   "name": "Camp Evans",
+   "lat": 41.841929,
+   "lon": 41.79792,
+   "elev_ft": 33
+  },
+  {
+   "name": "FSB Currahee",
+   "lat": 42.085259,
+   "lon": 43.413341,
+   "elev_ft": 1993
+  },
+  {
+   "name": "LZ Stud",
+   "lat": 42.097626,
+   "lon": 43.917445,
+   "elev_ft": 2311
+  },
+  {
+   "name": "LZ Peanuts",
+   "lat": 41.508565,
+   "lon": 41.711819,
+   "elev_ft": 228
+  },
+  {
+   "name": "LZ Custer",
+   "lat": 41.641861,
+   "lon": 42.461941,
+   "elev_ft": 4689
+  },
+  {
+   "name": "LZ Snoopy",
+   "lat": 41.630711,
+   "lon": 41.997004,
+   "elev_ft": 1654
+  },
+  {
+   "name": "LZ Ace",
+   "lat": 41.821264,
+   "lon": 43.845193,
+   "elev_ft": 4799
+  },
+  {
+   "name": "Bravo",
+   "lat": 42.264958,
+   "lon": 43.960821,
+   "elev_ft": 2942
+  },
+  {
+   "name": "Charlie",
+   "lat": 42.364463,
+   "lon": 43.915908,
+   "elev_ft": 3962
+  },
+  {
+   "name": "Delta",
+   "lat": 42.590693,
+   "lon": 44.113594,
+   "elev_ft": 6450
+  },
+  {
+   "name": "pickzone1",
+   "lat": 41.841569,
+   "lon": 41.797726,
+   "elev_ft": 33
+  },
+  {
+   "name": "pickzone2",
+   "lat": 41.609801,
+   "lon": 41.603413,
+   "elev_ft": 33
+  },
+  {
+   "name": "Khe Sanh CB",
+   "lat": 41.993304,
+   "lon": 43.628014,
+   "elev_ft": 2315
+  },
+  {
+   "name": "LZ MACK",
+   "lat": 42.023072,
+   "lon": 44.04528,
+   "elev_ft": 2716
+  },
+  {
+   "name": "LZ LOON",
+   "lat": 42.187101,
+   "lon": 44.01895,
+   "elev_ft": 2879
+  },
+  {
+   "name": "LZ MARGO",
+   "lat": 42.298633,
+   "lon": 43.943902,
+   "elev_ft": 3004
+  },
+  {
+   "name": "LZ ROBIN",
+   "lat": 42.453055,
+   "lon": 44.075577,
+   "elev_ft": 5600
+  },
+  {
+   "name": "LZ SIERRA",
+   "lat": 42.547932,
+   "lon": 44.1193,
+   "elev_ft": 4868
+  },
+  {
+   "name": "LZ Sally",
+   "lat": 41.516196,
+   "lon": 41.54215,
+   "elev_ft": 0
+  },
+  {
+   "name": "KheSanhExclusion",
+   "lat": 41.998953,
+   "lon": 43.650664,
+   "elev_ft": 2278
+  },
+  {
+   "name": "pickzone3",
+   "lat": 41.994098,
+   "lon": 43.631008,
+   "elev_ft": 2311
+  },
+  {
+   "name": "MACK1",
+   "lat": 41.995707,
+   "lon": 44.062482,
+   "elev_ft": 2106
+  },
+  {
+   "name": "STUD1",
+   "lat": 42.107734,
+   "lon": 43.901465,
+   "elev_ft": 2380
+  },
+  {
+   "name": "LOON1",
+   "lat": 42.17955,
+   "lon": 44.242287,
+   "elev_ft": 3794
+  },
+  {
+   "name": "CHARLIE1",
+   "lat": 42.405693,
+   "lon": 43.938881,
+   "elev_ft": 3766
+  },
+  {
+   "name": "ROBIN1",
+   "lat": 42.488597,
+   "lon": 44.118304,
+   "elev_ft": 6612
+  },
+  {
+   "name": "DELTA1",
+   "lat": 42.57204,
+   "lon": 44.115013,
+   "elev_ft": 5711
+  },
+  {
+   "name": "Bridge A",
+   "lat": 42.533811,
+   "lon": 44.09399,
+   "elev_ft": 4655
+  },
+  {
+   "name": "Bridge B",
+   "lat": 42.287486,
+   "lon": 43.952532,
+   "elev_ft": 2978
+  },
+  {
+   "name": "Bridge C",
+   "lat": 42.230586,
+   "lon": 43.978429,
+   "elev_ft": 2785
+  },
+  {
+   "name": "Bridge D",
+   "lat": 42.221019,
+   "lon": 43.979454,
+   "elev_ft": 2785
+  },
+  {
+   "name": "Bridge E",
+   "lat": 42.197271,
+   "lon": 43.959823,
+   "elev_ft": 2784
+  },
+  {
+   "name": "Bridge F",
+   "lat": 42.191557,
+   "lon": 43.985996,
+   "elev_ft": 2771
+  },
+  {
+   "name": "Bridge G1",
+   "lat": 42.162305,
+   "lon": 43.965975,
+   "elev_ft": 2514
+  },
+  {
+   "name": "Bridge G2",
+   "lat": 42.163249,
+   "lon": 43.967766,
+   "elev_ft": 2517
+  },
+  {
+   "name": "Bridge H",
+   "lat": 42.154799,
+   "lon": 44.003496,
+   "elev_ft": 2463
+  },
+  {
+   "name": "Bridge I",
+   "lat": 42.135885,
+   "lon": 43.982961,
+   "elev_ft": 2449
+  },
+  {
+   "name": "Bridge J",
+   "lat": 42.09189,
+   "lon": 44.011954,
+   "elev_ft": 2250
+  },
+  {
+   "name": "Bridge K",
+   "lat": 42.055197,
+   "lon": 44.042502,
+   "elev_ft": 2269
+  },
+  {
+   "name": "Bridge L",
+   "lat": 41.989619,
+   "lon": 44.090504,
+   "elev_ft": 1936
+  },
+  {
+   "name": "Bridge M",
+   "lat": 41.983965,
+   "lon": 44.088813,
+   "elev_ft": 1880
+  },
+  {
+   "name": "Bridge N",
+   "lat": 41.984484,
+   "lon": 44.101121,
+   "elev_ft": 1859
+  },
+  {
+   "name": "Bridge O",
+   "lat": 41.989716,
+   "lon": 44.108741,
+   "elev_ft": 1904
+  },
+  {
+   "name": "Bridge P",
+   "lat": 41.990998,
+   "lon": 44.110769,
+   "elev_ft": 1929
+  },
+  {
+   "name": "Bridge Q",
+   "lat": 41.962313,
+   "lon": 44.130519,
+   "elev_ft": 1872
+  },
+  {
+   "name": "26",
+   "lat": 42.523509,
+   "lon": 41.667517,
+   "elev_ft": 77
+  },
+  {
+   "name": "2",
+   "lat": 44.991549,
+   "lon": 38.974545,
+   "elev_ft": 56
+  },
+  {
+   "name": "1",
+   "lat": 45.057167,
+   "lon": 38.995603,
+   "elev_ft": 114
+  },
+  {
+   "name": "3",
+   "lat": 44.882034,
+   "lon": 38.590487,
+   "elev_ft": 131
+  },
+  {
+   "name": "4",
+   "lat": 44.877813,
+   "lon": 38.013519,
+   "elev_ft": 159
+  },
+  {
+   "name": "5",
+   "lat": 44.86841,
+   "lon": 37.726042,
+   "elev_ft": 921
+  },
+  {
+   "name": "6",
+   "lat": 44.726944,
+   "lon": 37.819647,
+   "elev_ft": 15
+  },
+  {
+   "name": "7",
+   "lat": 44.708737,
+   "lon": 37.860591,
+   "elev_ft": 395
+  },
+  {
+   "name": "8",
+   "lat": 44.639029,
+   "lon": 37.973337,
+   "elev_ft": 261
+  },
+  {
+   "name": "9",
+   "lat": 44.573641,
+   "lon": 38.109876,
+   "elev_ft": 1111
+  },
+  {
+   "name": "10",
+   "lat": 44.535774,
+   "lon": 38.238535,
+   "elev_ft": 893
+  },
+  {
+   "name": "11",
+   "lat": 44.492945,
+   "lon": 38.330042,
+   "elev_ft": 257
+  },
+  {
+   "name": "12",
+   "lat": 44.438228,
+   "lon": 38.447573,
+   "elev_ft": 642
+  },
+  {
+   "name": "13",
+   "lat": 44.360938,
+   "lon": 38.635367,
+   "elev_ft": 671
+  },
+  {
+   "name": "14",
+   "lat": 44.313743,
+   "lon": 38.800453,
+   "elev_ft": 723
+  },
+  {
+   "name": "15",
+   "lat": 44.149983,
+   "lon": 39.023269,
+   "elev_ft": 514
+  },
+  {
+   "name": "16",
+   "lat": 43.998535,
+   "lon": 39.239209,
+   "elev_ft": 802
+  },
+  {
+   "name": "17",
+   "lat": 43.901147,
+   "lon": 39.42035,
+   "elev_ft": 975
+  },
+  {
+   "name": "18",
+   "lat": 43.567384,
+   "lon": 39.803929,
+   "elev_ft": 156
+  },
+  {
+   "name": "19",
+   "lat": 43.441149,
+   "lon": 40.055108,
+   "elev_ft": 389
+  },
+  {
+   "name": "20",
+   "lat": 43.174627,
+   "lon": 40.55619,
+   "elev_ft": 235
+  },
+  {
+   "name": "21",
+   "lat": 42.973945,
+   "lon": 41.017253,
+   "elev_ft": 0
+  },
+  {
+   "name": "22",
+   "lat": 42.839811,
+   "lon": 41.216783,
+   "elev_ft": 144
+  },
+  {
+   "name": "23",
+   "lat": 42.721062,
+   "lon": 41.512649,
+   "elev_ft": 74
+  },
+  {
+   "name": "24",
+   "lat": 42.600701,
+   "lon": 41.748282,
+   "elev_ft": 227
+  },
+  {
+   "name": "25",
+   "lat": 42.530312,
+   "lon": 41.791428,
+   "elev_ft": 257
+  },
+  {
+   "name": "27",
+   "lat": 42.476435,
+   "lon": 41.704259,
+   "elev_ft": 77
+  },
+  {
+   "name": "28",
+   "lat": 42.587605,
+   "lon": 41.829021,
+   "elev_ft": 554
+  },
+  {
+   "name": "29",
+   "lat": 42.566539,
+   "lon": 41.862475,
+   "elev_ft": 435
+  },
+  {
+   "name": "30",
+   "lat": 42.492668,
+   "lon": 41.88631,
+   "elev_ft": 319
+  },
+  {
+   "name": "31",
+   "lat": 42.403316,
+   "lon": 41.938998,
+   "elev_ft": 241
+  },
+  {
+   "name": "32",
+   "lat": 42.319707,
+   "lon": 41.916572,
+   "elev_ft": 92
+  },
+  {
+   "name": "33",
+   "lat": 42.487336,
+   "lon": 41.802625,
+   "elev_ft": 191
+  },
+  {
+   "name": "34",
+   "lat": 42.387533,
+   "lon": 41.826691,
+   "elev_ft": 638
+  },
+  {
+   "name": "35",
+   "lat": 42.281652,
+   "lon": 42.041253,
+   "elev_ft": 347
+  },
+  {
+   "name": "36",
+   "lat": 42.375858,
+   "lon": 41.292097,
+   "elev_ft": 0
+  },
+  {
+   "name": "37",
+   "lat": 42.174461,
+   "lon": 42.501701,
+   "elev_ft": 148
+  },
+  {
+   "name": "38",
+   "lat": 42.220003,
+   "lon": 42.717249,
+   "elev_ft": 384
+  },
+  {
+   "name": "39",
+   "lat": 42.101772,
+   "lon": 43.087885,
+   "elev_ft": 611
+  },
+  {
+   "name": "40",
+   "lat": 42.002883,
+   "lon": 43.414042,
+   "elev_ft": 2679
+  },
+  {
+   "name": "41",
+   "lat": 41.849005,
+   "lon": 43.378132,
+   "elev_ft": 3431
+  },
+  {
+   "name": "42",
+   "lat": 41.724361,
+   "lon": 43.153891,
+   "elev_ft": 3021
+  },
+  {
+   "name": "43",
+   "lat": 41.658877,
+   "lon": 42.944999,
+   "elev_ft": 3462
+  },
+  {
+   "name": "44",
+   "lat": 41.652038,
+   "lon": 42.721161,
+   "elev_ft": 4503
+  },
+  {
+   "name": "45",
+   "lat": 41.651084,
+   "lon": 42.532533,
+   "elev_ft": 7375
+  },
+  {
+   "name": "46",
+   "lat": 41.640635,
+   "lon": 42.364837,
+   "elev_ft": 3119
+  },
+  {
+   "name": "47",
+   "lat": 41.641783,
+   "lon": 42.207269,
+   "elev_ft": 3150
+  },
+  {
+   "name": "48",
+   "lat": 41.984607,
+   "lon": 44.106364,
+   "elev_ft": 1864
+  },
+  {
+   "name": "49",
+   "lat": 42.056898,
+   "lon": 44.063855,
+   "elev_ft": 2117
+  },
+  {
+   "name": "50",
+   "lat": 42.143142,
+   "lon": 44.025688,
+   "elev_ft": 2490
+  },
+  {
+   "name": "51",
+   "lat": 42.230944,
+   "lon": 43.974111,
+   "elev_ft": 2788
+  },
+  {
+   "name": "52",
+   "lat": 42.31682,
+   "lon": 43.924665,
+   "elev_ft": 3785
+  },
+  {
+   "name": "53",
+   "lat": 42.413945,
+   "lon": 43.852029,
+   "elev_ft": 4529
+  },
+  {
+   "name": "54",
+   "lat": 42.424632,
+   "lon": 43.993832,
+   "elev_ft": 3998
+  },
+  {
+   "name": "55",
+   "lat": 42.489706,
+   "lon": 44.072942,
+   "elev_ft": 6045
+  },
+  {
+   "name": "56",
+   "lat": 42.581156,
+   "lon": 44.128439,
+   "elev_ft": 6652
+  },
+  {
+   "name": "57",
+   "lat": 41.638642,
+   "lon": 42.059503,
+   "elev_ft": 1588
+  },
+  {
+   "name": "58",
+   "lat": 41.602968,
+   "lon": 41.922617,
+   "elev_ft": 1808
+  },
+  {
+   "name": "59",
+   "lat": 41.556108,
+   "lon": 41.785372,
+   "elev_ft": 704
+  },
+  {
+   "name": "60",
+   "lat": 41.565937,
+   "lon": 41.660347,
+   "elev_ft": 159
+  },
+  {
+   "name": "61",
+   "lat": 41.557683,
+   "lon": 41.565683,
+   "elev_ft": 19
+  },
+  {
+   "name": "62",
+   "lat": 41.626847,
+   "lon": 41.622723,
+   "elev_ft": 57
+  },
+  {
+   "name": "63",
+   "lat": 42.011949,
+   "lon": 43.703038,
+   "elev_ft": 2214
+  },
+  {
+   "name": "64",
+   "lat": 42.034148,
+   "lon": 43.867266,
+   "elev_ft": 2068
+  },
+  {
+   "name": "65",
+   "lat": 42.010724,
+   "lon": 44.005539,
+   "elev_ft": 1936
+  },
+  {
+   "name": "66",
+   "lat": 44.159404,
+   "lon": 39.193698,
+   "elev_ft": 556
+  },
+  {
+   "name": "67",
+   "lat": 44.255704,
+   "lon": 39.269565,
+   "elev_ft": 1365
+  },
+  {
+   "name": "68",
+   "lat": 44.348014,
+   "lon": 39.328241,
+   "elev_ft": 1114
+  },
+  {
+   "name": "69",
+   "lat": 44.434968,
+   "lon": 39.438507,
+   "elev_ft": 1152
+  },
+  {
+   "name": "70",
+   "lat": 44.548249,
+   "lon": 39.569545,
+   "elev_ft": 748
+  },
+  {
+   "name": "71",
+   "lat": 44.745567,
+   "lon": 39.886223,
+   "elev_ft": 419
+  },
+  {
+   "name": "72",
+   "lat": 44.913631,
+   "lon": 40.471429,
+   "elev_ft": 464
+  },
+  {
+   "name": "73",
+   "lat": 44.961456,
+   "lon": 41.00334,
+   "elev_ft": 795
+  },
+  {
+   "name": "74",
+   "lat": 44.816902,
+   "lon": 41.549208,
+   "elev_ft": 870
+  },
+  {
+   "name": "75",
+   "lat": 44.553271,
+   "lon": 42.271688,
+   "elev_ft": 1528
+  },
+  {
+   "name": "76",
+   "lat": 44.331704,
+   "lon": 42.923601,
+   "elev_ft": 1131
+  },
+  {
+   "name": "77",
+   "lat": 44.172526,
+   "lon": 43.377121,
+   "elev_ft": 1198
+  },
+  {
+   "name": "78",
+   "lat": 44.005725,
+   "lon": 43.651004,
+   "elev_ft": 1026
+  },
+  {
+   "name": "79",
+   "lat": 43.752866,
+   "lon": 43.955366,
+   "elev_ft": 700
+  },
+  {
+   "name": "80",
+   "lat": 43.428726,
+   "lon": 44.220499,
+   "elev_ft": 929
+  },
+  {
+   "name": "81",
+   "lat": 43.087881,
+   "lon": 44.242787,
+   "elev_ft": 1735
+  },
+  {
+   "name": "82",
+   "lat": 42.887868,
+   "lon": 44.159856,
+   "elev_ft": 3398
+  },
+  {
+   "name": "83",
+   "lat": 42.818113,
+   "lon": 44.049423,
+   "elev_ft": 5297
+  },
+  {
+   "name": "84",
+   "lat": 42.7592,
+   "lon": 43.97805,
+   "elev_ft": 5956
+  },
+  {
+   "name": "85",
+   "lat": 42.686146,
+   "lon": 43.959017,
+   "elev_ft": 5847
+  },
+  {
+   "name": "86",
+   "lat": 42.640087,
+   "lon": 44.042979,
+   "elev_ft": 6573
+  },
+  {
+   "name": "LZ Bayonet",
+   "lat": 41.639744,
+   "lon": 43.385187,
+   "elev_ft": 6198
+  },
+  {
+   "name": "Terminal",
+   "lat": 41.676275,
+   "lon": 44.956776,
+   "elev_ft": 1574
+  },
+  {
+   "name": "Bridge R",
+   "lat": 41.97946,
+   "lon": 44.101284,
+   "elev_ft": 1846
+  },
+  {
+   "name": "BRIGHAM",
+   "lat": 43.848821,
+   "lon": 41.544323,
+   "elev_ft": 3357
+  },
+  {
+   "name": "PANAMA",
+   "lat": 41.7592,
+   "lon": 42.647767,
+   "elev_ft": 6541
+  },
+  {
+   "name": "WATERBOY",
+   "lat": 42.613228,
+   "lon": 38.912294,
+   "elev_ft": 0
+  },
+  {
+   "name": "INVERT",
+   "lat": 42.455839,
+   "lon": 44.416848,
+   "elev_ft": 7964
+  },
+  {
+   "name": "New Trigger Zone-1",
+   "lat": 42.714373,
+   "lon": 39.83811,
+   "elev_ft": 0
+  },
+  {
+   "name": "Bridge S Span 2",
+   "lat": 42.463335,
+   "lon": 41.654018,
+   "elev_ft": 47
+  },
+  {
+   "name": "Bridge S Span 1",
+   "lat": 42.463432,
+   "lon": 41.65233,
+   "elev_ft": 47
+  },
+  {
+   "name": "Bridge U Span 2",
+   "lat": 42.525059,
+   "lon": 41.796656,
+   "elev_ft": 258
+  },
+  {
+   "name": "Bridge U Span 1",
+   "lat": 42.525904,
+   "lon": 41.79626,
+   "elev_ft": 259
+  },
+  {
+   "name": "Bridge U Span 3",
+   "lat": 42.524213,
+   "lon": 41.797052,
+   "elev_ft": 258
+  },
+  {
+   "name": "Bridge U Span 4",
+   "lat": 42.523367,
+   "lon": 41.797448,
+   "elev_ft": 258
+  },
+  {
+   "name": "Bridge V Span 1",
+   "lat": 42.583727,
+   "lon": 41.849194,
+   "elev_ft": 407
+  },
+  {
+   "name": "Bridge V Span 2",
+   "lat": 42.583109,
+   "lon": 41.850669,
+   "elev_ft": 403
+  },
+  {
+   "name": "Bridge V Span 3",
+   "lat": 42.582491,
+   "lon": 41.852143,
+   "elev_ft": 401
+  },
+  {
+   "name": "Bridge V Span 4",
+   "lat": 42.581873,
+   "lon": 41.853618,
+   "elev_ft": 409
+  },
+  {
+   "name": "Bridge U Span 5",
+   "lat": 42.540579,
+   "lon": 41.786681,
+   "elev_ft": 264
+  },
+  {
+   "name": "Bridge U Span 6",
+   "lat": 42.541395,
+   "lon": 41.786185,
+   "elev_ft": 266
+  },
+  {
+   "name": "Bridge U Span 7",
+   "lat": 42.539763,
+   "lon": 41.787177,
+   "elev_ft": 263
+  },
+  {
+   "name": "Bridge U Span 8",
+   "lat": 42.538946,
+   "lon": 41.787673,
+   "elev_ft": 263
+  },
+  {
+   "name": "Bridge U Span 9",
+   "lat": 42.53813,
+   "lon": 41.788169,
+   "elev_ft": 263
+  },
+  {
+   "name": "Bridge U Span 10",
+   "lat": 42.537314,
+   "lon": 41.788664,
+   "elev_ft": 264
+  },
+  {
+   "name": "SAM26",
+   "lat": 42.506014,
+   "lon": 41.628967,
+   "elev_ft": 39
+  },
+  {
+   "name": "SAM24",
+   "lat": 42.58647,
+   "lon": 41.755806,
+   "elev_ft": 241
+  },
+  {
+   "name": "SAM22",
+   "lat": 42.854739,
+   "lon": 41.13588,
+   "elev_ft": 44
+  },
+  {
+   "name": "SAM20",
+   "lat": 43.113533,
+   "lon": 40.581089,
+   "elev_ft": 72
+  },
+  {
+   "name": "SAM19",
+   "lat": 43.436893,
+   "lon": 39.954575,
+   "elev_ft": 81
+  },
+  {
+   "name": "SAM73",
+   "lat": 44.970796,
+   "lon": 40.982553,
+   "elev_ft": 797
+  },
+  {
+   "name": "SAM01",
+   "lat": 45.088975,
+   "lon": 38.906086,
+   "elev_ft": 83
+  },
+  {
+   "name": "SAM48",
+   "lat": 41.96716,
+   "lon": 44.155101,
+   "elev_ft": 1842
+  },
+  {
+   "name": "SAM53",
+   "lat": 42.467449,
+   "lon": 43.750779,
+   "elev_ft": 5641
+  },
+  {
+   "name": "SAM76",
+   "lat": 44.22644,
+   "lon": 43.073325,
+   "elev_ft": 1050
+  },
+  {
+   "name": "SAM79",
+   "lat": 43.720197,
+   "lon": 43.984968,
+   "elev_ft": 692
+  },
+  {
+   "name": "SHELL",
+   "lat": 42.773227,
+   "lon": 39.428199,
+   "elev_ft": 0
+  },
+  {
+   "name": "ARCO",
+   "lat": 43.230127,
+   "lon": 44.877593,
+   "elev_ft": 2090
+  }
+ ],
+ "labels": [
+  {
+   "text": "Da Nang AB",
+   "lat": 41.56936,
+   "lon": 41.51485,
+   "elev_ft": 0
+  },
+  {
+   "text": "Ubon AB",
+   "lat": 41.685796,
+   "lon": 44.967127,
+   "elev_ft": 1594
+  },
+  {
+   "text": "Udorn AB",
+   "lat": 43.209428,
+   "lon": 44.589756,
+   "elev_ft": 1681
+  },
+  {
+   "text": "Hanoi",
+   "lat": 45.261856,
+   "lon": 38.887674,
+   "elev_ft": 64
+  },
+  {
+   "text": "Haiphong",
+   "lat": 44.481775,
+   "lon": 37.332672,
+   "elev_ft": 0
+  },
+  {
+   "text": "Khe Sanh CB",
+   "lat": 41.995702,
+   "lon": 43.625995,
+   "elev_ft": 2287
+  },
+  {
+   "text": "Tanker Track",
+   "lat": 43.037238,
+   "lon": 44.702537,
+   "elev_ft": 2183
+  },
+  {
+   "text": "Tanker Track",
+   "lat": 42.727835,
+   "lon": 38.942797,
+   "elev_ft": 0
+  },
+  {
+   "text": "FREQUENCIES",
+   "lat": 41.018981,
+   "lon": 43.009797,
+   "elev_ft": 8297
+  },
+  {
+   "text": "DMZ",
+   "lat": 42.251066,
+   "lon": 41.329686,
+   "elev_ft": 0
+  },
+  {
+   "text": "South Vietnam Border",
+   "lat": 42.196939,
+   "lon": 40.922374,
+   "elev_ft": 0
+  },
+  {
+   "text": "North Vietnam Border",
+   "lat": 42.395062,
+   "lon": 40.984566,
+   "elev_ft": 0
+  },
+  {
+   "text": "BRIGHAM",
+   "lat": 43.150622,
+   "lon": 42.072667,
+   "elev_ft": 7450
+  },
+  {
+   "text": "INVERT",
+   "lat": 41.56499,
+   "lon": 44.328607,
+   "elev_ft": 4634
+  },
+  {
+   "text": "PANAMA",
+   "lat": 41.35973,
+   "lon": 43.028665,
+   "elev_ft": 9253
+  },
+  {
+   "text": "WATERBOY",
+   "lat": 41.499558,
+   "lon": 39.885024,
+   "elev_ft": 0
+  },
+  {
+   "text": "PRIMARY COMMS PRESETS",
+   "lat": 41.510063,
+   "lon": 44.85158,
+   "elev_ft": 1796
+  }
+ ],
+ "drawings": [
+  {
+   "layer": "Common",
+   "name": "North Vietnam",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0xff00004b",
+   "thickness": 23,
+   "style": "wirefence",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.439822,
+   "lon": 39.883061,
+   "points": [
+    [
+     42.485508,
+     43.761609
+    ],
+    [
+     43.972496,
+     44.372632
+    ],
+    [
+     44.693787,
+     42.486071
+    ],
+    [
+     45.07473,
+     41.160283
+    ],
+    [
+     46.137819,
+     41.166616
+    ],
+    [
+     47.810563,
+     40.652982
+    ],
+    [
+     48.043469,
+     34.569354
+    ],
+    [
+     48.046226,
+     34.35261
+    ],
+    [
+     46.264922,
+     34.351827
+    ],
+    [
+     46.250954,
+     34.49998
+    ],
+    [
+     42.332941,
+     41.328598
+    ],
+    [
+     42.155569,
+     42.7299
+    ],
+    [
+     42.486299,
+     43.758832
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "Danang",
+   "type": "TextBox",
+   "color": "0x0000008d",
+   "fill": "0x00800041",
+   "text": "Da Nang AB",
+   "font_size": 24,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.56936,
+   "lon": 41.51485,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "Ubon",
+   "type": "TextBox",
+   "color": "0x00000090",
+   "fill": "0x00800041",
+   "text": "Ubon AB",
+   "font_size": 24,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.685796,
+   "lon": 44.967127,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "HCM5",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 45.030375,
+   "lon": 39.023785,
+   "points": [
+    [
+     45.030375,
+     39.023785
+    ],
+    [
+     45.010547,
+     38.977509
+    ],
+    [
+     44.894052,
+     38.871481
+    ],
+    [
+     44.870115,
+     38.262912
+    ],
+    [
+     44.91862,
+     38.017724
+    ],
+    [
+     44.868855,
+     37.89411
+    ],
+    [
+     44.878856,
+     37.777516
+    ],
+    [
+     44.834235,
+     37.651063
+    ],
+    [
+     44.820366,
+     37.631277
+    ],
+    [
+     44.733201,
+     37.776132
+    ],
+    [
+     44.736905,
+     37.807191
+    ],
+    [
+     44.588876,
+     38.055713
+    ],
+    [
+     44.542962,
+     38.151303
+    ],
+    [
+     44.553544,
+     38.171375
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "RSVN",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x00008051",
+   "thickness": 30,
+   "style": "strongpoint",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.504099,
+   "lon": 41.49065,
+   "points": [
+    [
+     42.189433,
+     41.548121
+    ],
+    [
+     42.04293,
+     42.811057
+    ],
+    [
+     42.359905,
+     43.782381
+    ],
+    [
+     41.987475,
+     44.027881
+    ],
+    [
+     40.357756,
+     43.730493
+    ],
+    [
+     40.353105,
+     43.739657
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "HCM4",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ffff",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.587135,
+   "lon": 42.599114,
+   "points": [
+    [
+     41.627643,
+     42.188031
+    ],
+    [
+     41.642838,
+     42.132167
+    ],
+    [
+     41.645327,
+     42.059542
+    ],
+    [
+     41.635786,
+     41.99061
+    ],
+    [
+     41.604128,
+     41.957685
+    ],
+    [
+     41.541628,
+     41.716048
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "HCM3",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ffff",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.581154,
+   "lon": 42.799186,
+   "points": [
+    [
+     41.628003,
+     42.286751
+    ],
+    [
+     41.627674,
+     42.187166
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "HCM2",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.993155,
+   "lon": 41.002479,
+   "points": [
+    [
+     44.090417,
+     39.079927
+    ],
+    [
+     43.939466,
+     39.307816
+    ],
+    [
+     43.65177,
+     39.652342
+    ],
+    [
+     43.504024,
+     39.885694
+    ],
+    [
+     43.43288,
+     39.921021
+    ],
+    [
+     43.326625,
+     40.22967
+    ],
+    [
+     43.23343,
+     40.310133
+    ],
+    [
+     43.205542,
+     40.497811
+    ],
+    [
+     43.114714,
+     40.579372
+    ],
+    [
+     43.080045,
+     40.922598
+    ],
+    [
+     43.005059,
+     41.031967
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "HCM1",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ffff",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 44.42507,
+   "lon": 39.713291,
+   "points": [
+    [
+     44.099681,
+     39.073562
+    ],
+    [
+     44.131932,
+     39.043419
+    ],
+    [
+     44.145471,
+     39.054991
+    ],
+    [
+     44.141726,
+     39.022731
+    ],
+    [
+     44.171224,
+     38.994785
+    ],
+    [
+     44.188024,
+     38.891998
+    ],
+    [
+     44.256937,
+     38.880783
+    ],
+    [
+     44.317797,
+     38.699973
+    ],
+    [
+     44.361925,
+     38.714904
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "HAnoi",
+   "type": "TextBox",
+   "color": "0xff000085",
+   "fill": "0xffff007f",
+   "text": "Hanoi",
+   "font_size": 24,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 45.261856,
+   "lon": 38.887674,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "Haiphong",
+   "type": "TextBox",
+   "color": "0xff00008b",
+   "fill": "0xffff0086",
+   "text": "Haiphong",
+   "font_size": 24,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 44.481775,
+   "lon": 37.332672,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "hcm8",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.564115,
+   "lon": 42.583667,
+   "points": [
+    [
+     41.640278,
+     42.465402
+    ],
+    [
+     41.635376,
+     42.385098
+    ],
+    [
+     41.66106,
+     42.34305
+    ],
+    [
+     41.628004,
+     42.287621
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "hcm7",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.167155,
+   "lon": 42.730797,
+   "points": [
+    [
+     41.980927,
+     43.27938
+    ],
+    [
+     42.054766,
+     43.178644
+    ],
+    [
+     42.159991,
+     42.907969
+    ],
+    [
+     42.201315,
+     42.724898
+    ],
+    [
+     42.186232,
+     42.465483
+    ],
+    [
+     42.15213,
+     42.31584
+    ],
+    [
+     42.266968,
+     42.050713
+    ],
+    [
+     42.322805,
+     41.882933
+    ],
+    [
+     42.410093,
+     41.790901
+    ],
+    [
+     42.470828,
+     41.815174
+    ],
+    [
+     42.64811,
+     41.706144
+    ],
+    [
+     42.716021,
+     41.473685
+    ],
+    [
+     42.761413,
+     41.416727
+    ],
+    [
+     42.851706,
+     41.156545
+    ],
+    [
+     43.00652,
+     41.031504
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "hcm6",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 44.554373,
+   "lon": 38.172264,
+   "points": [
+    [
+     44.554373,
+     38.172264
+    ],
+    [
+     44.524651,
+     38.308334
+    ],
+    [
+     44.461019,
+     38.344363
+    ],
+    [
+     44.47097,
+     38.429254
+    ],
+    [
+     44.373538,
+     38.535846
+    ],
+    [
+     44.363223,
+     38.718439
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "hcm",
+   "type": "Line",
+   "mode": "segments",
+   "color": "0x8000ff90",
+   "thickness": 16,
+   "style": "dot",
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.370089,
+   "lon": 41.126014,
+   "points": [
+    [
+     44.453695,
+     39.512
+    ],
+    [
+     44.522928,
+     39.478159
+    ],
+    [
+     44.875995,
+     40.228702
+    ],
+    [
+     45.004911,
+     41.096408
+    ],
+    [
+     44.823972,
+     41.330278
+    ],
+    [
+     44.413429,
+     42.730969
+    ],
+    [
+     44.212486,
+     43.11089
+    ],
+    [
+     44.218827,
+     43.320453
+    ],
+    [
+     44.157874,
+     43.486187
+    ],
+    [
+     43.926216,
+     43.659689
+    ],
+    [
+     43.73674,
+     44.059865
+    ],
+    [
+     43.609248,
+     44.056789
+    ],
+    [
+     43.581589,
+     44.079675
+    ],
+    [
+     43.256811,
+     44.255143
+    ],
+    [
+     43.053688,
+     44.223476
+    ],
+    [
+     42.941982,
+     44.206204
+    ],
+    [
+     42.850817,
+     44.136722
+    ],
+    [
+     42.846836,
+     44.091345
+    ],
+    [
+     42.83261,
+     44.025226
+    ],
+    [
+     42.801245,
+     44.012389
+    ],
+    [
+     42.736708,
+     43.972411
+    ],
+    [
+     42.685729,
+     43.975551
+    ],
+    [
+     42.667749,
+     44.024075
+    ],
+    [
+     42.635743,
+     44.013995
+    ],
+    [
+     42.620764,
+     44.08323
+    ],
+    [
+     42.606239,
+     44.085264
+    ],
+    [
+     42.598499,
+     44.102865
+    ],
+    [
+     42.579332,
+     44.107557
+    ],
+    [
+     42.536308,
+     44.103446
+    ],
+    [
+     42.518747,
+     44.084942
+    ],
+    [
+     42.452504,
+     44.058671
+    ],
+    [
+     42.412963,
+     44.011964
+    ],
+    [
+     42.411726,
+     43.955849
+    ],
+    [
+     42.369786,
+     43.898915
+    ],
+    [
+     42.349528,
+     43.887265
+    ],
+    [
+     42.261639,
+     43.946593
+    ],
+    [
+     42.202611,
+     43.976702
+    ],
+    [
+     42.183897,
+     43.989767
+    ],
+    [
+     42.168289,
+     44.026568
+    ],
+    [
+     41.97463,
+     44.091978
+    ],
+    [
+     41.966684,
+     44.094126
+    ],
+    [
+     41.955955,
+     44.115547
+    ],
+    [
+     41.9583,
+     44.141659
+    ],
+    [
+     41.938894,
+     44.258853
+    ],
+    [
+     41.950138,
+     44.188336
+    ],
+    [
+     41.96811,
+     44.095328
+    ],
+    [
+     41.978404,
+     44.083698
+    ],
+    [
+     42.008172,
+     44.017786
+    ],
+    [
+     42.051904,
+     43.884475
+    ],
+    [
+     42.038574,
+     43.830384
+    ],
+    [
+     41.947754,
+     43.507272
+    ],
+    [
+     41.849288,
+     43.407914
+    ],
+    [
+     41.669862,
+     43.067147
+    ],
+    [
+     41.634718,
+     42.952376
+    ],
+    [
+     41.642442,
+     42.873386
+    ],
+    [
+     41.634723,
+     42.836322
+    ],
+    [
+     41.657314,
+     42.805308
+    ],
+    [
+     41.673161,
+     42.648182
+    ],
+    [
+     41.624143,
+     42.567389
+    ],
+    [
+     41.629805,
+     42.458164
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "Track East",
+   "type": "Polygon",
+   "mode": "oval",
+   "color": "0x00ffffff",
+   "fill": "0x0080ff41",
+   "thickness": 1,
+   "style": "solid",
+   "angle": 16,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.226004,
+   "lon": 44.891043,
+   "points": [
+    [
+     42.906048,
+     45.847826
+    ],
+    [
+     42.941534,
+     45.860292
+    ],
+    [
+     42.981948,
+     45.856277
+    ],
+    [
+     43.026602,
+     45.835816
+    ],
+    [
+     43.074728,
+     45.799221
+    ],
+    [
+     43.125492,
+     45.74707
+    ],
+    [
+     43.178009,
+     45.68021
+    ],
+    [
+     43.231363,
+     45.599737
+    ],
+    [
+     43.284614,
+     45.506987
+    ],
+    [
+     43.336829,
+     45.403511
+    ],
+    [
+     43.387087,
+     45.291055
+    ],
+    [
+     43.434505,
+     45.171529
+    ],
+    [
+     43.478253,
+     45.046979
+    ],
+    [
+     43.517566,
+     44.919546
+    ],
+    [
+     43.551762,
+     44.791437
+    ],
+    [
+     43.580254,
+     44.664875
+    ],
+    [
+     43.602559,
+     44.54207
+    ],
+    [
+     43.618307,
+     44.425168
+    ],
+    [
+     43.627243,
+     44.31622
+    ],
+    [
+     43.629237,
+     44.217135
+    ],
+    [
+     43.62428,
+     44.129649
+    ],
+    [
+     43.612481,
+     44.055294
+    ],
+    [
+     43.594069,
+     43.995365
+    ],
+    [
+     43.569382,
+     43.950897
+    ],
+    [
+     43.538862,
+     43.922653
+    ],
+    [
+     43.503045,
+     43.911101
+    ],
+    [
+     43.462551,
+     43.916415
+    ],
+    [
+     43.418077,
+     43.93847
+    ],
+    [
+     43.370376,
+     43.976846
+    ],
+    [
+     43.320253,
+     44.030843
+    ],
+    [
+     43.268549,
+     44.099489
+    ],
+    [
+     43.216128,
+     44.181565
+    ],
+    [
+     43.163862,
+     44.275629
+    ],
+    [
+     43.11262,
+     44.380038
+    ],
+    [
+     43.063255,
+     44.492982
+    ],
+    [
+     43.01659,
+     44.612518
+    ],
+    [
+     42.973404,
+     44.736601
+    ],
+    [
+     42.934422,
+     44.863118
+    ],
+    [
+     42.900305,
+     44.98993
+    ],
+    [
+     42.871633,
+     45.114897
+    ],
+    [
+     42.848904,
+     45.235921
+    ],
+    [
+     42.832515,
+     45.350976
+    ],
+    [
+     42.822764,
+     45.458138
+    ],
+    [
+     42.819838,
+     45.555619
+    ],
+    [
+     42.82381,
+     45.641792
+    ],
+    [
+     42.834635,
+     45.715215
+    ],
+    [
+     42.852154,
+     45.774657
+    ],
+    [
+     42.876088,
+     45.819113
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "Khe Sanh",
+   "type": "TextBox",
+   "color": "0x0000008d",
+   "fill": "0x00800041",
+   "text": "Khe Sanh CB\nTACAN 21X KSH",
+   "font_size": 18,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.995702,
+   "lon": 43.625995,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "East Tanker",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0x0080ff1c",
+   "text": "Tanker Track\nARCO 11 KC-135\n272.4 MHz\nTACAN 1X ARC",
+   "font_size": 12,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.037238,
+   "lon": 44.702537,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "West Tanker Boom",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0x00ff8000",
+   "text": "Tanker Track\nSHELL 11 KC-135 Boom\n272.5 MHz\nTACAN 3X SHL",
+   "font_size": 12,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.727835,
+   "lon": 38.942797,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "DMZ",
+   "type": "TextBox",
+   "color": "0x00000063",
+   "fill": "0xffff8080",
+   "text": "DMZ",
+   "font_size": 14,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.251066,
+   "lon": 41.329686,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "South Vietnam Border",
+   "type": "TextBox",
+   "color": "0x0000004f",
+   "fill": "0x0080ff6f",
+   "text": "South Vietnam Border",
+   "font_size": 20,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.196939,
+   "lon": 40.922374,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "North Vietnam Border",
+   "type": "TextBox",
+   "color": "0x00000060",
+   "fill": "0xff000080",
+   "text": "North Vietnam Border",
+   "font_size": 20,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.395062,
+   "lon": 40.984566,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "DMZshade",
+   "type": "Polygon",
+   "mode": "rect",
+   "color": "0xffff00ff",
+   "fill": "0xffff003b",
+   "thickness": 0,
+   "style": "solid",
+   "angle": 329,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.279128,
+   "lon": 43.317789,
+   "points": [
+    [
+     42.118242,
+     42.709464
+    ],
+    [
+     42.507702,
+     43.886617
+    ],
+    [
+     42.436384,
+     43.928676
+    ],
+    [
+     42.047257,
+     42.752776
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "DMZshade2",
+   "type": "Polygon",
+   "mode": "rect",
+   "color": "0xffff00ff",
+   "fill": "0xffff003b",
+   "thickness": 0,
+   "style": "solid",
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.182326,
+   "lon": 42.123586,
+   "points": [
+    [
+     42.291757,
+     41.496241
+    ],
+    [
+     42.139729,
+     42.764023
+    ],
+    [
+     42.069643,
+     42.748145
+    ],
+    [
+     42.221368,
+     41.481688
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "Brigham",
+   "type": "TextBox",
+   "color": "0x0000008b",
+   "fill": "0x0080ff6f",
+   "text": "BRIGHAM\nUHF 284.1 MHz",
+   "font_size": 14,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 43.150622,
+   "lon": 42.072667,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "INVERT",
+   "type": "TextBox",
+   "color": "0x00000073",
+   "fill": "0x9800ff31",
+   "text": "INVERT\nUHF 284.0 MHz",
+   "font_size": 11,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.56499,
+   "lon": 44.328607,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "PANAMA",
+   "type": "TextBox",
+   "color": "0x0000007a",
+   "fill": "0x00800042",
+   "text": "PANAMA\nUHF 284.4 MHz",
+   "font_size": 14,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.35973,
+   "lon": 43.028665,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "Shell",
+   "type": "Polygon",
+   "mode": "oval",
+   "color": "0x00ff0072",
+   "fill": "0x00ff0020",
+   "thickness": 2,
+   "style": "solid",
+   "angle": 32,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 42.751467,
+   "lon": 39.247133,
+   "points": [
+    [
+     42.356937,
+     39.968829
+    ],
+    [
+     42.550722,
+     40.154886
+    ],
+    [
+     42.747634,
+     40.326637
+    ],
+    [
+     42.944385,
+     40.481026
+    ],
+    [
+     43.1377,
+     40.615232
+    ],
+    [
+     43.324367,
+     40.726732
+    ],
+    [
+     43.50128,
+     40.813358
+    ],
+    [
+     43.665493,
+     40.873349
+    ],
+    [
+     43.81426,
+     40.905406
+    ],
+    [
+     43.945077,
+     40.908728
+    ],
+    [
+     44.055722,
+     40.883047
+    ],
+    [
+     44.144292,
+     40.82865
+    ],
+    [
+     44.209237,
+     40.746382
+    ],
+    [
+     44.249386,
+     40.637644
+    ],
+    [
+     44.263971,
+     40.504365
+    ],
+    [
+     44.252651,
+     40.348972
+    ],
+    [
+     44.21552,
+     40.174329
+    ],
+    [
+     44.153116,
+     39.983681
+    ],
+    [
+     44.066416,
+     39.780575
+    ],
+    [
+     43.956829,
+     39.568779
+    ],
+    [
+     43.826174,
+     39.352196
+    ],
+    [
+     43.676657,
+     39.134776
+    ],
+    [
+     43.510831,
+     38.920431
+    ],
+    [
+     43.331553,
+     38.712958
+    ],
+    [
+     43.141935,
+     38.515959
+    ],
+    [
+     42.945285,
+     38.332785
+    ],
+    [
+     42.745046,
+     38.166474
+    ],
+    [
+     42.544731,
+     38.019716
+    ],
+    [
+     42.347858,
+     37.894809
+    ],
+    [
+     42.157883,
+     37.793644
+    ],
+    [
+     41.978136,
+     37.717687
+    ],
+    [
+     41.811755,
+     37.667972
+    ],
+    [
+     41.661635,
+     37.645099
+    ],
+    [
+     41.530373,
+     37.649243
+    ],
+    [
+     41.42022,
+     37.680164
+    ],
+    [
+     41.333047,
+     37.737216
+    ],
+    [
+     41.27031,
+     37.819372
+    ],
+    [
+     41.233028,
+     37.925238
+    ],
+    [
+     41.221774,
+     38.053078
+    ],
+    [
+     41.236661,
+     38.200838
+    ],
+    [
+     41.277353,
+     38.366172
+    ],
+    [
+     41.343068,
+     38.546471
+    ],
+    [
+     41.432603,
+     38.738895
+    ],
+    [
+     41.544357,
+     38.940406
+    ],
+    [
+     41.676361,
+     39.147802
+    ],
+    [
+     41.82632,
+     39.35776
+    ],
+    [
+     41.99165,
+     39.566874
+    ],
+    [
+     42.169528,
+     39.771706
+    ]
+   ]
+  },
+  {
+   "layer": "Common",
+   "name": "WATERBOY",
+   "type": "TextBox",
+   "color": "0x0000007a",
+   "fill": "0x00800042",
+   "text": "WATERBOY\nUHF 284.3 MHz",
+   "font_size": 14,
+   "angle": 3,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.499558,
+   "lon": 39.885024,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "COMM PLAN",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0xffffff9a",
+   "text": "PRIMARY COMMS PRESETS \nButton           FREQ\n1                     236.6   (Tower)\n2                     284.0   (INVERT)\n3                     265.435 (433rd)\n4                     284.1   (BRIGHAM)\n5                     284.2   (LION)\n6                     284.3   (WATERBOY)\n7                     284.4   (PANAMA)\n8                     284.5   (KHE SANH AFAC)\n9                     284.6   (BIG EYE)\n10                   250.0\n11                   251.0\n12                   252.0\n13                   253.0\n14                   254.0\n15                   255.0\n16                   256.0\n17                   272.4   (ARCO)\n18                   272.5   (SHELL)\n19                   257.0\n20                   258.0\nF-4 PRI & F-86: buttons 1-18 (F-86 button 3 = 265.4)\n         ",
+   "font_size": 10,
+   "angle": 0,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 41.510063,
+   "lon": 44.85158,
+   "points": []
+  }
+ ],
+ "airbases": [
+  {
+   "name": "Anapa-Vityazevo",
+   "code": "URKA",
+   "type": "Airbase",
+   "lat": 45.004948,
+   "lon": 37.347825,
+   "elev_m": 43.0,
+   "runways": [
+    "04",
+    "22"
+   ],
+   "rwy_heading_true": 221,
+   "frequencies_hz": [
+    [
+     38400000,
+     0
+    ],
+    [
+     121000000,
+     0
+    ],
+    [
+     250000000,
+     0
+    ],
+    [
+     3750000,
+     0
+    ]
+   ],
+   "mag_var": 4.92
+  },
+  {
+   "name": "Krasnodar-Center",
+   "code": "URKL",
+   "type": "Airbase",
+   "lat": 45.08695,
+   "lon": 38.939985,
+   "elev_m": 30.0,
+   "runways": [
+    "27",
+    "09"
+   ],
+   "rwy_heading_true": 87,
+   "frequencies_hz": [
+    [
+     38600000,
+     0
+    ],
+    [
+     122000000,
+     0
+    ],
+    [
+     251000000,
+     0
+    ],
+    [
+     3800000,
+     0
+    ]
+   ],
+   "mag_var": 5.2
+  },
+  {
+   "name": "Novorossiysk",
+   "code": "URKN",
+   "type": "Airbase",
+   "lat": 44.668096,
+   "lon": 37.778258,
+   "elev_m": 40.0,
+   "runways": [
+    "04",
+    "22"
+   ],
+   "rwy_heading_true": 222,
+   "frequencies_hz": [
+    [
+     38800000,
+     0
+    ],
+    [
+     123000000,
+     0
+    ],
+    [
+     252000000,
+     0
+    ],
+    [
+     3850000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Krymsk",
+   "code": "URKW",
+   "type": "Airbase",
+   "lat": 44.967937,
+   "lon": 37.99503,
+   "elev_m": 20.0,
+   "runways": [
+    "22",
+    "04"
+   ],
+   "rwy_heading_true": 40,
+   "frequencies_hz": [
+    [
+     39000000,
+     0
+    ],
+    [
+     124000000,
+     0
+    ],
+    [
+     253000000,
+     0
+    ],
+    [
+     3900000,
+     0
+    ]
+   ],
+   "mag_var": 5.02
+  },
+  {
+   "name": "Maykop-Khanskaya",
+   "code": "URKH",
+   "type": "Airbase",
+   "lat": 44.681285,
+   "lon": 40.035254,
+   "elev_m": 180.0,
+   "runways": [
+    "22",
+    "04"
+   ],
+   "rwy_heading_true": 39,
+   "frequencies_hz": [
+    [
+     39200000,
+     0
+    ],
+    [
+     125000000,
+     0
+    ],
+    [
+     254000000,
+     0
+    ],
+    [
+     3950000,
+     0
+    ]
+   ],
+   "mag_var": 5.25
+  },
+  {
+   "name": "Gelendzhik",
+   "code": "URKG",
+   "type": "Airbase",
+   "lat": 44.572901,
+   "lon": 38.011614,
+   "elev_m": 22.0,
+   "runways": [
+    "19",
+    "01"
+   ],
+   "rwy_heading_true": 40,
+   "frequencies_hz": [
+    [
+     39400000,
+     0
+    ],
+    [
+     126000000,
+     0
+    ],
+    [
+     255000000,
+     0
+    ],
+    [
+     4000000,
+     0
+    ]
+   ],
+   "mag_var": 4.92
+  },
+  {
+   "name": "Sochi-Adler",
+   "code": "URSS",
+   "type": "Airbase",
+   "lat": 43.444354,
+   "lon": 39.941076,
+   "elev_m": 30.0,
+   "runways": [
+    "24",
+    "06"
+   ],
+   "rwy_heading_true": 62,
+   "frequencies_hz": [
+    [
+     39600000,
+     0
+    ],
+    [
+     127000000,
+     0
+    ],
+    [
+     256000000,
+     0
+    ],
+    [
+     4050000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Krasnodar-Pashkovsky",
+   "code": "URKK",
+   "type": "Airbase",
+   "lat": 45.038008,
+   "lon": 39.188135,
+   "elev_m": 34.0,
+   "runways": [
+    "05R",
+    "23L"
+   ],
+   "rwy_heading_true": 227,
+   "frequencies_hz": [
+    [
+     39800000,
+     0
+    ],
+    [
+     128000000,
+     0
+    ],
+    [
+     257000000,
+     0
+    ],
+    [
+     4100000,
+     0
+    ]
+   ],
+   "mag_var": 5.22
+  },
+  {
+   "name": "Sukhumi-Babushara",
+   "code": "UGSS",
+   "type": "Airbase",
+   "lat": 42.861092,
+   "lon": 41.124999,
+   "elev_m": 13.2,
+   "runways": [
+    "12",
+    "30"
+   ],
+   "rwy_heading_true": 296,
+   "frequencies_hz": [
+    [
+     40000000,
+     0
+    ],
+    [
+     129000000,
+     0
+    ],
+    [
+     258000000,
+     0
+    ],
+    [
+     4150000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Gudauta",
+   "code": "UG23",
+   "type": "Airbase",
+   "lat": 43.114327,
+   "lon": 40.569741,
+   "elev_m": 21.0,
+   "runways": [
+    "33",
+    "15"
+   ],
+   "rwy_heading_true": 151,
+   "frequencies_hz": [
+    [
+     40200000,
+     0
+    ],
+    [
+     130000000,
+     0
+    ],
+    [
+     259000000,
+     0
+    ],
+    [
+     4200000,
+     0
+    ]
+   ],
+   "mag_var": 4.91
+  },
+  {
+   "name": "Batumi",
+   "code": "UGSB",
+   "type": "Airbase",
+   "lat": 41.609597,
+   "lon": 41.600237,
+   "elev_m": 10.0,
+   "runways": [
+    "13",
+    "31"
+   ],
+   "rwy_heading_true": 306,
+   "frequencies_hz": [
+    [
+     40400000,
+     0
+    ],
+    [
+     131000000,
+     0
+    ],
+    [
+     260000000,
+     0
+    ],
+    [
+     4250000,
+     0
+    ]
+   ],
+   "mag_var": 4.64
+  },
+  {
+   "name": "Senaki-Kolkhi",
+   "code": "UGKS",
+   "type": "Airbase",
+   "lat": 42.240849,
+   "lon": 42.048014,
+   "elev_m": 13.2,
+   "runways": [
+    "09",
+    "27"
+   ],
+   "rwy_heading_true": 275,
+   "frequencies_hz": [
+    [
+     40600000,
+     0
+    ],
+    [
+     132000000,
+     0
+    ],
+    [
+     261000000,
+     0
+    ],
+    [
+     4300000,
+     0
+    ]
+   ],
+   "mag_var": 4.85
+  },
+  {
+   "name": "Kobuleti",
+   "code": "UG5X",
+   "type": "Airbase",
+   "lat": 41.929919,
+   "lon": 41.863275,
+   "elev_m": 18.0,
+   "runways": [
+    "07",
+    "25"
+   ],
+   "rwy_heading_true": 250,
+   "frequencies_hz": [
+    [
+     40800000,
+     0
+    ],
+    [
+     133000000,
+     0
+    ],
+    [
+     262000000,
+     0
+    ],
+    [
+     4350000,
+     0
+    ]
+   ],
+   "mag_var": 4.75
+  },
+  {
+   "name": "Kutaisi",
+   "code": "UGKO",
+   "type": "Airbase",
+   "lat": 42.177616,
+   "lon": 42.481292,
+   "elev_m": 45.0,
+   "runways": [
+    "07",
+    "25"
+   ],
+   "rwy_heading_true": 254,
+   "frequencies_hz": [
+    [
+     41000000,
+     0
+    ],
+    [
+     134000000,
+     0
+    ],
+    [
+     263000000,
+     0
+    ],
+    [
+     4400000,
+     0
+    ]
+   ],
+   "mag_var": 4.88
+  },
+  {
+   "name": "Mineralnye Vody",
+   "code": "URMM",
+   "type": "Airbase",
+   "lat": 44.227853,
+   "lon": 43.081192,
+   "elev_m": 320.0,
+   "runways": [
+    "12",
+    "30"
+   ],
+   "rwy_heading_true": 295,
+   "frequencies_hz": [
+    [
+     41200000,
+     0
+    ],
+    [
+     135000000,
+     0
+    ],
+    [
+     264000000,
+     0
+    ],
+    [
+     4450000,
+     0
+    ]
+   ],
+   "mag_var": 5.52
+  },
+  {
+   "name": "Nalchik",
+   "code": "URMN",
+   "type": "Airbase",
+   "lat": 43.514002,
+   "lon": 43.636451,
+   "elev_m": 430.0,
+   "runways": [
+    "24",
+    "06"
+   ],
+   "rwy_heading_true": 55,
+   "frequencies_hz": [
+    [
+     41400000,
+     0
+    ],
+    [
+     136000000,
+     0
+    ],
+    [
+     265000000,
+     0
+    ],
+    [
+     4500000,
+     0
+    ]
+   ],
+   "mag_var": 5.37
+  },
+  {
+   "name": "Mozdok",
+   "code": "XRMF",
+   "type": "Airbase",
+   "lat": 43.791711,
+   "lon": 44.605839,
+   "elev_m": 154.6,
+   "runways": [
+    "08",
+    "26"
+   ],
+   "rwy_heading_true": 263,
+   "frequencies_hz": [
+    [
+     41600000,
+     0
+    ],
+    [
+     137000000,
+     0
+    ],
+    [
+     266000000,
+     0
+    ],
+    [
+     4550000,
+     0
+    ]
+   ],
+   "mag_var": 5.55
+  },
+  {
+   "name": "Tbilisi-Lochini",
+   "code": "UGTB",
+   "type": "Airbase",
+   "lat": 41.667034,
+   "lon": 44.956288,
+   "elev_m": 479.7,
+   "runways": [
+    "31L",
+    "13R"
+   ],
+   "rwy_heading_true": 128,
+   "frequencies_hz": [
+    [
+     41800000,
+     0
+    ],
+    [
+     138000000,
+     0
+    ],
+    [
+     267000000,
+     0
+    ],
+    [
+     4600000,
+     0
+    ]
+   ],
+   "mag_var": 4.96
+  },
+  {
+   "name": "Soganlug",
+   "code": "UG24",
+   "type": "Airbase",
+   "lat": 41.649542,
+   "lon": 44.938358,
+   "elev_m": 452.1,
+   "runways": [
+    "32",
+    "14"
+   ],
+   "rwy_heading_true": 312,
+   "frequencies_hz": [
+    [
+     42000000,
+     0
+    ],
+    [
+     139000000,
+     0
+    ],
+    [
+     268000000,
+     0
+    ],
+    [
+     4650000,
+     0
+    ]
+   ],
+   "mag_var": 4.95
+  },
+  {
+   "name": "Vaziani",
+   "code": "UG27",
+   "type": "Airbase",
+   "lat": 41.629026,
+   "lon": 45.027231,
+   "elev_m": 464.5,
+   "runways": [
+    "31L",
+    "13R"
+   ],
+   "rwy_heading_true": 135,
+   "frequencies_hz": [
+    [
+     42200000,
+     0
+    ],
+    [
+     140000000,
+     0
+    ],
+    [
+     269000000,
+     0
+    ],
+    [
+     4700000,
+     0
+    ]
+   ],
+   "mag_var": 4.96
+  },
+  {
+   "name": "Beslan",
+   "code": "URMO",
+   "type": "Airbase",
+   "lat": 43.205706,
+   "lon": 44.605808,
+   "elev_m": 524.8,
+   "runways": [
+    "28",
+    "10"
+   ],
+   "rwy_heading_true": 94,
+   "frequencies_hz": [
+    [
+     42400000,
+     0
+    ],
+    [
+     141000000,
+     0
+    ],
+    [
+     270000000,
+     0
+    ],
+    [
+     4750000,
+     0
+    ]
+   ],
+   "mag_var": 5.37
+  },
+  {
+   "name": "Camp Evans FARP-7-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.837487,
+   "lon": 41.799459,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-8-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.842573,
+   "lon": 41.798503,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-9-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.843646,
+   "lon": 41.799597,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-10-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.84024,
+   "lon": 41.796057,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-11-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.838564,
+   "lon": 41.794479,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Static PAD Single-2",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993907,
+   "lon": 43.628039,
+   "elev_m": 705.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-3-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993104,
+   "lon": 43.627606,
+   "elev_m": 706.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-5-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993368,
+   "lon": 43.626663,
+   "elev_m": 706.3,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-7-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.992683,
+   "lon": 43.627826,
+   "elev_m": 706.2,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-9-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.992376,
+   "lon": 43.626654,
+   "elev_m": 707.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "MARGO",
+   "code": null,
+   "type": "FARP",
+   "lat": 40.593209,
+   "lon": 43.556067,
+   "elev_m": 1531.8,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "STUD",
+   "code": null,
+   "type": "FARP",
+   "lat": 40.5749,
+   "lon": 43.538789,
+   "elev_m": 1416.4,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "Static Invisible FARP-11-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993992,
+   "lon": 43.630109,
+   "elev_m": 704.1,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "MACK",
+   "code": null,
+   "type": "FARP",
+   "lat": 40.594849,
+   "lon": 43.542591,
+   "elev_m": 1534.1,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "ROBIN",
+   "code": null,
+   "type": "FARP",
+   "lat": 40.579118,
+   "lon": 43.50592,
+   "elev_m": 1423.3,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "LOON",
+   "code": null,
+   "type": "FARP",
+   "lat": 40.574156,
+   "lon": 43.55653,
+   "elev_m": 1421.6,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.56
+  },
+  {
+   "name": "Static Invisible FARP-10-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.99298,
+   "lon": 43.628909,
+   "elev_m": 705.3,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-8-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.992561,
+   "lon": 43.62726,
+   "elev_m": 706.6,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static PAD Single-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993697,
+   "lon": 43.628114,
+   "elev_m": 705.2,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-1-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.992987,
+   "lon": 43.627062,
+   "elev_m": 706.4,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-2-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.992858,
+   "lon": 43.626531,
+   "elev_m": 706.8,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Static Invisible FARP-4-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993543,
+   "lon": 43.627418,
+   "elev_m": 705.7,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  },
+  {
+   "name": "Camp Evans FARP 1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.843709,
+   "lon": 41.798523,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-2-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.844657,
+   "lon": 41.800572,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-3-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.842546,
+   "lon": 41.797142,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-4-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.844842,
+   "lon": 41.797254,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-5-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.841153,
+   "lon": 41.797115,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Camp Evans FARP-6-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.839942,
+   "lon": 41.798592,
+   "elev_m": 10.0,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.72
+  },
+  {
+   "name": "Static Invisible FARP-6-1",
+   "code": null,
+   "type": "FARP",
+   "lat": 41.993231,
+   "lon": 43.62612,
+   "elev_m": 706.7,
+   "runways": [],
+   "rwy_heading_true": null,
+   "frequencies_hz": [],
+   "mag_var": 4.94
+  }
+ ]
+}
