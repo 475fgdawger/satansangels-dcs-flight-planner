@@ -244,8 +244,9 @@ export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSet
 
 /**
  * Departure fuel burned before the first waypoint: taxi at ground idle, then full afterburner for takeoff and
- * acceleration to 400 kt. With recorded data the takeoff figure is the recorded max AB takeoff and climbs are
- * part of each leg; without, a fixed MIL climb is flown at the start of the first leg.
+ * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS, then the MIL climb is
+ * part of the first leg. Without: AB for a set time (to about 400 kt), then a fixed MIL climb at the start of the
+ * first leg.
  */
 export function departureFuel(s: PlanSettings): { taxi: number; takeoff: number; climb: number; beforeFirstLeg: number; total: number } {
   const a = AIRCRAFT[s.aircraft]

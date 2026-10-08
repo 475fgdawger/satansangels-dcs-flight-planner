@@ -121,7 +121,7 @@ describe('F-4E route planning from the tables', () => {
     const cruiseMin = ((leg.nm - leg.climb!.nm) / leg.gs) * 60
     expect(leg.ete).toBeCloseTo(leg.climb!.min + cruiseMin, 6)
     expect(leg.fuelUsed).toBeCloseTo(1324 + (leg.ff * cruiseMin) / 60, 6)
-    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1028 - leg.fuelUsed, 6)
+    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1115 - leg.fuelUsed, 6)
   })
 
   it('descent leg: cruise high, idle descent at the end with the top of descent', () => {
