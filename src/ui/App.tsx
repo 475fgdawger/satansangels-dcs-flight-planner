@@ -528,15 +528,30 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
         <div class="route-wrap">
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th>{perf
+            <tr><th>#</th><th>Name</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th>{perf
               ? <><th title="Planned speed for the leg in: KIAS, or Mach. Blank = 7.5 units AoA at 20,000 ft and up, else the low-level speed.">Speed in</th><th title="Power to set and fuel flow for the leg in, from the performance tables. Hover for notes.">Plan</th></>
-              : <th>TAS in (kt)</th>}<th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
+              : <th>TAS in (kt)</th>}<th title="Hold at this waypoint before the next leg">Loiter (min)</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
               <tr key={w.id}>
                 <td>{i}</td>
                 <td><input value={w.name} onInput={(e) => update(i, { name: (e.target as HTMLInputElement).value })} /></td>
+                <td>
+                  <div class="marks">
+                    {WAYPOINT_TAGS.map((tag) => (
+                      <label key={tag}>
+                        <input type="checkbox" checked={w.tags?.includes(tag) ?? false}
+                          onChange={(e) => {
+                            const on = (e.target as HTMLInputElement).checked
+                            const tags = WAYPOINT_TAGS.filter((t) => (t === tag ? on : w.tags?.includes(t)))
+                            update(i, { tags: tags.length ? tags : undefined })
+                          }} />
+                        {tag}
+                      </label>
+                    ))}
+                  </div>
+                </td>
                 <td class="muted">{w.source === 'manual' ? 'Typed' : kindLabel(w.source as CatalogPoint['kind'])}</td>
                 <td><input type="number" class="elev" value={w.elevFt ?? ''} placeholder="MSL"
                   title={elevTitle(w)}
@@ -563,7 +578,7 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
                     </div>
                   </div>
                 </td>
-                <td>{i > 0 && (
+                <td class="phase">{i > 0 && (
                   <select value={w.phase ?? ''} disabled={w.ff !== undefined}
                     onChange={(e) => {
                       const v = (e.target as HTMLSelectElement).value
@@ -604,21 +619,6 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
                     </>}
                   </div>
                 )}</td>
-                <td>
-                  <div class="marks">
-                    {WAYPOINT_TAGS.map((tag) => (
-                      <label key={tag}>
-                        <input type="checkbox" checked={w.tags?.includes(tag) ?? false}
-                          onChange={(e) => {
-                            const on = (e.target as HTMLInputElement).checked
-                            const tags = WAYPOINT_TAGS.filter((t) => (t === tag ? on : w.tags?.includes(t)))
-                            update(i, { tags: tags.length ? tags : undefined })
-                          }} />
-                        {tag}
-                      </label>
-                    ))}
-                  </div>
-                </td>
                 <td>
                   <div class="actions">
                     <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>

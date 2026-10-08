@@ -68,9 +68,9 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .route input, .route select { width: 100%; }
 .route td:nth-child(2) input { min-width: 100px; max-width: 140px; }
 .route input.num { min-width: 72px; max-width: 100px; }
-.route td:nth-child(6) select { width: auto; }
+.route td.phase select { width: auto; }
 .route input.elev { min-width: 80px; max-width: 90px; }
-.route .loiter { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; min-width: 190px; }
+.route .loiter { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; min-width: 140px; }
 .route .loiter input[type=checkbox] { width: auto; }
 .route .loiter input[type=number] { width: 60px; }
 .route .loiter select { width: 100%; min-width: 0; }
@@ -86,7 +86,7 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .route .speed { display: flex; gap: 4px; align-items: center; }
 .route .speed input.num { min-width: 64px; max-width: 80px; }
 .route .speed select { width: auto; }
-.route .plan-cell { white-space: nowrap; font-size: 12px; min-width: 150px; }
+.route .plan-cell { white-space: nowrap; font-size: 12px; }
 .warn-text { color: #a4161a; }
 .kb-pwr { white-space: nowrap; }
 .actions { white-space: nowrap; }
