@@ -6,7 +6,7 @@ import { inverse, norm360 } from './geodesy'
 import { catalog, magVarAt } from './mission'
 import type { LatLon, MissionExport } from './types'
 import { kcasFromMach, ktasFromMach, machFromKcas, speedOfSoundKt } from './atmo'
-import { NO_STORES, PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, levelAtRpm, powerFf, type ClimbDescent, type PerfData,
+import { NO_STORES, PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, dragOf, levelAtRpm, powerFf, type ClimbDescent, type PerfData,
   type PerfFlag } from './perf'
 import { DEFAULT_INGRESS_AGL, type PopupInputs, type PopupSettings } from './popup'
 
@@ -74,8 +74,8 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
     bingoFloor: 3000,
     placeholder: false,
     perf: PERF['F-4E'],
-    // Squadron (2026-10-08): bingo at BFM Only drag. A missiles-only (no centerline tank) category may follow.
-    bingoDrag: 'BFM Only',
+    // Squadron (2026-10-08): bingo at BFM No Tank drag (missiles kept, stores and centerline tank gone).
+    bingoDrag: 'BFM No Tank',
   },
   'F-5E': {
     id: 'F-5E',
@@ -454,7 +454,7 @@ function perfLeg(p: PerfData, wp: Waypoint, fromFt: number, toFt: number, course
   if (phase?.id === 'mil') ff = powerFf(p, 'MIL', altFt, spd.mach)
   else if (phase?.id === 'ab') ff = powerFf(p, 'ABMAX', altFt, spd.mach)
   else {
-    const c = cruiseAt(p, altFt, spd.mach, dragFactor(p, s.drag), s.isaDev ?? 0)
+    const c = cruiseAt(p, altFt, spd.mach, dragOf(p, s.drag), s.isaDev ?? 0)
     ff = wp.ff ?? c.ff
     rpm = c.rpm
     flags = c.flags
@@ -500,7 +500,7 @@ export function loiterFf(s: PlanSettings, power: LoiterPower | undefined, leg: L
   if (power === 'mil') return powerFf(p, 'MIL', altFt, mach)
   if (power === 'ab') return powerFf(p, 'ABMAX', altFt, mach)
   if (power === 'combat') return (powerFf(p, 'MIL', altFt, mach) + powerFf(p, 'ABMAX', altFt, mach)) / 2
-  if (power === 'cruise' || !leg) return cruiseAt(p, altFt, mach, dragFactor(p, s.drag), s.isaDev ?? 0).ff
+  if (power === 'cruise' || !leg) return cruiseAt(p, altFt, mach, dragOf(p, s.drag), s.isaDev ?? 0).ff
   return leg.ff
 }
 
@@ -524,7 +524,7 @@ export interface HomeProfile {
 
 function homeProfile(p: PerfData, s: PlanSettings, fromFt: number, cruiseFt: number, toFt: number, distNm: number, course: number,
   speed: { kias: number } | { rpm: number }): HomeProfile {
-  const f = dragFactor(p, s.drag), isa = s.isaDev ?? 0
+  const f = dragOf(p, s.drag), isa = s.isaDev ?? 0
   let mach: number, c: { ff: number; rpm: number | null; flags: PerfFlag[] }
   if ('rpm' in speed) {
     const l = levelAtRpm(p, cruiseFt, speed.rpm, f, isa)
@@ -616,7 +616,7 @@ export const JOKER_AB_MIN = 1
  *
  * With recorded data (rows give the planned loiter there):
  * - Bingo: the best-range return (climb to the best altitude up to the cap, 7.5 units AoA, idle descent) plus the
- *   landing reserve, at the aircraft's bingo drag category (F-4E: BFM Only) whatever the plan's category.
+ *   landing reserve, at the aircraft's bingo drag category (F-4E: BFM No Tank) whatever the plan's category.
  * - Joker: the planned loiter, 1 minute of max AB, a 30 nm escape at 95 % RPM at 500 ft above the target, a MIL climb
  *   to 20,000 ft, home at 95 % RPM, idle descent, plus the landing reserve. Never below bingo.
  *
@@ -656,7 +656,7 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings, rows?: Row[]): Fuel
     const ab = (powerFf(p, 'ABMAX', alts[target], rows?.[target]?.leg?.mach ?? 0.9) * JOKER_AB_MIN) / 60
     const isa = s.isaDev ?? 0
     const escFt = (t.elevFt ?? 0) + JOKER_ESCAPE_AGL
-    const esc = levelAtRpm(p, escFt, JOKER_ESCAPE_RPM, dragFactor(p, s.drag), isa)
+    const esc = levelAtRpm(p, escFt, JOKER_ESCAPE_RPM, dragOf(p, s.drag), isa)
     const escKtas = ktasFromMach(esc.mach, escFt, isa)
     const escNm = Math.min(JOKER_AB_EGRESS_NM, rtbNm)
     const escFuel = (escNm / groundSpeed(az, escKtas, s).gs) * esc.ff

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import raw from './fixtures/targets_syria.json'
 import { airfields, parseMission } from '../src/nav/mission'
 import { isaTempK, kcasFromMach, ktasFromMach, machFromKcas } from '../src/nav/atmo'
-import { PERF, bestRangeKias, climb, cruiseAt, descent, dragCategories, dragFactor, levelAtRpm, powerFf } from '../src/nav/perf'
+import { PERF, bestRangeKias, climb, cruiseAt, descent, dragCategories, dragFactor, dragOf, levelAtRpm, powerFf } from '../src/nav/perf'
 import { AIRCRAFT, bingoDragOf, bingoProfile, carryLegData, computeRows, defaultSettings, fuelPlan, routeAltitudes, type Waypoint } from '../src/nav/plan'
 
 const m = parseMission(raw)
@@ -37,30 +37,43 @@ describe('F-4E tables', () => {
   it('flags speeds outside the recorded envelope and wide gaps', () => {
     expect(cruiseAt(p, 20000, 1.2).flags).toContain('fast')
     expect(cruiseAt(p, 10000, 0.5).flags).toContain('slow')
-    // Sea level, 420 KIAS sits in the 388-492 KTAS gap.
-    expect(cruiseAt(p, 1000, machFromKcas(420, 1000)).flags).toContain('wide')
+    // No band has a wide gap any more (2026-10-08 fill-in flight).
+    expect(p.bands.every((b) => b.gaps.length === 0)).toBe(true)
+    expect(cruiseAt(p, 1000, machFromKcas(420, 1000)).flags).toEqual([])
     expect(cruiseAt(p, 40000, 0.85).flags).toContain('high')
   })
 
   it('drag categories, lowest first, with their factors', () => {
-    expect(dragCategories(p).map((c) => c.name)).toEqual(['No Stores', 'BFM Only', 'BFM and Bombs', 'SEAD', 'Superbomber', 'BFM + High Drag'])
+    expect(dragCategories(p).map((c) => c.name)).toEqual(['No Stores', 'BFM Only', 'BFM No Tank', 'BFM and Bombs', 'SEAD', 'Superbomber', 'BFM + High Drag'])
     expect(dragFactor(p, undefined)).toBe(1)
-    expect(dragFactor(p, 'SEAD')).toBe(1.71)
+    expect(dragFactor(p, 'SEAD')).toBe(1.58)
   })
 
-  // The 10,000 ft / 90 % drag runs: KIAS flown, fuel flow and RPM measured. The planner gets them from the No Stores
-  // tables and the drag factor; it should be close and never optimistic.
-  it.each([
-    ['BFM Only', 451, 10962, 89.9],
-    ['BFM and Bombs', 398, 10823, 89.8],
-    ['SEAD', 371, 10796, 89.9],
-    ['Superbomber', 346, 10494, 89.7],
-    ['BFM + High Drag', 320, 10912, 90.5],
-  ] as const)('%s at 10,000 ft and %i KIAS matches the drag run', (name, kias, ff, rpm) => {
-    const c = cruiseAt(p, 10000, machFromKcas(kias, 10000), dragFactor(p, name))
-    expect(c.ff).toBeGreaterThanOrEqual(ff * 0.99)
-    expect(c.ff).toBeLessThan(ff * 1.06)
-    expect(c.rpm!).toBeCloseTo(rpm, 0)
+  // Every loaded level point recorded (7.5 units AoA or less) comes back from the planner's lookup: from the
+  // category's own curve where it has two or more points in the band, else from the factor its one point gives.
+  const loaded = p.configs.flatMap((c) => (c.bands ?? []).flatMap((b) => b.points.map((q) => ({ name: c.name, alt: b.alt_ft, q }))))
+  it('has loaded curves for every drag category', () => {
+    expect(new Set(loaded.map((x) => x.name))).toEqual(new Set(dragCategories(p).filter((c) => c.factor !== 1).map((c) => c.name)))
+  })
+  it.each(loaded.map((x) => [x.name, x.alt, x.q.kias, x.q] as const))('%s at %i ft and %i KIAS matches the recorded point', (name, alt, kias, q) => {
+    const c = cruiseAt(p, alt, q.mach, dragOf(p, name))
+    expect(Math.abs(c.ff / q.ff - 1)).toBeLessThan(0.005)
+    expect(c.rpm!).toBeCloseTo(q.rpm!, 0)
+    expect(levelAtRpm(p, alt, q.rpm!, dragOf(p, name)).mach).toBeCloseTo(q.mach, 2)
+    void kias
+  })
+
+  it('between and beyond the loaded bands: interpolated, then the factor', () => {
+    // Between bands at the same Mach, as for the No Stores tables.
+    const bombs = dragOf(p, 'BFM and Bombs')
+    const at15 = cruiseAt(p, 15000, 0.75, bombs).ff
+    const at10 = cruiseAt(p, 10000, 0.75, bombs).ff
+    const at20 = cruiseAt(p, 20000, 0.75, bombs).ff
+    expect(at15).toBeGreaterThan(Math.min(at10, at20))
+    expect(at15).toBeLessThan(Math.max(at10, at20))
+    // 30,000 ft has no loaded run: the No Stores band with the overall factor.
+    const m30 = machFromKcas(300, 30000)
+    expect(cruiseAt(p, 30000, m30, bombs).ff).toBeCloseTo(cruiseAt(p, 30000, m30, dragFactor(p, 'BFM and Bombs')).ff, 6)
   })
 
   it('level speed at an RPM: 95 % at sea level is the escape speed; a loaded jet is slower at the same fuel flow', () => {
@@ -79,10 +92,10 @@ describe('F-4E tables', () => {
   })
 
   it('MIL climb and idle descent from the cumulative tables', () => {
-    expect(climb(p, 1000, 20000)).toMatchObject({ min: 4.37, nm: 40.1, lb: 1324, flags: [] })
-    expect(climb(p, 0, 20000).lb).toBe(1324)
+    expect(climb(p, 0, 20000)).toMatchObject({ min: 3.61, nm: 31.8, lb: 1135, flags: [] })
+    expect(climb(p, 1000, 20000).lb).toBe(1135 - 157)
     const loaded = climb(p, 1000, 20000, 1.47)
-    expect(loaded.lb).toBeCloseTo(1324 * Math.sqrt(1.47), 6)
+    expect(loaded.lb).toBeCloseTo((1135 - 157) * Math.sqrt(1.47), 6)
     expect(loaded.flags).toContain('est')
     expect(descent(p, 35000, 1000)).toMatchObject({ min: 6.09, nm: 38.9, lb: 164 })
     expect(climb(p, 20000, 10000).lb).toBe(0)
@@ -130,11 +143,14 @@ describe('F-4E route planning from the tables', () => {
     expect(leg.altFt).toBe(20000)
     expect(leg.kias).toBeCloseTo(292, 0)
     expect(leg.rpm!).toBeCloseTo(82.2, 0)
-    expect(leg.climb).toMatchObject({ fromFt: 240, toFt: 20000, lb: 1324 })
+    // The climb table starts at 0 ft: from field elevation, 240 ft of the first 1,000 ft row is already flown.
+    const climbLb = 1135 - 157 * 0.24
+    expect(leg.climb).toMatchObject({ fromFt: 240, toFt: 20000 })
+    expect(leg.climb!.lb).toBeCloseTo(climbLb, 6)
     expect(leg.descent).toBeNull()
     const cruiseMin = ((leg.nm - leg.climb!.nm) / leg.gs) * 60
     expect(leg.ete).toBeCloseTo(leg.climb!.min + cruiseMin, 6)
-    expect(leg.fuelUsed).toBeCloseTo(1324 + (leg.ff * cruiseMin) / 60, 6)
+    expect(leg.fuelUsed).toBeCloseTo(climbLb + (leg.ff * cruiseMin) / 60, 6)
     expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1115 - leg.fuelUsed, 6)
   })
 
@@ -189,11 +205,11 @@ describe('F-4E route planning from the tables', () => {
     expect(rows[1].loiter!.fuel).toBeCloseTo((want * 5) / 60, 6)
   })
 
-  it('bingo is flown at BFM Only drag, whatever the plan\'s drag category', () => {
+  it('bingo is flown at BFM No Tank drag, whatever the plan\'s drag category', () => {
     const at = (drag?: string) => fuelPlan(route, { ...s, drag })!
-    expect(at().profiles!.bingoDrag).toBe('BFM Only')
+    expect(at().profiles!.bingoDrag).toBe('BFM No Tank')
     expect(at('Superbomber').bingo).toBeCloseTo(at().bingo, 6)
-    expect(at('BFM Only').bingo).toBeCloseTo(at().bingo, 6)
+    expect(at('BFM No Tank').bingo).toBeCloseTo(at().bingo, 6)
     expect(at('Superbomber').joker).toBeGreaterThan(at().joker)
     expect(bingoDragOf({ ...defaultSettings('F-5E'), drag: 'SEAD' })).toBe('SEAD')
   })
