@@ -3,7 +3,10 @@ import { useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import { altAgl, altMsl, departureFuel, planTitle, phaseOf, type AttackRun, type Waypoint, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
+import { AIRCRAFT, JOKER_ESCAPE_RPM, altAgl, altMsl, departureFuel, planTitle, phaseOf, type AttackRun, type Waypoint, type FuelPlan,
+  type PlanSettings, type Row } from '../nav/plan'
+import { NO_STORES } from '../nav/perf'
+import { approx, ft, machText, powerText, speedText } from './perfLabels'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
 import { AttackCard, AttackPicture } from './Popup'
 import type { PopupResult } from '../nav/popup'
@@ -19,6 +22,8 @@ const EXPORT_SCALE = 2
 const ROWS_PER_PAGE = 10
 // A loiter line is about 40% of a waypoint's height on the page.
 const LOITER_ROW = 0.4
+// A climb / descent line under a leg (recorded data) is about a quarter of a waypoint's height.
+const CLIMB_ROW = 0.25
 
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
@@ -40,7 +45,7 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
   const pages: { first: number; rows: Row[] }[] = []
   let used = Infinity
   rows.forEach((r, i) => {
-    const h = 1 + (r.loiter ? LOITER_ROW : 0)
+    const h = 1 + (r.loiter ? LOITER_ROW : 0) + (r.leg?.climb || r.leg?.descent ? CLIMB_ROW : 0)
     if (used + h > ROWS_PER_PAGE) {
       pages.push({ first: i, rows: [] })
       used = 0
@@ -117,6 +122,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
   const lb = (n: number) => Math.round(n).toLocaleString('en-US')
   const lowFuel = (f: number) => (!fuel ? '' : f < fuel.bingo ? 'bingo' : f < fuel.joker ? 'joker' : '')
   const dep = departureFuel(s)
+  const perf = AIRCRAFT[s.aircraft].perf
   const beacons = [
     ...mission.tacans.map((t) => `${t.id} ${t.chan}`),
     ...(EXTRA_BEACONS[mission.mission.theatre] ?? []).map((b) => `${b.id} ${b.chan}`),
@@ -135,6 +141,8 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         <span><b>{Math.round(last.totalNm)}</b> nm</span>
         <span><b>{duration(last.elapsedAfter)}</b> enroute</span>
         <span>{s.windKt > 0 ? <>Wind <b>{heading3(s.windDir)}/{s.windKt}</b>T</> : 'No wind'}</span>
+        {perf && <span><b>{(s.drag ?? NO_STORES).toUpperCase()}</b></span>}
+        {perf && !!s.isaDev && <span>ISA <b>{s.isaDev > 0 ? '+' : ''}{s.isaDev}</b></span>}
       </div>
       <div class="kb-fuel">
         <div><small>START</small><b>{lb(s.startFuel)}</b></div>
@@ -142,6 +150,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         <div class="bingo"><small>BINGO</small><b>{fuel ? lb(fuel.bingo) : '—'}</b></div>
         <div><small>AT {fuel?.targetKind === 'CAP' ? 'CAP' : 'TGT'}</small><b>{fuel ? all[fuel.target].wp.name : '—'}</b></div>
       </div>
+      {fuel?.profiles && <FuelProfiles fuel={fuel} />}
       <div class="kb-strip"><small>TACAN</small> {beacons.join(' · ')}</div>
       <div class="kb-strip">
         <small>COMMS</small> {COMMON_COMMS.map((c) => `${COMM_SHORT[c.name] ?? c.name} ${c.freq}`).join(' · ')}
@@ -169,7 +178,8 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
                 <td class="n">{r.leg ? heading3(r.leg.magHeading) : ''}</td>
                 <td class="n">{r.leg ? r.leg.nm.toFixed(1) : ''}</td>
                 <td class="n kb-alt"><AltCell wp={r.wp} /></td>
-                <td>{r.leg ? powerLabel(r.leg, s) : ''}</td>
+                <td class="kb-pwr">{r.leg ? powerLabel(r.leg, s) : ''}
+                  {r.leg?.kias !== undefined && <div class="kb-alt2">{speedText(r.leg, r.wp)}</div>}</td>
                 <td class="n">{r.leg ? duration(r.leg.ete) : ''}</td>
                 <td class="n">{r.eta === null ? '' : clock(r.eta)}</td>
                 <td class="n">{lb(r.fuelRemaining)}</td>
@@ -181,6 +191,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
                   <span>INS {ddm(r.wp)}</span>
                   <span class="kb-dms">{dms(r.wp)}</span>
                   {r.wp.elevFt !== undefined && <span>ELEV {lb(r.wp.elevFt)}{r.wp.elevSource === 'dem' ? '≈' : ''}</span>}
+                  {(r.leg?.climb || r.leg?.descent) && <div class="kb-cd"><ClimbDescent leg={r.leg!} /></div>}
                 </td>
               </tr>
               {r.loiter && (
@@ -201,10 +212,19 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
         })}
       </table>
 
-      <div class="kb-foot">
-        MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
-        leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
-      </div>
+      {perf ? (
+        <div class="kb-foot">
+          MC/MH magnetic · ALT ft at the waypoint as planned, other reference below · PWR RPM to set (or MIL/AB) and speed for the leg,
+          ≈ approximate · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} max AB T/O;
+          legs include MIL climbs and idle descents (TOD = start descent, nm before the waypoint); fuel on arrival, OUT = leaving after
+          loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
+        </div>
+      ) : (
+        <div class="kb-foot">
+          MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
+          leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
+        </div>
+      )}
     </div>
   )
 }
@@ -255,6 +275,8 @@ function LegPage({ mission, rows, to, settings: s, fuel, terrain }: {
         <div><small>MH</small><b>{heading3(leg.magHeading)}°</b></div>
         <div><small>DIST</small><b>{leg.nm.toFixed(1)}</b></div>
         <div><small>GS / TAS</small><b>{Math.round(leg.gs)}</b><i>/{Math.round(leg.tas)}</i></div>
+        {leg.kias !== undefined && <div><small>{r.wp.speed?.unit === 'mach' ? 'MACH' : 'KIAS'}</small><b>{speedText(leg, r.wp).replace(' KIAS', '')}</b></div>}
+        {leg.kias !== undefined && <div><small>PWR</small><b>{powerText(leg)}{approx(leg.flags)}</b></div>}
         <div><small>ETE</small><b>{duration(leg.ete)}</b></div>
         <div><small>{r.eta === null ? 'ELAPSED' : 'ETA'}</small><b>{r.eta === null ? duration(r.elapsed) : clock(r.eta)}</b></div>
         <div><small>ALT</small><b class="kb-alt"><AltCell wp={r.wp} /></b></div>
@@ -262,6 +284,7 @@ function LegPage({ mission, rows, to, settings: s, fuel, terrain }: {
         {ground?.maxFt != null && <div><small>TERR ±{TERRAIN_CLEAR_NM}</small><b>{lb(ground.maxFt)}</b></div>}
       </div>
       <div class="kb-strip"><small>TO {to}</small> {fix(r.wp)}</div>
+      {(leg.climb || leg.descent) && <div class="kb-strip"><ClimbDescent leg={leg} long /></div>}
       {r.loiter && (
         <div class="kb-strip"><small>LOITER</small> {duration(r.loiter.min)} {r.loiter.phase ? r.loiter.phase.short : `${lb(r.loiter.ff)} lb/hr`},
           out with {lb(r.fuelAfter)} lb{s.takeoff === undefined ? '' : ` at ${clock(s.takeoff + r.elapsedAfter * 60)}`}</div>
@@ -320,7 +343,39 @@ function AltCell({ wp }: { wp: Waypoint }) {
   )
 }
 
+/** Climb at the start of a leg and descent at its end (recorded data). */
+function ClimbDescent({ leg, long }: { leg: NonNullable<Row['leg']>; long?: boolean }) {
+  const lb = (n: number) => ft(n)
+  return (
+    <>
+      {leg.climb && <span><b>MIL CLIMB</b> {ft(leg.climb.fromFt)}→{ft(leg.climb.toFt)} {duration(leg.climb.min)}{long ? ` · ${leg.climb.nm.toFixed(0)} nm · ${lb(leg.climb.lb)} lb` : ''}</span>}
+      {long && leg.climb && leg.descent && ' · '}
+      {leg.descent && <span><b>TOD {Math.round(leg.descent.nm)} nm</b> idle to {ft(leg.descent.toFt)}{long ? ` · ${duration(leg.descent.min)} · ${lb(leg.descent.lb)} lb` : ''}</span>}
+    </>
+  )
+}
+
+/** Bingo and joker profiles, one line each, under the fuel boxes. */
+function FuelProfiles({ fuel }: { fuel: FuelPlan }) {
+  const { bingo: b, joker: j, reserve } = fuel.profiles!
+  const climbTo = (h: typeof b) => (h.climb ? `MIL CLIMB ${ft(h.altFt)}` : `${ft(h.altFt)}`)
+  return (
+    <>
+      <div class="kb-strip">
+        <small>BINGO</small> {fuel.profiles!.bingoDrag.toUpperCase()} · {climbTo(b)} · {Math.round(b.kias)} KIAS {b.rpm != null ? `${b.rpm.toFixed(1)}%` : ''}{approx(b.flags)}
+        {b.descent ? ` · TOD ${Math.round(b.descent.nm)} nm` : ''} · +{ft(reserve)} RES
+      </div>
+      <div class="kb-strip">
+        <small>JOKER</small> {j.loiter > 0 ? 'LOITER + ' : ''}1 MIN AB · {Math.round(j.escape.nm)} nm {JOKER_ESCAPE_RPM}% LOW ({Math.round(j.escape.kias)} KIAS)
+        · {climbTo(j.home)} {JOKER_ESCAPE_RPM}% {machText(j.home.mach)}{approx([...j.escape.flags, ...j.home.flags])}
+        {j.home.descent ? ` · TOD ${Math.round(j.home.descent.nm)} nm` : ''} · +{ft(reserve)} RES
+      </div>
+    </>
+  )
+}
+
 function powerLabel(leg: NonNullable<Row['leg']>, s: PlanSettings): string {
+  if (leg.kias !== undefined) return `${powerText(leg)}${approx(leg.flags)}`
   const main = leg.phase ? leg.phase.short : `${Math.round(leg.ff)}`
   return leg.climbMin > 0 ? `${phaseOf(s.aircraft, 'mil').short}/${main}` : main
 }

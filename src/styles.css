@@ -83,6 +83,12 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .route .marks label { display: flex; align-items: center; gap: 3px; }
 .route .marks input { width: auto; margin: 0; }
 .route .actions { display: flex; flex-direction: column; gap: 2px; }
+.route .speed { display: flex; gap: 4px; align-items: center; }
+.route .speed input.num { min-width: 64px; max-width: 80px; }
+.route .speed select { width: auto; }
+.route .plan-cell { white-space: nowrap; font-size: 12px; min-width: 150px; }
+.warn-text { color: #a4161a; }
+.kb-pwr { white-space: nowrap; }
 .actions { white-space: nowrap; }
 .actions button { padding: 2px 8px; }
 
@@ -162,6 +168,7 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .kb-near { font-weight: 400; font-size: 12px; color: #333; }
 .kb-sub td { font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; padding-bottom: 5px; }
 .kb-sub span { margin-right: 18px; white-space: nowrap; }
+.kb-cd { margin-top: 1px; }
 .kb-tacan { font-weight: 700; }
 .kb-dms { color: #444; }
 .kb-loiter td { font-size: 14px; padding-bottom: 5px; border-top: 1px dashed #000; }

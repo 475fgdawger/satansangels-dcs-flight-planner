@@ -14,7 +14,11 @@ radial/DME fix and coordinates for every waypoint.
    there, or drag a waypoint to move it. The map shows threat rings (approximate), TACAN DME rings and
    the TACAN fix under the cursor, plus the mission editor's drawings (one overlay per draw layer) when
    the bot export includes them.
-3. Set aircraft, takeoff time, fuel, TAS and wind. Per-leg TAS and fuel flow can be overridden.
+3. Set aircraft, takeoff time, fuel and wind. For the F-4E (recorded performance data, see below) also set the
+   drag category and temperature, then an altitude at each waypoint and, if you want other than the default, a speed
+   (KIAS or Mach) for each leg. The planner works out the RPM to set, fuel flow, MIL climbs and idle descents (with
+   top of descent), and joker and bingo. Per-leg fuel flow can be overridden. Aircraft without recorded data use a
+   TAS and a fixed fuel flow per phase.
 4. Save the nav log as kneeboard PNGs (3:4 portrait, 1536x2048, one per page) or a PDF, or print it. A strip map page per
    leg follows the nav log: course up, with MC/MH, distance, GS, ETE, altitude and fuel, distance-to-go and time ticks,
    a TACAN radial/DME checkpoint at each tick, threat rings, TACANs, airfields and the mission drawings.
@@ -41,7 +45,30 @@ These match the bot's target list, and the tests check them against a real expor
 - Nearby reference: `8 nm NNW of Aleppo` (16-point compass, mag var at the point).
 - MC/MH on each leg use the mag var at the leg's start point, interpolated from DCS's values in the export.
 
-Fuel defaults per aircraft are placeholder estimates, not flight-manual data.
+## Performance data
+
+`src/data/perf/<aircraft>.json` is recorded in DCS with dcs-perf-recorder (`perfrec.py export` writes
+`out/planner/<aircraft>.app.json`; copy it here). It holds the same numbers as the squadron performance manual:
+
+- **Level cruise**: No Stores level points per altitude band (sea level to 35,000 ft), standard day, with RPM.
+  Lookups interpolate along Mach and between bands; flags mark interpolation across wide gaps (≈) and speeds
+  above max level / below min level.
+- **Drag categories**: a factor per category from loaded runs at 10,000 ft. A loaded jet at a speed uses the
+  No Stores fuel flow and RPM at KIAS × √factor (the loaded jet holds KIAS / √factor at the same RPM).
+- **Temperature**: at the same Mach and pressure altitude, TAS, fuel flow and RPM scale with √(T / T std).
+- **Climb / descent**: MIL climb and idle descent tables; loaded climbs are the No Stores climb × √factor (estimate,
+  flagged, until a loaded climb is recorded).
+- **MIL / max AB** fuel flow points, ground idle and the max AB takeoff to 400 KIAS.
+
+Joker and bingo with recorded data (fuel states at the TGT or CAP):
+
+- **Bingo**: MIL climb to the altitude (up to the bingo ceiling) that needs the least fuel home, cruise at 7.5 units
+  AoA, idle descent, plus the 3,000 lb landing reserve. Always at BFM Only drag (stores gone, missiles and tank kept),
+  whatever the plan's drag category.
+- **Joker**: the planned loiter, 1 min max AB, 30 nm escape at 95 % RPM at 500 ft above the target, MIL climb to
+  20,000 ft, home at 95 % RPM, idle descent, plus the reserve. Never below bingo.
+
+F-5E and F-100D fuel defaults are placeholder estimates, not flight-manual data.
 
 ## Development
 
