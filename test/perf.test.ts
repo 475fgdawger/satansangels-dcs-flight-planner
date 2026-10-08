@@ -3,7 +3,7 @@ import raw from './fixtures/targets_syria.json'
 import { airfields, parseMission } from '../src/nav/mission'
 import { isaTempK, kcasFromMach, ktasFromMach, machFromKcas } from '../src/nav/atmo'
 import { PERF, bestRangeKias, climb, cruiseAt, descent, dragCategories, dragFactor, levelAtRpm, powerFf } from '../src/nav/perf'
-import { AIRCRAFT, computeRows, defaultSettings, fuelPlan, routeAltitudes, type Waypoint } from '../src/nav/plan'
+import { AIRCRAFT, bingoDragOf, bingoProfile, computeRows, defaultSettings, fuelPlan, routeAltitudes, type Waypoint } from '../src/nav/plan'
 
 const m = parseMission(raw)
 const p = PERF['F-4E']!
@@ -175,6 +175,15 @@ describe('F-4E route planning from the tables', () => {
     expect(rows[1].loiter!.fuel).toBeCloseTo((want * 5) / 60, 6)
   })
 
+  it('bingo is flown at BFM Only drag, whatever the plan\'s drag category', () => {
+    const at = (drag?: string) => fuelPlan(route, { ...s, drag })!
+    expect(at().profiles!.bingoDrag).toBe('BFM Only')
+    expect(at('Superbomber').bingo).toBeCloseTo(at().bingo, 6)
+    expect(at('BFM Only').bingo).toBeCloseTo(at().bingo, 6)
+    expect(at('Superbomber').joker).toBeGreaterThan(at().joker)
+    expect(bingoDragOf({ ...defaultSettings('F-5E'), drag: 'SEAD' })).toBe('SEAD')
+  })
+
   it('bingo: best-range return plus the landing reserve, up to the ceiling', () => {
     const f = fuelPlan(route, s, computeRows(m, route, s))!
     const b = f.profiles!.bingo
@@ -183,8 +192,8 @@ describe('F-4E route planning from the tables', () => {
     expect(b.altFt).toBeGreaterThanOrEqual(20000)
     expect(b.kias).toBeCloseTo(bestRangeKias(p, b.altFt)!, 0)
     expect(b.descent!.toFt).toBe(240)
-    // A Superbomber can't hold 7.5 units level up high: the bingo stays where it can.
-    const heavy = fuelPlan(route, { ...s, drag: 'Superbomber' })!.profiles!.bingo
+    // A Superbomber can't hold 7.5 units level up high: a bingo profile at that drag stays where it can.
+    const heavy = bingoProfile(p, { ...s, drag: 'Superbomber' }, 20000, 240, f.rtbNm, 107)
     expect(heavy.flags).not.toContain('fast')
     expect(heavy.altFt).toBeLessThan(35000)
     const capped = fuelPlan(route, { ...s, bingoCapFt: 22000 })!.profiles!.bingo
@@ -214,7 +223,7 @@ describe('F-4E route planning from the tables', () => {
     expect(f.joker).toBeGreaterThan(f.bingo)
     const loaded = fuelPlan(r, { ...s, drag: 'Superbomber' }, computeRows(m, r, { ...s, drag: 'Superbomber' }))!
     expect(loaded.joker).toBeGreaterThan(f.joker)
-    expect(loaded.bingo).toBeGreaterThan(f.bingo)
+    expect(loaded.bingo).toBeCloseTo(f.bingo, 6)
     expect(fuelPlan(r, { ...s, jokerOverride: 9000 }, rows)!.joker).toBe(9000)
   })
 

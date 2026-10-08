@@ -450,7 +450,7 @@ function JokerBingo({ fuel, where }: { fuel: FuelPlan; where: string }) {
         Joker and bingo are fuel states at {at}, {fuel.rtbNm.toFixed(0)} nm from base, plus a {ft(reserve)} lb landing reserve.
       </p>
       <p class="muted small" title={flagTitle(b.flags)}>
-        <b>Bingo {ft(fuel.calc.bingo)}</b>: {b.climb ? `MIL climb to ${ft(b.altFt)} ft` : `stay at ${ft(b.altFt)} ft`},
+        <b>Bingo {ft(fuel.calc.bingo)}</b> (at {fuel.profiles!.bingoDrag} drag): {b.climb ? `MIL climb to ${ft(b.altFt)} ft` : `stay at ${ft(b.altFt)} ft`},
         {' '}{Math.round(b.kias)} KIAS / {machText(b.mach)}{b.rpm != null ? ` (${b.rpm.toFixed(1)}%)` : ''} at 7.5 units
         {tod(b.descent?.nm)}: {ft(b.fuel)} lb{approx(b.flags)} + reserve.
       </p>

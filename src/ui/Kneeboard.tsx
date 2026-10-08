@@ -362,7 +362,7 @@ function FuelProfiles({ fuel }: { fuel: FuelPlan }) {
   return (
     <>
       <div class="kb-strip">
-        <small>BINGO</small> {climbTo(b)} · {Math.round(b.kias)} KIAS {b.rpm != null ? `${b.rpm.toFixed(1)}%` : ''}{approx(b.flags)}
+        <small>BINGO</small> {fuel.profiles!.bingoDrag.toUpperCase()} · {climbTo(b)} · {Math.round(b.kias)} KIAS {b.rpm != null ? `${b.rpm.toFixed(1)}%` : ''}{approx(b.flags)}
         {b.descent ? ` · TOD ${Math.round(b.descent.nm)} nm` : ''} · +{ft(reserve)} RES
       </div>
       <div class="kb-strip">

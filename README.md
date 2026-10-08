@@ -63,7 +63,8 @@ These match the bot's target list, and the tests check them against a real expor
 Joker and bingo with recorded data (fuel states at the TGT or CAP):
 
 - **Bingo**: MIL climb to the altitude (up to the bingo ceiling) that needs the least fuel home, cruise at 7.5 units
-  AoA, idle descent, plus the 3,000 lb landing reserve.
+  AoA, idle descent, plus the 3,000 lb landing reserve. Always at BFM Only drag (stores gone, missiles and tank kept),
+  whatever the plan's drag category.
 - **Joker**: the planned loiter, 1 min max AB, 30 nm escape at 95 % RPM at 500 ft above the target, MIL climb to
   20,000 ft, home at 95 % RPM, idle descent, plus the reserve. Never below bingo.
 

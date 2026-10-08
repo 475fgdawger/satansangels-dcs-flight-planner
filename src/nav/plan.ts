@@ -6,7 +6,7 @@ import { inverse, norm360 } from './geodesy'
 import { catalog, magVarAt } from './mission'
 import type { LatLon, MissionExport } from './types'
 import { kcasFromMach, ktasFromMach, machFromKcas, speedOfSoundKt } from './atmo'
-import { PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, levelAtRpm, powerFf, type ClimbDescent, type PerfData,
+import { NO_STORES, PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, levelAtRpm, powerFf, type ClimbDescent, type PerfData,
   type PerfFlag } from './perf'
 import { DEFAULT_INGRESS_AGL, type PopupInputs, type PopupSettings } from './popup'
 
@@ -42,6 +42,8 @@ export interface AircraftProfile {
   placeholder: boolean
   /** Recorded performance data (level cruise, climb, descent, MIL / AB, drag categories). */
   perf?: PerfData
+  /** Drag category the bingo is flown at, whatever the plan's category (stores gone, missiles and tank kept). */
+  bingoDrag?: string
 }
 
 /** Leg phases for aircraft with recorded data: fuel flow and RPM come from the tables. */
@@ -72,6 +74,8 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
     bingoFloor: 3000,
     placeholder: false,
     perf: PERF['F-4E'],
+    // Squadron (2026-10-08): bingo at BFM Only drag. A missiles-only (no centerline tank) category may follow.
+    bingoDrag: 'BFM Only',
   },
   'F-5E': {
     id: 'F-5E',
@@ -559,6 +563,8 @@ export interface FuelPlan {
   /** The profiles behind joker and bingo (recorded data). */
   profiles?: {
     reserve: number
+    /** Drag category the bingo was worked out at. */
+    bingoDrag: string
     bingo: HomeProfile
     joker: {
       loiter: number
@@ -567,6 +573,13 @@ export interface FuelPlan {
       home: HomeProfile
     }
   }
+}
+
+/** The drag category the bingo uses: the aircraft's bingo category when the data has it, else the plan's. */
+export function bingoDragOf(s: PlanSettings): string {
+  const a = AIRCRAFT[s.aircraft]
+  const known = a.perf?.configs.some((c) => c.name === a.bingoDrag && c.factor !== null)
+  return (known ? a.bingoDrag : undefined) ?? s.drag ?? NO_STORES
 }
 
 /** Escape distance in the joker definition, nm. */
@@ -583,7 +596,7 @@ export const JOKER_AB_MIN = 1
  *
  * With recorded data (rows give the planned loiter there):
  * - Bingo: the best-range return (climb to the best altitude up to the cap, 7.5 units AoA, idle descent) plus the
- *   landing reserve.
+ *   landing reserve, at the aircraft's bingo drag category (F-4E: BFM Only) whatever the plan's category.
  * - Joker: the planned loiter, 1 minute of max AB, a 30 nm escape at 95 % RPM at 500 ft above the target, a MIL climb
  *   to 20,000 ft, home at 95 % RPM, idle descent, plus the landing reserve. Never below bingo.
  *
@@ -616,7 +629,8 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings, rows?: Row[]): Fuel
     const alts = routeAltitudes(route)
     const baseFt = alts[alts.length - 1]
     const reserve = a.bingoFloor
-    const home = bingoProfile(p, s, alts[target], baseFt, rtbNm, az)
+    const bingoDrag = bingoDragOf(s)
+    const home = bingoProfile(p, { ...s, drag: bingoDrag }, alts[target], baseFt, rtbNm, az)
     const bingo = home.fuel + reserve
     const loiter = rows?.[target]?.loiter?.fuel ?? 0
     const ab = (powerFf(p, 'ABMAX', alts[target], rows?.[target]?.leg?.mach ?? 0.9) * JOKER_AB_MIN) / 60
@@ -635,6 +649,7 @@ export function fuelPlan(route: Waypoint[], s: PlanSettings, rows?: Row[]): Fuel
       calc: { rtbFuel: home.fuel, bingo, abLoiter: ab, abEgress: escFuel, cruiseHome: back.fuel, joker },
       profiles: {
         reserve,
+        bingoDrag,
         bingo: home,
         joker: { loiter, ab, home: back,
           escape: { altFt: escFt, nm: escNm, kias: kcasFromMach(esc.mach, escFt), ktas: escKtas, rpm: JOKER_ESCAPE_RPM, ff: esc.ff,
