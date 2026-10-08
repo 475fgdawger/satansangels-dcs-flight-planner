@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import type { LatLon, MissionExport, Target } from '../nav/types'
 import { ddm, heading3 } from '../nav/format'
 import { airfields, magVarAt, nearRef, runwayPairs, tacanFix, M_TO_FT, type PointKind } from '../nav/mission'
-import type { Row, Waypoint } from '../nav/plan'
+import { carryLegData, type Row, type Waypoint } from '../nav/plan'
 import { boundsOf, drawingLayers, insertIndex, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
 import { drawingLayer } from './drawings'
 
@@ -145,7 +145,8 @@ export function MapPanel({ mission, route, rows, onRoute }: {
 
   function addWaypoint(wp: Waypoint, at?: number) {
     const { route: r, onRoute: set } = live.current
-    set(at === undefined ? [...r, wp] : [...r.slice(0, at), wp, ...r.slice(at)])
+    const i = at ?? r.length
+    set([...r.slice(0, i), carryLegData(r, i, wp), ...r.slice(i)])
   }
 
   // Add appends to the route; Insert puts the point into the leg it lengthens least (once there is a leg).

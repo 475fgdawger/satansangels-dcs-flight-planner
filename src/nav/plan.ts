@@ -186,6 +186,25 @@ export function routeAltitudes(route: Waypoint[]): number[] {
   return out
 }
 
+/**
+ * A waypoint added at index `at` takes the planned altitude and phase from the waypoints before it (the nearest
+ * typed altitude after takeoff, and the waypoint before's phase), so the next leg carries on as planned. Airfields
+ * are left blank: as the last waypoint that means landing at field elevation, mid-route it carries on anyway.
+ */
+export function carryLegData(route: Waypoint[], at: number, wp: Waypoint): Waypoint {
+  if (at < 1 || wp.source === 'airfield') return wp
+  const out = { ...wp }
+  if (out.alt === undefined) {
+    for (let i = Math.min(at, route.length) - 1; i >= 1; i--) {
+      const alt = route[i].alt
+      if (alt?.ft !== undefined) { out.alt = { ...alt }; break }
+    }
+  }
+  const phase = route[Math.min(at, route.length) - 1]?.phase
+  if (out.phase === undefined && phase !== undefined) out.phase = phase
+  return out
+}
+
 export interface PlanSettings {
   aircraft: AircraftId
   startFuel: number
