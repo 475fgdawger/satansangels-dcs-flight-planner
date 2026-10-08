@@ -3,7 +3,7 @@ import raw from './fixtures/targets_syria.json'
 import { airfields, parseMission } from '../src/nav/mission'
 import { isaTempK, kcasFromMach, ktasFromMach, machFromKcas } from '../src/nav/atmo'
 import { PERF, bestRangeKias, climb, cruiseAt, descent, dragCategories, dragFactor, levelAtRpm, powerFf } from '../src/nav/perf'
-import { AIRCRAFT, bingoDragOf, bingoProfile, computeRows, defaultSettings, fuelPlan, routeAltitudes, type Waypoint } from '../src/nav/plan'
+import { AIRCRAFT, bingoDragOf, bingoProfile, carryLegData, computeRows, defaultSettings, fuelPlan, routeAltitudes, type Waypoint } from '../src/nav/plan'
 
 const m = parseMission(raw)
 const p = PERF['F-4E']!
@@ -110,6 +110,20 @@ describe('F-4E route planning from the tables', () => {
     expect(routeAltitudes([home, { ...tgt, alt: { ft: 500, ref: 'agl' } }, home])).toEqual([240, 2000, 240])
   })
 
+  it('a new waypoint takes the altitude and phase from the one before; airfields stay blank', () => {
+    const r: Waypoint[] = [home, { ...tgt, phase: 'mil' }]
+    const pt: Waypoint = { id: 'n', name: 'WP3', source: 'manual', lat: 36, lon: 36 }
+    expect(carryLegData(r, 2, pt)).toMatchObject({ alt: { ft: 20000, ref: 'msl' }, phase: 'mil' })
+    // Nearest typed altitude, skipping blanks; the takeoff field's own altitude doesn't carry.
+    const blank = [...r, { ...pt, id: 'b2', alt: undefined, phase: undefined }]
+    expect(carryLegData(blank, 3, pt).alt).toEqual({ ft: 20000, ref: 'msl' })
+    expect(carryLegData([{ ...home, alt: { ft: 240, ref: 'msl' } }], 1, pt).alt).toBeUndefined()
+    // Typed values on the new waypoint win; inserting mid-route copies from the waypoint before the slot.
+    expect(carryLegData(r, 2, { ...pt, alt: { ft: 500, ref: 'agl' } }).alt).toEqual({ ft: 500, ref: 'agl' })
+    expect(carryLegData(r, 1, pt)).toEqual(pt)
+    expect(carryLegData(r, 2, { ...home, id: 'z' })).toEqual({ ...home, id: 'z' })
+  })
+
   it('climb leg: MIL climb at the start, then cruise at 7.5 units', () => {
     const rows = computeRows(m, route, s)
     const leg = rows[1].leg!
@@ -121,7 +135,7 @@ describe('F-4E route planning from the tables', () => {
     const cruiseMin = ((leg.nm - leg.climb!.nm) / leg.gs) * 60
     expect(leg.ete).toBeCloseTo(leg.climb!.min + cruiseMin, 6)
     expect(leg.fuelUsed).toBeCloseTo(1324 + (leg.ff * cruiseMin) / 60, 6)
-    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1028 - leg.fuelUsed, 6)
+    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1115 - leg.fuelUsed, 6)
   })
 
   it('descent leg: cruise high, idle descent at the end with the top of descent', () => {

@@ -186,6 +186,25 @@ export function routeAltitudes(route: Waypoint[]): number[] {
   return out
 }
 
+/**
+ * A waypoint added at index `at` takes the planned altitude and phase from the waypoints before it (the nearest
+ * typed altitude after takeoff, and the waypoint before's phase), so the next leg carries on as planned. Airfields
+ * are left blank: as the last waypoint that means landing at field elevation, mid-route it carries on anyway.
+ */
+export function carryLegData(route: Waypoint[], at: number, wp: Waypoint): Waypoint {
+  if (at < 1 || wp.source === 'airfield') return wp
+  const out = { ...wp }
+  if (out.alt === undefined) {
+    for (let i = Math.min(at, route.length) - 1; i >= 1; i--) {
+      const alt = route[i].alt
+      if (alt?.ft !== undefined) { out.alt = { ...alt }; break }
+    }
+  }
+  const phase = route[Math.min(at, route.length) - 1]?.phase
+  if (out.phase === undefined && phase !== undefined) out.phase = phase
+  return out
+}
+
 export interface PlanSettings {
   aircraft: AircraftId
   startFuel: number
@@ -244,8 +263,9 @@ export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSet
 
 /**
  * Departure fuel burned before the first waypoint: taxi at ground idle, then full afterburner for takeoff and
- * acceleration to 400 kt. With recorded data the takeoff figure is the recorded max AB takeoff and climbs are
- * part of each leg; without, a fixed MIL climb is flown at the start of the first leg.
+ * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS, then the MIL climb is
+ * part of the first leg. Without: AB for a set time (to about 400 kt), then a fixed MIL climb at the start of the
+ * first leg.
  */
 export function departureFuel(s: PlanSettings): { taxi: number; takeoff: number; climb: number; beforeFirstLeg: number; total: number } {
   const a = AIRCRAFT[s.aircraft]

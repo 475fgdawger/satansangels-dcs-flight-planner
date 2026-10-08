@@ -107,13 +107,14 @@ describe('legs', () => {
     { id: 'c', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
   ]
 
-  it('F-4E departure: taxi at the recorded ground idle and the recorded max AB takeoff to 400 KIAS', () => {
+  it('F-4E departure: taxi at the recorded ground idle and the recorded max AB takeoff to 450 KIAS', () => {
     const d = departureFuel(defaultSettings('F-4E', 43200))
     expect(AIRCRAFT['F-4E'].idleLbMin).toBe(38.3)
+    expect(AIRCRAFT['F-4E'].perf!.ground.takeoff).toMatchObject({ kias: 450, lb: 732, nm: 2.2 })
     expect(d.taxi).toBeCloseTo(383, 6)
-    expect(d.takeoff).toBe(645)
+    expect(d.takeoff).toBe(732)
     expect(d.climb).toBe(0)
-    expect(d.total).toBeCloseTo(1028, 6)
+    expect(d.total).toBeCloseTo(1115, 6)
   })
 
   it('without recorded data (F-5E): fixed flows, with the MIL climb on the first leg', () => {

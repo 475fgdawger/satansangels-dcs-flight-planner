@@ -5,7 +5,7 @@ import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
-  WAYPOINT_TAGS, altAgl, altMsl, attackRun, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
+  WAYPOINT_TAGS, altAgl, altMsl, attackRun, carryLegData, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
   fuelPlan, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
   type Row, type Waypoint } from '../nav/plan'
 import { NO_STORES, dragCategories } from '../nav/perf'
@@ -405,8 +405,9 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
       </div>
       {perf ? (
         <p class="muted small">
-          Departure: {ft(dep.total)} lb = {ft(dep.taxi)} taxi + {ft(dep.takeoff)} max AB takeoff to 400 KIAS. Climbs (MIL)
-          and descents (idle) are flown in the legs: the altitude column is the altitude at each waypoint.
+          Departure: {ft(dep.total)} lb = {ft(dep.taxi)} taxi + {ft(dep.takeoff)} max AB from brake release
+          to {perf.ground.takeoff?.kias ?? 450} KIAS, then a MIL climb on the first leg. Climbs (MIL) and descents (idle) are
+          flown in the legs: the altitude column is the altitude at each waypoint (crossing altitude).
         </p>
       ) : (
         <p class="muted small">
@@ -498,7 +499,7 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
       setHint('Not found. Pick from the list, or type a TACAN fix (DAN 287/99) or coordinates (N37 37.05 E033 30.65).')
       return
     }
-    onChange([...route, wp])
+    onChange([...route, carryLegData(route, route.length, wp)])
     setText('')
     setHint(null)
   }
@@ -528,15 +529,30 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
         <div class="route-wrap">
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th>{perf
+            <tr><th>#</th><th>Name</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th>{perf
               ? <><th title="Planned speed for the leg in: KIAS, or Mach. Blank = 7.5 units AoA at 20,000 ft and up, else the low-level speed.">Speed in</th><th title="Power to set and fuel flow for the leg in, from the performance tables. Hover for notes.">Plan</th></>
-              : <th>TAS in (kt)</th>}<th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
+              : <th>TAS in (kt)</th>}<th title="Hold at this waypoint before the next leg">Loiter (min)</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
               <tr key={w.id}>
                 <td>{i}</td>
                 <td><input value={w.name} onInput={(e) => update(i, { name: (e.target as HTMLInputElement).value })} /></td>
+                <td>
+                  <div class="marks">
+                    {WAYPOINT_TAGS.map((tag) => (
+                      <label key={tag}>
+                        <input type="checkbox" checked={w.tags?.includes(tag) ?? false}
+                          onChange={(e) => {
+                            const on = (e.target as HTMLInputElement).checked
+                            const tags = WAYPOINT_TAGS.filter((t) => (t === tag ? on : w.tags?.includes(t)))
+                            update(i, { tags: tags.length ? tags : undefined })
+                          }} />
+                        {tag}
+                      </label>
+                    ))}
+                  </div>
+                </td>
                 <td class="muted">{w.source === 'manual' ? 'Typed' : kindLabel(w.source as CatalogPoint['kind'])}</td>
                 <td><input type="number" class="elev" value={w.elevFt ?? ''} placeholder="MSL"
                   title={elevTitle(w)}
@@ -563,7 +579,7 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
                     </div>
                   </div>
                 </td>
-                <td>{i > 0 && (
+                <td class="phase">{i > 0 && (
                   <select value={w.phase ?? ''} disabled={w.ff !== undefined}
                     onChange={(e) => {
                       const v = (e.target as HTMLSelectElement).value
@@ -604,21 +620,6 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
                     </>}
                   </div>
                 )}</td>
-                <td>
-                  <div class="marks">
-                    {WAYPOINT_TAGS.map((tag) => (
-                      <label key={tag}>
-                        <input type="checkbox" checked={w.tags?.includes(tag) ?? false}
-                          onChange={(e) => {
-                            const on = (e.target as HTMLInputElement).checked
-                            const tags = WAYPOINT_TAGS.filter((t) => (t === tag ? on : w.tags?.includes(t)))
-                            update(i, { tags: tags.length ? tags : undefined })
-                          }} />
-                        {tag}
-                      </label>
-                    ))}
-                  </div>
-                </td>
                 <td>
                   <div class="actions">
                     <button type="button" title="Move up" onClick={() => move(i, -1)}>↑</button>
