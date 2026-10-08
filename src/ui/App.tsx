@@ -4,8 +4,13 @@ import { loadTerrain } from './terrain'
 import type { MissionExport } from '../nav/types'
 import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
-import { AIRCRAFT, WAYPOINT_TAGS, altAgl, altMsl, attackRun, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel, fuelPlan, phaseOf, type AircraftId, type FuelPlan, type PhaseId,
-  type PlanSettings, type Waypoint } from '../nav/plan'
+import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
+  WAYPOINT_TAGS, altAgl, altMsl, attackRun, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
+  fuelPlan, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
+  type Row, type Waypoint } from '../nav/plan'
+import { NO_STORES, dragCategories } from '../nav/perf'
+import { machFromKcas } from '../nav/atmo'
+import { approx, flagTitle, ft, machText, powerText } from './perfLabels'
 import { Kneeboard } from './Kneeboard'
 import { PopupPanel } from './Popup'
 import { MapPanel } from './MapPanel'
@@ -179,7 +184,7 @@ export function App() {
     && e.built_utc > mission.built_utc) : undefined
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
-  const fuel = useMemo(() => (settings ? fuelPlan(route, settings) : null), [route, settings])
+  const fuel = useMemo(() => (settings ? fuelPlan(route, settings, rows) : null), [route, settings, rows])
   // Waypoints with no elevation get one from the terrain lookup; each is tried once per visit.
   const tried = useRef(new Set<string>())
   useEffect(() => {
@@ -195,7 +200,7 @@ export function App() {
       .catch(() => { /* offline or blocked: elevations stay blank and can be typed */ })
   }, [route])
 
-  const run = useMemo(() => (mission && settings ? attackRun(mission, route, settings) : null), [mission, route, settings])
+  const run = useMemo(() => (mission && settings ? attackRun(mission, route, settings, rows) : null), [mission, route, settings, rows])
   const attack = useMemo(() => (run && settings ? popupAttack(popupInputs(run, settings.popup ?? defaultPopup())) : null),
     [run, settings])
 
@@ -261,7 +266,7 @@ export function App() {
       {mission && settings && (
         <>
           <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} onChange={setSettings} />
-          <RoutePanel mission={mission} route={route} settings={settings} onChange={setRoute} />
+          <RoutePanel mission={mission} route={route} rows={rows} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
           <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} terrain={terrain} />
@@ -296,6 +301,20 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
       <small>{s[key] === undefined ? 'lb, calculated' : 'lb, typed (clear to calculate)'}</small>
     </label>
   )
+  /** A setting left blank to use its default; the placeholder shows the default. */
+  const optional = (label: string, key: 'isaDev' | 'lowKias' | 'bingoCapFt', def: number, unit: string, signed = false) => (
+    <label class="field">
+      <span>{label}</span>
+      <input type="number" step="any" value={s[key] ?? ''} placeholder={String(def)}
+        onInput={(e) => {
+          const v = (e.target as HTMLInputElement).value
+          set({ [key]: signed ? optElev(v) : optNum(v) })
+        }} />
+      <small>{unit}</small>
+    </label>
+  )
+  const perf = a.perf
+  const dep = departureFuel(s)
   const load = a.fuelLoads.find((l) => l.lb === s.startFuel)
   return (
     <section class="panel no-print">
@@ -319,7 +338,7 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
           <span>Aircraft</span>
           <select value={s.aircraft}
             onChange={(e) => onChange({ ...defaultSettings((e.target as HTMLSelectElement).value as AircraftId, s.takeoff),
-              windDir: s.windDir, windKt: s.windKt, targetId: s.targetId, title: s.title, callsign: s.callsign })}>
+              windDir: s.windDir, windKt: s.windKt, targetId: s.targetId, title: s.title, callsign: s.callsign, isaDev: s.isaDev })}>
             {Object.keys(AIRCRAFT).map((id) => <option value={id}>{id}</option>)}
           </select>
         </label>
@@ -347,27 +366,57 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
         </label>
         {field('Start fuel', 'startFuel', 'lb')}
         {field('Taxi', 'taxiMin', `min at idle (${a.idleLbMin} lb/min)`)}
-        {field('AB takeoff', 'abTakeoffMin', 'min, full AB to 400 kt')}
-        {field('MIL climb', 'climbMin', 'min, start of first leg')}
-        {field('Cruise TAS', 'tas', 'kt')}
+        {perf ? (
+          <>
+            <label class="field span2">
+              <span>Drag category</span>
+              <select value={s.drag ?? NO_STORES}
+                onChange={(e) => {
+                  const v = (e.target as HTMLSelectElement).value
+                  set({ drag: v === NO_STORES ? undefined : v })
+                }}>
+                {dragCategories(perf).map((c) => <option value={c.name}>{c.name} (drag x{c.factor.toFixed(2)})</option>)}
+              </select>
+              <small>{dragCategories(perf).find((c) => c.name === (s.drag ?? NO_STORES))?.loadout
+                ?? 'pick the category nearest your stores; between two, the higher drag'}</small>
+            </label>
+            {optional('Temperature', 'isaDev', 0, '°C from ISA (0 = standard day)', true)}
+            {optional('Low-level speed', 'lowKias', DEFAULT_LOW_KIAS, 'KIAS, default for legs below 20,000 ft')}
+            {optional('Bingo ceiling', 'bingoCapFt', DEFAULT_BINGO_CAP_FT, 'ft, highest altitude for the bingo profile')}
+          </>
+        ) : (
+          <>
+            {field('AB takeoff', 'abTakeoffMin', 'min, full AB to 400 kt')}
+            {field('MIL climb', 'climbMin', 'min, start of first leg')}
+            {field('Cruise TAS', 'tas', 'kt')}
+          </>
+        )}
         <label class="field span2">
           <span>Default phase</span>
           <select value={s.phase} onChange={(e) => set({ phase: (e.target as HTMLSelectElement).value as PhaseId })}>
-            {a.phases.map((p) => <option value={p.id}>{p.label} ({p.ff.toLocaleString('en-US')} lb/hr)</option>)}
+            {a.phases.map((p) => <option value={p.id} title={p.note}>{phaseLabel(p)}</option>)}
           </select>
         </label>
-        {field('AB egress TAS', 'abTas', 'kt, for joker')}
+        {!perf && field('AB egress TAS', 'abTas', 'kt, for joker')}
         {override('Joker', 'jokerOverride', fuel?.calc.joker)}
         {override('Bingo', 'bingoOverride', fuel?.calc.bingo)}
         {field('Wind from', 'windDir', '° true')}
         {field('Wind speed', 'windKt', 'kt')}
       </div>
-      <p class="muted small">
-        Departure (taxi, AB takeoff to 400 kt, MIL climb): {Math.round(departureFuel(s).total).toLocaleString('en-US')} lb
-        = {Math.round(departureFuel(s).taxi)} taxi + {Math.round(departureFuel(s).takeoff)} AB
-        + {Math.round(departureFuel(s).climb)} climb. The climb is flown at the start of the first leg.
-      </p>
-      {fuel && (
+      {perf ? (
+        <p class="muted small">
+          Departure: {ft(dep.total)} lb = {ft(dep.taxi)} taxi + {ft(dep.takeoff)} max AB takeoff to 400 KIAS. Climbs (MIL)
+          and descents (idle) are flown in the legs: the altitude column is the altitude at each waypoint.
+        </p>
+      ) : (
+        <p class="muted small">
+          Departure (taxi, AB takeoff to 400 kt, MIL climb): {ft(dep.total)} lb
+          = {Math.round(dep.taxi)} taxi + {Math.round(dep.takeoff)} AB
+          + {Math.round(dep.climb)} climb. The climb is flown at the start of the first leg.
+        </p>
+      )}
+      {fuel?.profiles && <JokerBingo fuel={fuel} where={route[fuel.target].name} />}
+      {fuel && !fuel.profiles && (
         <p class="muted small">
           Joker and bingo are fuel states at {fuel.targetKind === 'auto'
             ? <>{route[fuel.target].name}, the farthest point from base (mark a TGT or CAP to change it)</>
@@ -380,15 +429,53 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
       <p class="muted small">
         {a.placeholder
           ? `${s.aircraft} fuel numbers are placeholders, not squadron figures. Edit them for your flight.`
-          : `${s.aircraft} fuel numbers are the squadron's initial planning figures.`}
+          : perf
+            ? `${s.aircraft} figures are recorded in DCS (the squadron performance manual), not flight-manual data. No weight correction.`
+            : `${s.aircraft} fuel numbers are the squadron's initial planning figures.`}
       </p>
     </section>
   )
 }
 
-function RoutePanel({ mission, route, settings, onChange }:
-  { mission: MissionExport; route: Waypoint[]; settings: PlanSettings; onChange: (r: Waypoint[]) => void }) {
+/** Joker and bingo with the profiles behind them (aircraft with recorded data). */
+function JokerBingo({ fuel, where }: { fuel: FuelPlan; where: string }) {
+  const { bingo: b, joker: j, reserve } = fuel.profiles!
+  const at = fuel.targetKind === 'auto'
+    ? <>{where}, the farthest point from base (mark a TGT or CAP to change it)</>
+    : <>the {fuel.targetKind} ({where})</>
+  const tod = (nm: number | undefined) => (nm ? `, idle descent from ${Math.round(nm)} nm out` : '')
+  return (
+    <>
+      <p class="muted small">
+        Joker and bingo are fuel states at {at}, {fuel.rtbNm.toFixed(0)} nm from base, plus a {ft(reserve)} lb landing reserve.
+      </p>
+      <p class="muted small" title={flagTitle(b.flags)}>
+        <b>Bingo {ft(fuel.calc.bingo)}</b>: {b.climb ? `MIL climb to ${ft(b.altFt)} ft` : `stay at ${ft(b.altFt)} ft`},
+        {' '}{Math.round(b.kias)} KIAS / {machText(b.mach)}{b.rpm != null ? ` (${b.rpm.toFixed(1)}%)` : ''} at 7.5 units
+        {tod(b.descent?.nm)}: {ft(b.fuel)} lb{approx(b.flags)} + reserve.
+      </p>
+      <p class="muted small" title={flagTitle([...j.escape.flags, ...j.home.flags])}>
+        <b>Joker {ft(fuel.calc.joker)}</b>: {j.loiter > 0 ? `${ft(j.loiter)} loiter + ` : ''}{ft(j.ab)} for 1 min max AB
+        + {ft(j.escape.fuel)} for {Math.round(j.escape.nm)} nm at {JOKER_ESCAPE_RPM}% at {ft(j.escape.altFt)} ft
+        ({Math.round(j.escape.kias)} KIAS) + {ft(j.home.fuel)} MIL climb to {ft(j.home.altFt)} ft and home
+        at {JOKER_ESCAPE_RPM}% ({machText(j.home.mach)}){tod(j.home.descent?.nm)} + reserve
+        {fuel.calc.joker <= fuel.calc.bingo + 0.5 ? ' (raised to bingo)' : ''}.
+      </p>
+    </>
+  )
+}
+
+/** A phase for a select: its name, and its fixed fuel flow when it has one. */
+function phaseLabel(p: Phase): string {
+  return p.ff === undefined ? p.label : `${p.label} (${p.ff.toLocaleString('en-US')})`
+}
+
+function RoutePanel({ mission, route, rows, settings, onChange }:
+  { mission: MissionExport; route: Waypoint[]; rows: Row[]; settings: PlanSettings; onChange: (r: Waypoint[]) => void }) {
   const phases = AIRCRAFT[settings.aircraft].phases
+  const perf = AIRCRAFT[settings.aircraft].perf
+  const alts = routeAltitudes(route)
+  const loiterPowers: Phase[] = [...phases, COMBAT_LOITER]
   const points = useMemo(() => catalog(mission), [mission])
   const byLabel = useMemo(() => new Map(points.map((p) => [optionLabel(p), p])), [points])
   const [text, setText] = useState('')
@@ -441,7 +528,9 @@ function RoutePanel({ mission, route, settings, onChange }:
         <div class="route-wrap">
         <table class="route">
           <thead>
-            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th><th>TAS in (kt)</th><th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
+            <tr><th>#</th><th>Name</th><th>From</th><th title="Ground elevation, ft MSL">Elev (ft)</th><th title="Planned altitude at this waypoint, ft above sea level (MSL) or above the ground (AGL)">Altitude (ft)</th><th>Phase in</th><th>Custom flow (lb/hr)</th>{perf
+              ? <><th title="Planned speed for the leg in: KIAS, or Mach. Blank = 7.5 units AoA at 20,000 ft and up, else the low-level speed.">Speed in</th><th title="Power to set and fuel flow for the leg in, from the performance tables. Hover for notes.">Plan</th></>
+              : <th>TAS in (kt)</th>}<th title="Hold at this waypoint before the next leg">Loiter (min)</th><th title="Initial point, CAP station, target, egress point. The first TGT or CAP sets where joker and bingo are measured.">Marks</th><th /></tr>
           </thead>
           <tbody>
             {route.map((w, i) => (
@@ -458,6 +547,7 @@ function RoutePanel({ mission, route, settings, onChange }:
                 <td>
                   <div class="alt">
                     <input type="number" step="any" value={w.alt?.ft ?? ''} title={altTitle(w)}
+                      placeholder={perf && w.alt?.ft === undefined ? ft(alts[i]) : undefined}
                       onInput={(e) => {
                         const ft = optElev((e.target as HTMLInputElement).value)
                         update(i, { alt: ft === undefined && !w.alt ? undefined : { ref: w.alt?.ref ?? 'msl', ft } })
@@ -480,14 +570,22 @@ function RoutePanel({ mission, route, settings, onChange }:
                       update(i, { phase: v === '' ? undefined : (v as PhaseId) })
                     }}>
                     <option value="">Default ({phaseOf(settings.aircraft, settings.phase).label})</option>
-                    {phases.map((p) => <option value={p.id} title={p.note}>{p.label} ({p.ff.toLocaleString('en-US')})</option>)}
+                    {phases.map((p) => <option value={p.id} title={p.note}>{phaseLabel(p)}</option>)}
                   </select>
                 )}</td>
                 <td>{i > 0 && <input type="number" class="num" value={w.ff ?? ''}
-                  placeholder={String(phaseOf(settings.aircraft, w.phase ?? settings.phase).ff)}
+                  placeholder={String(Math.round(rows[i]?.leg?.ff ?? phaseOf(settings.aircraft, w.phase ?? settings.phase).ff ?? 0))}
                   onInput={(e) => update(i, { ff: optNum((e.target as HTMLInputElement).value) })} />}</td>
-                <td>{i > 0 && <input type="number" class="num" placeholder={String(settings.tas)} value={w.tas ?? ''}
-                  onInput={(e) => update(i, { tas: optNum((e.target as HTMLInputElement).value) })} />}</td>
+                {perf ? (
+                  <>
+                    <td>{i > 0 && <SpeedInput wp={w} row={rows[i]} altFt={rows[i]?.leg?.altFt ?? alts[i]}
+                      onChange={(patch) => update(i, patch)} />}</td>
+                    <td class="small plan-cell" title={flagTitle(rows[i]?.leg?.flags)}>{rows[i]?.leg && <LegPlan row={rows[i]} />}</td>
+                  </>
+                ) : (
+                  <td>{i > 0 && <input type="number" class="num" placeholder={String(settings.tas)} value={w.tas ?? ''}
+                    onInput={(e) => update(i, { tas: optNum((e.target as HTMLInputElement).value) })} />}</td>
+                )}
                 <td>{i > 0 && (
                   <div class="loiter">
                     <input type="checkbox" title="Loiter here" checked={w.loiter !== undefined}
@@ -498,10 +596,10 @@ function RoutePanel({ mission, route, settings, onChange }:
                       <select value={w.loiter.phase ?? ''} title="Power while loitering"
                         onChange={(e) => {
                           const v = (e.target as HTMLSelectElement).value
-                          update(i, { loiter: { ...w.loiter!, phase: v === '' ? undefined : (v as PhaseId) } })
+                          update(i, { loiter: { ...w.loiter!, phase: v === '' ? undefined : (v as LoiterPower) } })
                         }}>
                         <option value="">Same as leg in</option>
-                        {phases.map((p) => <option value={p.id} title={p.note}>{p.label} ({p.ff.toLocaleString('en-US')})</option>)}
+                        {loiterPowers.map((p) => <option value={p.id} title={p.note}>{phaseLabel(p)}</option>)}
                       </select>
                     </>}
                   </div>
@@ -540,6 +638,56 @@ function RoutePanel({ mission, route, settings, onChange }:
         </div>
       )}
     </section>
+  )
+}
+
+/** Leg speed: a number and its unit. Switching the unit keeps the same speed. Typing replaces an older plan's TAS. */
+function SpeedInput({ wp, row, altFt, onChange }:
+  { wp: Waypoint; row: Row | undefined; altFt: number; onChange: (patch: Partial<Waypoint>) => void }) {
+  const unit = wp.speed?.unit ?? 'kias'
+  const leg = row?.leg
+  const placeholder = !leg?.kias || !leg.mach ? '' : unit === 'mach' ? leg.mach.toFixed(2) : String(Math.round(leg.kias))
+  return (
+    <div class="speed">
+      <input type="number" step="any" class="num" value={wp.speed?.v ?? ''} placeholder={placeholder}
+        title={wp.tas !== undefined && !wp.speed ? `${wp.tas} KTAS from an older plan` : 'Blank = default speed for the leg altitude'}
+        onInput={(e) => {
+          const v = optNum((e.target as HTMLInputElement).value)
+          onChange({ speed: v === undefined ? undefined : { v, unit }, tas: undefined })
+        }} />
+      <select value={unit} title="KIAS or Mach"
+        onChange={(e) => {
+          const next = (e.target as HTMLSelectElement).value as 'kias' | 'mach'
+          if (!wp.speed) {
+            // Nothing typed: keep the blank default, shown in the new unit.
+            if (next === 'mach' && leg?.mach) onChange({ speed: { v: Math.round(leg.mach * 100) / 100, unit: 'mach' }, tas: undefined })
+            return
+          }
+          const v = next === unit ? wp.speed.v
+            : next === 'mach' ? Math.round(machFromKcas(wp.speed.v, altFt) * 100) / 100
+            : Math.round(leg?.kias && wp.speed.unit === 'mach' ? leg.kias : wp.speed.v)
+          onChange({ speed: { v, unit: next } })
+        }}>
+        <option value="kias">KIAS</option>
+        <option value="mach">Mach</option>
+      </select>
+    </div>
+  )
+}
+
+/** What the tables give for a leg: altitude, power to set, fuel flow, climb / descent. */
+function LegPlan({ row }: { row: Row }) {
+  const leg = row.leg!
+  const a = approx(leg.flags)
+  return (
+    <>
+      <div><b>{powerText(leg)}{a}</b> · {ft(leg.ff)} pph</div>
+      <div class="muted">{ft(leg.altFt ?? 0)} ft · {Math.round(leg.tas)} KTAS · {machText(leg.mach ?? 0)}</div>
+      {leg.climb && <div class="muted">MIL climb {leg.climb.min.toFixed(1)} min</div>}
+      {leg.descent && <div class="muted">TOD {Math.round(leg.descent.nm)} nm out</div>}
+      {leg.flags.includes('fast') && <div class="warn-text">above max level speed</div>}
+      {leg.flags.includes('slow') && <div class="warn-text">below min level speed</div>}
+    </>
   )
 }
 

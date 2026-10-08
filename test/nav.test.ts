@@ -107,22 +107,26 @@ describe('legs', () => {
     { id: 'c', name: 'Incirlik', source: 'airfield', lat: inc.lat, lon: inc.lon },
   ]
 
-  it('F-4E departure (taxi, AB takeoff, MIL climb) is about 2,000 lb', () => {
+  it('F-4E departure: taxi at the recorded ground idle and the recorded max AB takeoff to 400 KIAS', () => {
     const d = departureFuel(defaultSettings('F-4E', 43200))
-    expect(d.total).toBeGreaterThan(1800)
-    expect(d.total).toBeLessThan(2200)
+    expect(AIRCRAFT['F-4E'].idleLbMin).toBe(38.3)
+    expect(d.taxi).toBeCloseTo(383, 6)
+    expect(d.takeoff).toBe(645)
+    expect(d.climb).toBe(0)
+    expect(d.total).toBeCloseTo(1028, 6)
   })
 
-  it('computes time, distance and fuel along a route, with the climb on the first leg', () => {
-    const s = { ...defaultSettings('F-4E', 43200), tas: 420 }
+  it('without recorded data (F-5E): fixed flows, with the MIL climb on the first leg', () => {
+    const s = { ...defaultSettings('F-5E', 43200), tas: 420 }
     const d = departureFuel(s)
+    expect(d.total).toBeCloseTo(10 * 12 + 0.75 * 20000 / 60 + 4 * 6000 / 60, 6)
     const rows = computeRows(m, route, s)
     const leg = rows[1].leg!
     expect(leg.nm).toBeGreaterThan(90)
     expect(leg.nm).toBeLessThan(95)
     expect(leg.ete).toBeCloseTo((leg.nm / 420) * 60, 6)
     expect(leg.climbMin).toBe(4)
-    const want = 12200 - d.beforeFirstLeg - (13000 * 4 + 4250 * (leg.ete - 4)) / 60
+    const want = 4400 - d.beforeFirstLeg - (6000 * 4 + 2200 * (leg.ete - 4)) / 60
     expect(rows[1].fuelRemaining).toBeCloseTo(want, 6)
     expect(rows[2].leg!.climbMin).toBe(0)
     expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)
@@ -143,31 +147,35 @@ describe('legs', () => {
   })
 
   it('loiter adds time and fuel at the waypoint, at its own phase or the leg in', () => {
-    const s = defaultSettings('F-4E', 43200)
+    const s = defaultSettings('F-5E', 43200)
     const plain = computeRows(m, route, s)
     const held = computeRows(m, [route[0], { ...route[1], phase: 'cruise-low', loiter: { min: 10 } }, route[2]], s)
     const lo = held[1].loiter!
-    expect(lo.ff).toBe(8250)
-    expect(lo.fuel).toBeCloseTo(8250 * 10 / 60, 6)
+    expect(lo.ff).toBe(3800)
+    expect(lo.fuel).toBeCloseTo(3800 * 10 / 60, 6)
     expect(held[1].fuelAfter).toBeCloseTo(held[1].fuelRemaining - lo.fuel, 6)
     expect(held[1].elapsedAfter).toBeCloseTo(held[1].elapsed + 10, 6)
     expect(held[2].elapsed).toBeCloseTo(plain[2].elapsed + 10, 6)
     expect(held[2].eta).toBeCloseTo(plain[2].eta! + 600, 6)
     const hi = computeRows(m, [route[0], { ...route[1], loiter: { min: 6, phase: 'mil' } }], s)[1].loiter!
-    expect(hi.fuel).toBeCloseTo(13000 * 6 / 60, 6)
+    expect(hi.fuel).toBeCloseTo(6000 * 6 / 60, 6)
+    const combat = computeRows(m, [route[0], { ...route[1], loiter: { min: 6, phase: 'combat' } }], s)[1].loiter!
+    expect(combat.ff).toBe((6000 + 20000) / 2)
+    expect(combat.phase!.short).toBe('CMBT')
     expect(computeRows(m, [route[0], { ...route[1], loiter: { min: 0 } }], s)[1].loiter).toBeNull()
     expect(plain[1].loiter).toBeNull()
     expect(plain[1].fuelAfter).toBe(plain[1].fuelRemaining)
   })
 
-  it('joker and bingo follow the squadron definitions', () => {
-    const s = { ...defaultSettings('F-4E', 43200), tas: 460, abTas: 550 }
+  it('joker and bingo without recorded data (F-5E) follow the fixed-flow definitions', () => {
+    const s = { ...defaultSettings('F-5E', 43200), tas: 460, abTas: 550 }
     const f = fuelPlan(route, s)!
     expect(f.target).toBe(1)
+    expect(f.profiles).toBeUndefined()
     const rtb = f.rtbNm
-    expect(f.calc.rtbFuel).toBeCloseTo((rtb / 460) * 4250, 6)
-    expect(f.bingo).toBe(Math.max(3000, f.calc.rtbFuel))
-    const joker = 65000 / 60 + (30 / 550) * 65000 + ((rtb - 30) / 460) * 4250
+    expect(f.calc.rtbFuel).toBeCloseTo((rtb / 460) * 2200, 6)
+    expect(f.bingo).toBe(Math.max(1200, f.calc.rtbFuel))
+    const joker = 20000 / 60 + (30 / 550) * 20000 + ((rtb - 30) / 460) * 2200
     expect(f.joker).toBeCloseTo(Math.max(joker, f.bingo), 6)
     expect(fuelPlan(route, { ...s, jokerOverride: 7000 })!.joker).toBe(7000)
   })
@@ -190,7 +198,8 @@ describe('legs', () => {
 
   it('bingo never drops below the floor', () => {
     const near: Waypoint[] = [route[0], { ...route[0], id: 'x', lat: inc.lat + 0.1 }, { ...route[0], id: 'y' }]
-    expect(fuelPlan(near, defaultSettings('F-4E', 0))!.bingo).toBe(AIRCRAFT['F-4E'].bingoFloor)
+    expect(fuelPlan(near, defaultSettings('F-5E', 0))!.bingo).toBe(AIRCRAFT['F-5E'].bingoFloor)
+    expect(fuelPlan(near, defaultSettings('F-4E', 0))!.bingo).toBeGreaterThan(AIRCRAFT['F-4E'].bingoFloor)
   })
 })
 
