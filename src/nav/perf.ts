@@ -2,8 +2,10 @@
 // `perfrec.py export` -> src/data/perf/<aircraft>.json). The same numbers as the squadron performance manual.
 //
 // Level cruise: No Stores level points per altitude band, standard day. A lookup interpolates along Mach within
-// a band and then between bands. Loaded jets use the drag category factor: at the same RPM a loaded jet holds
-// KIAS / sqrt(factor), so its fuel flow and RPM at a speed are the No Stores values at KIAS x sqrt(factor).
+// a band and then between bands. Loaded jets use their own level points (curves per altitude band, recorded at
+// 7.5 units AoA or less) where they were flown. At a band without a loaded curve they use the drag category factor:
+// at the same RPM a loaded jet holds KIAS / sqrt(factor), so its fuel flow and RPM at a speed are the No Stores
+// values at KIAS x sqrt(factor). A band with one loaded point takes the factor that point gives.
 // Temperature: at the same Mach and pressure altitude, TAS, fuel flow and RPM scale with sqrt(T / T_std).
 
 import f4e from '../data/perf/F-4E.json'
@@ -41,7 +43,8 @@ export interface PerfData {
   basis: string
   disclaimer: string
   bands: Band[]
-  configs: { name: string; factor: number | null; loadout: string | null }[]
+  /** Drag categories; `bands`: the category's own level points per altitude band (7.5 units AoA or less). */
+  configs: { name: string; factor: number | null; loadout: string | null; bands?: { alt_ft: number; points: LevelPoint[] }[] }[]
   /** MIL climb, cumulative from the first row's altitude up. */
   climb: ProfileRow[] | null
   /** Idle descent, cumulative from an altitude down to the first row's altitude. */
@@ -74,6 +77,19 @@ export function dragCategories(p: PerfData): { name: string; factor: number; loa
 export function dragFactor(p: PerfData, name: string | undefined): number {
   return p.configs.find((c) => c.name === (name ?? NO_STORES))?.factor ?? 1
 }
+
+/** A drag category for the cruise lookups: its overall factor and its own level-point curves by altitude band. */
+export interface Drag {
+  factor: number
+  bands: { alt_ft: number; points: LevelPoint[] }[]
+}
+
+export function dragOf(p: PerfData, name: string | undefined): Drag {
+  const c = p.configs.find((x) => x.name === (name ?? NO_STORES))
+  return { factor: c?.factor ?? 1, bands: (c?.bands ?? []).filter((b) => b.points.length > 0) }
+}
+
+const asDrag = (d: number | Drag): Drag => (typeof d === 'number' ? { factor: d, bands: [] } : d)
 
 const lerp = (a: number, b: number, f: number) => a + (b - a) * f
 
@@ -121,23 +137,55 @@ export interface Cruise {
 }
 
 /**
- * Level cruise at a Mach and pressure altitude: fuel flow and the RPM that holds it, for a drag factor
+ * How a loaded jet maps onto a No Stores band away from its own curve: a factor (at the same RPM it holds
+ * KIAS / sqrt(factor) and burns the same fuel), with fuel flow and RPM scaled so the anchor point comes back as
+ * recorded. Anchored on the nearest end of the loaded curve, or on the category's overall factor without one.
+ */
+interface Anchor { factor: number; ffScale: number; rpmScale: number }
+
+function anchorOn(band: Band, q: LevelPoint): Anchor {
+  const factor = (kcasFromMach(machAtRpm(band, q.rpm!).mach, band.alt_ft) / kcasFromMach(q.mach, band.alt_ft)) ** 2
+  const clean = inBand(band, machFromKcas(kcasFromMach(q.mach, band.alt_ft) * Math.sqrt(factor), band.alt_ft))
+  return { factor, ffScale: q.ff / clean.ff, rpmScale: clean.rpm ? q.rpm! / clean.rpm : 1 }
+}
+
+/** The loaded curve at a No Stores band (points with RPM, by Mach); empty without one. */
+function curveAt(band: Band, drag: Drag): LevelPoint[] {
+  const own = drag.bands.find((b) => b.alt_ft === band.alt_ft)
+  return (own?.points ?? []).filter((q) => q.rpm !== null).sort((x, y) => x.mach - y.mach)
+}
+
+/** Standard-day value at one band for a loaded (or clean) jet, with that band's envelope in the asked-for Mach. */
+function atBand(band: Band, drag: Drag, altFt: number, mach: number): BandValue & { lo: number; hi: number } {
+  const pts = curveAt(band, drag)
+  const ms = band.points.map((q) => q.mach)
+  const toClean = (f: number) => (f === 1 ? mach : machFromKcas(kcasFromMach(mach, altFt) * Math.sqrt(f), altFt))
+  if (pts.length >= 2 && mach >= pts[0].mach && mach <= pts[pts.length - 1].mach) {
+    // On the loaded curve.
+    const m = toClean(drag.factor)
+    return { ...inBand({ alt_ft: band.alt_ft, points: pts, gaps: [] }, mach), lo: Math.min(...ms) - (m - mach), hi: Math.max(...ms) - (m - mach) }
+  }
+  const a: Anchor = pts.length === 0 ? { factor: drag.factor, ffScale: 1, rpmScale: 1 }
+    : anchorOn(band, mach < pts[0].mach ? pts[0] : pts[pts.length - 1])
+  const m = toClean(a.factor)
+  const v = inBand(band, m)
+  return { ...v, ff: v.ff * a.ffScale, rpm: v.rpm === null ? null : v.rpm * a.rpmScale, lo: Math.min(...ms) - (m - mach), hi: Math.max(...ms) - (m - mach) }
+}
+
+/**
+ * Level cruise at a Mach and pressure altitude: fuel flow and the RPM that holds it, for a drag category or factor
  * (1 = No Stores) and ISA deviation.
  */
-export function cruiseAt(p: PerfData, altFt: number, mach: number, factor = 1, isaDev = 0): Cruise {
-  const eqMach = factor === 1 ? mach : machFromKcas(kcasFromMach(mach, altFt) * Math.sqrt(factor), altFt)
+export function cruiseAt(p: PerfData, altFt: number, mach: number, drag: number | Drag = 1, isaDev = 0): Cruise {
+  const d = asDrag(drag)
   const { lo, hi, f } = bracket(p, altFt)
-  const a = inBand(lo, eqMach), b = inBand(hi, eqMach)
+  const a = atBand(lo, d, altFt, mach), b = atBand(hi, d, altFt, mach)
   const k = tempScale(altFt, isaDev)
   const rpm = a.rpm !== null && b.rpm !== null ? lerp(a.rpm, b.rpm, f) : (a.rpm ?? b.rpm)
   const flags: PerfFlag[] = []
   // Each band clamps at its own envelope: flag when the blended envelope is exceeded.
-  const env = (band: Band, edge: 'min' | 'max') => {
-    const ms = band.points.map((q) => q.mach)
-    return edge === 'min' ? Math.min(...ms) : Math.max(...ms)
-  }
-  if (eqMach < lerp(env(lo, 'min'), env(hi, 'min'), f) - 0.005) flags.push('slow')
-  if (eqMach > lerp(env(lo, 'max'), env(hi, 'max'), f) + 0.005) flags.push('fast')
+  if (mach < lerp(a.lo, b.lo, f) - 0.005) flags.push('slow')
+  if (mach > lerp(a.hi, b.hi, f) + 0.005) flags.push('fast')
   if ((a.wide && f < 1) || (b.wide && f > 0)) flags.push('wide')
   if (altFt > topAlt(p)) flags.push('high')
   return { ff: lerp(a.ff, b.ff, f) * k, rpm: rpm === null ? null : rpm * k, flags }
@@ -155,15 +203,28 @@ function machAtRpm(b: Band, rpm: number): { mach: number; fast: boolean } {
   return { mach: pts[0].mach, fast: false }
 }
 
-/** Level speed (Mach) and fuel flow at a set RPM, altitude, drag factor and temperature. */
-export function levelAtRpm(p: PerfData, altFt: number, rpm: number, factor = 1, isaDev = 0): Cruise & { mach: number } {
+/** Level speed (Mach) and fuel flow at a set RPM, altitude, drag category or factor and temperature. */
+export function levelAtRpm(p: PerfData, altFt: number, rpm: number, drag: number | Drag = 1, isaDev = 0): Cruise & { mach: number } {
+  const d = asDrag(drag)
   const corrected = rpm / tempScale(altFt, isaDev)
   const { lo, hi, f } = bracket(p, altFt)
-  const a = machAtRpm(lo, corrected), b = machAtRpm(hi, corrected)
-  const eqMach = lerp(a.mach, b.mach, f)
-  // The loaded jet at the same RPM: same fuel flow, KIAS / sqrt(factor).
-  const mach = factor === 1 ? eqMach : machFromKcas(kcasFromMach(eqMach, altFt) / Math.sqrt(factor), altFt)
-  const c = cruiseAt(p, altFt, eqMach, 1, isaDev)
+  // At each band: the loaded curve's Mach at the RPM, or the No Stores Mach slowed by the factor (same RPM, same
+  // fuel flow, KIAS / sqrt(factor)).
+  const at = (band: Band) => {
+    const pts = curveAt(band, d)
+    if (pts.length >= 2) {
+      const rpms = pts.map((q) => q.rpm!)
+      if (corrected >= Math.min(...rpms) && corrected <= Math.max(...rpms)) return machAtRpm({ alt_ft: band.alt_ft, points: pts, gaps: [] }, corrected)
+    }
+    const a: Anchor = pts.length === 0 ? { factor: d.factor, ffScale: 1, rpmScale: 1 }
+      : anchorOn(band, corrected < pts[0].rpm! ? pts[0] : pts[pts.length - 1])
+    const r = machAtRpm(band, corrected / a.rpmScale)
+    const mach = a.factor === 1 ? r.mach : machFromKcas(kcasFromMach(r.mach, altFt) / Math.sqrt(a.factor), altFt)
+    return { mach, fast: r.fast }
+  }
+  const a = at(lo), b = at(hi)
+  const mach = lerp(a.mach, b.mach, f)
+  const c = cruiseAt(p, altFt, mach, d, isaDev)
   const flags: PerfFlag[] = c.flags.filter((x) => x !== 'fast' && x !== 'slow')
   if (a.fast || b.fast) flags.push('fast')
   return { mach, ff: c.ff, rpm, flags }
