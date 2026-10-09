@@ -4,6 +4,8 @@ A browser flight planner for the Satan's Angels Cold War server (Syria TDY, NTTR
 Load a mission's target list export from the bot, build a route, and print a nav log with a TACAN
 radial/DME fix and coordinates for every waypoint.
 
+**Open the planner: https://475fgdawger.github.io/satansangels-dcs-flight-planner/**
+
 ## Using it
 
 1. Open the app and pick one of the **Current missions** (pushed by the bot), or open or drop a
