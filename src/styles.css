@@ -293,3 +293,5 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .library-actions { white-space: nowrap; text-align: right; }
 .library-actions button { margin-left: 4px; }
 .grid .span2 { grid-column: span 2; }
+
+button.link { background: none; border: none; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
