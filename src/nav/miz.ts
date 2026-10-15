@@ -179,9 +179,9 @@ export function startOf(g: MizGroup): { x: number; y: number } | null {
   return typeof x === 'number' && typeof y === 'number' ? { x, y } : null
 }
 
-/** The mission with the planned route written into these groups, as a new .miz. */
-export function writeRoute(miz: Miz, groupKeys: string[], rows: Row[]): Uint8Array {
-  const chosen = miz.groups.filter((g) => groupKeys.includes(g.key)).sort((a, b) => b.pointsTable.start - a.pointsTable.start)
+/** The mission with a planned route written into each assigned group (group key -> that plan's rows), as a new .miz. */
+export function writeRoutes(miz: Miz, plans: Record<string, Row[]>): Uint8Array {
+  const chosen = miz.groups.filter((g) => plans[g.key]).sort((a, b) => b.pointsTable.start - a.pointsTable.start)
   let text = miz.missionText
   for (const g of chosen) {
     const t = g.pointsTable
@@ -189,7 +189,7 @@ export function writeRoute(miz: Miz, groupKeys: string[], rows: Row[]): Uint8Arr
     // DCS indents with tabs or four spaces depending on the version that saved the mission.
     const unit = outer.includes('\t') || !outer ? '\t' : '    '
     const indent = outer + unit
-    const pts = routePoints(miz.theatre, rows, startOf(g))
+    const pts = routePoints(miz.theatre, plans[g.key], startOf(g))
     const parts: string[] = []
     if (g.first) parts.push(`${indent}[1] = \n${indent}${text.slice(g.first.start, g.first.end)}, -- end of [1]`)
     for (const p of pts) parts.push(pointText(parts.length + 1, p, indent, unit))
