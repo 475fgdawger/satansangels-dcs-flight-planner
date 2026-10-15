@@ -5,9 +5,9 @@
   "file": "Syria_TDY_433rd.miz",
   "theatre": "Syria",
   "date": "2016-06-21 00:00:00",
-  "start_time": 43200
+  "start_time": 46800
  },
- "built_utc": "2026-10-05T11:39:58Z",
+ "built_utc": "2026-10-15T14:52:15Z",
  "mag_var": {
   "source": "DCS",
   "fallback": 5.0
