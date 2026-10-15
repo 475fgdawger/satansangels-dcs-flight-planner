@@ -410,6 +410,26 @@ function profile(p: PerfData, s: PlanSettings, fromFt: number, cruiseFt: number,
     cruiseNm, min: up.min + cruiseMin + down.min, fuel: up.lb + (cruise.ff * cruiseMin) / 60 + down.lb, flags: [...flags] }
 }
 
+/** Departure and destination airfields: the route's first and last waypoints when they are airfields. */
+export function endpoints(route: Waypoint[]): { departure: Waypoint | null; destination: Waypoint | null } {
+  const first = route[0], last = route[route.length - 1]
+  return {
+    departure: first?.source === 'airfield' ? first : null,
+    destination: route.length > 1 && last.source === 'airfield' ? last : null,
+  }
+}
+
+/**
+ * The route with its departure or destination set to an airfield waypoint (null clears it): an airfield already at
+ * that end is replaced, otherwise the airfield goes in front of the route (departure) or after it (destination).
+ */
+export function setEndpoint(route: Waypoint[], end: 'departure' | 'destination', wp: Waypoint | null): Waypoint[] {
+  const current = endpoints(route)[end]
+  const rest = current === null ? route : end === 'departure' ? route.slice(1) : route.slice(0, -1)
+  if (!wp) return rest
+  return end === 'departure' ? [wp, ...rest] : [...rest, wp]
+}
+
 export interface MissionFuel {
   /** Minimum fuel at engine start to fly the plan and arrive with pattern fuel, lb. */
   required: number

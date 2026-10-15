@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { TerrainGrid } from '../nav/terrain'
 import { loadTerrain } from './terrain'
 import type { MissionExport } from '../nav/types'
-import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
+import { M_TO_FT, airfields, catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
   WAYPOINT_TAGS, altAgl, altMsl, attackRun, carryLegData, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
-  fuelPlan, missionFuel, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
+  endpoints, fuelPlan, missionFuel, phaseOf, setEndpoint, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
   type Row, type Waypoint } from '../nav/plan'
 import { NO_STORES, dragCategories } from '../nav/perf'
 import { machFromKcas } from '../nav/atmo'
@@ -266,7 +266,8 @@ export function App() {
 
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} need={need} onChange={setSettings} />
+          <SettingsPanel settings={settings} mission={mission} route={route} fuel={fuel} need={need} onChange={setSettings}
+            onRoute={setRoute} />
           <RoutePanel mission={mission} route={route} rows={rows} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
@@ -282,9 +283,29 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, missionName, route, fuel, need, onChange }:
-  { settings: PlanSettings; missionName: string; route: Waypoint[]; fuel: FuelPlan | null; need: MissionFuel | null
-    onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, mission, route, fuel, need, onChange, onRoute }:
+  { settings: PlanSettings; mission: MissionExport; route: Waypoint[]; fuel: FuelPlan | null; need: MissionFuel | null
+    onChange: (s: PlanSettings) => void; onRoute: (r: Waypoint[]) => void }) {
+  const missionName = mission.mission.name
+  const fields = useMemo(() => airfields(mission).slice().sort((x, y) => x.name.localeCompare(y.name)), [mission])
+  const ends = endpoints(route)
+  // Departure and destination are the route's first and last waypoints; picking one puts that airfield there.
+  const endpoint = (label: string, end: 'departure' | 'destination', note: string) => (
+    <label class="field">
+      <span>{label}</span>
+      <select value={ends[end]?.name ?? ''}
+        onChange={(e) => {
+          const a = fields.find((f) => f.name === (e.target as HTMLSelectElement).value)
+          onRoute(setEndpoint(route, end, a ? { id: newId(), name: a.name, source: 'airfield', lat: a.lat, lon: a.lon,
+            elevFt: Math.round(a.elev_m * M_TO_FT), elevSource: 'dcs' } : null))
+        }}>
+        <option value="">None</option>
+        {ends[end] && !fields.some((f) => f.name === ends[end]!.name) && <option value={ends[end]!.name}>{ends[end]!.name}</option>}
+        {fields.map((f) => <option value={f.name}>{f.name}</option>)}
+      </select>
+      <small>{note}</small>
+    </label>
+  )
   const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
@@ -334,6 +355,10 @@ function SettingsPanel({ settings: s, missionName, route, fuel, need, onChange }
             onInput={(e) => set({ callsign: (e.target as HTMLInputElement).value || undefined })} />
           <small>optional</small>
         </label>
+      </div>
+      <div class="grid">
+        {endpoint('Departure', 'departure', 'first waypoint')}
+        {endpoint('Destination', 'destination', 'last waypoint')}
       </div>
       <div class="grid">
         <label class="field">
