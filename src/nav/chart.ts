@@ -165,6 +165,36 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
   top.push(`<line class="ch-route" x1="${f(pa.x)}" y1="${f(pa.y)}" x2="${f(pb.x)}" y2="${f(pb.y)}"/>`)
   labels.reserve(pa.x - 5, pb.y, pa.x + 5, pa.y)
 
+  // The turn onto the next leg, at the end of this one: an arrow bending the way the turn goes, and the next
+  // leg's magnetic heading beside it. Drawn before the labels so they keep clear of it.
+  const next = rows[to + 1]?.leg
+  let turnBox: { svg: string[]; text: string[] } | null = null
+  if (next) {
+    const pn = xy(route[to + 1])
+    const len = Math.hypot(pn.x - pb.x, pn.y - pb.y)
+    const dx = len > 0.5 ? (pn.x - pb.x) / len : 0, dy = len > 0.5 ? (pn.y - pb.y) / len : -1
+    const delta = ((next.trueCourse - leg.trueCourse + 540) % 360) - 180
+    const side = delta >= 0 ? 1 : -1
+    // Up the turn side of the leg, then round onto the next course.
+    const sx = pb.x + side * 20, sy = pb.y + 46, cx = sx, cy = pb.y - 6
+    const ex = cx + dx * 34, ey = cy + dy * 34
+    const head = (a: number) => `${f(ex + Math.cos(a) * 10)},${f(ey + Math.sin(a) * 10)}`
+    const back = Math.atan2(-dy, -dx)
+    top.push(`<path class="ch-turn" d="M${f(sx)},${f(sy)} Q${f(cx)},${f(cy)} ${f(ex)},${f(ey)}"/>`,
+      `<path class="ch-turnhead" d="M${f(ex)},${f(ey)} L${head(back + 0.45)} L${head(back - 0.45)} Z"/>`)
+    labels.reserve(Math.min(sx, ex) - 6, Math.min(cy, ey) - 6, Math.max(sx, ex) + 6, sy + 2)
+    const nmh = `MH ${heading3(next.magHeading)}°`
+    const sub = `${delta >= 0 ? 'R' : 'L'} ${Math.round(Math.abs(delta))}° to ${to + 1}`
+    const tw = Math.max(nmh.length * 19 * 0.6, sub.length * 13 * 0.58) + 14, th = 44
+    const bx = side > 0 ? sx + 12 : sx - 12 - tw
+    const nb = labels.placeBox([pb.y + 8, pb.y + 56, pb.y - 40].map((top0) => ({ x0: bx, y0: top0, x1: bx + tw, y1: top0 + th })))
+    if (nb) turnBox = {
+      svg: [`<rect class="ch-legbox" x="${f(nb.x0)}" y="${f(nb.y0)}" width="${f(tw)}" height="${th}"/>`],
+      text: [`<text class="ch-mh" x="${f(nb.x0 + 7)}" y="${f(nb.y0 + 20)}">${nmh}</text>`,
+        `<text class="ch-turnl" x="${f(nb.x0 + 7)}" y="${f(nb.y0 + 37)}">${sub}</text>`],
+    }
+  }
+
   // Waypoint marks. A waypoint on top of another (the recovery base) shares its mark: "0/5".
   const pts = route.map(xy)
   const marks: { at: number; nums: number[] }[] = []
@@ -195,6 +225,8 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
     const lab = labels.place(p.x, p.y, name, own ? 15 : 12, AROUND(half + 5))
     if (lab) text.push(`<text class="${own ? 'ch-wpl' : 'ch-pl'}" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
   }
+
+  if (turnBox) { top.push(...turnBox.svg); text.push(...turnBox.text) }
 
   // Magnetic heading and leg distance boxed beside the start of the leg, where the turn onto it is flown.
   const mh = `MH ${heading3(leg.magHeading)}°`, dist = `${leg.nm.toFixed(1)} nm`
