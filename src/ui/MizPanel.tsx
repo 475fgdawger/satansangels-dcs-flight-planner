@@ -4,23 +4,39 @@ import type { Row } from '../nav/plan'
 import { hasGrid } from '../nav/dcsgrid'
 import { airdromeName, readMiz, routePoints, startOf, writeRoute, type Miz, type MizGroup } from '../nav/miz'
 
-type SavePicker = (o: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) =>
+const MIZ_TYPES = [{ description: 'DCS mission', accept: { 'application/octet-stream': ['.miz'] } }]
+
+/** A file picked with the browser's open dialog; passing it as startIn opens the save dialog in its folder. */
+interface FileHandle { getFile(): Promise<File> }
+type OpenPicker = (o: { id?: string; types: typeof MIZ_TYPES }) => Promise<FileHandle[]>
+type SavePicker = (o: { id?: string; suggestedName: string; startIn?: FileHandle; types: typeof MIZ_TYPES }) =>
   Promise<{ createWritable(): Promise<{ write(b: Blob): Promise<void>; close(): Promise<void> }> }>
+const pickers = () => window as unknown as { showOpenFilePicker?: OpenPicker; showSaveFilePicker?: SavePicker }
 
 /** Writes the planned route into chosen aircraft groups of a mission file and saves it as a new .miz. */
 export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[] }) {
-  const [miz, setMiz] = useState<{ file: string; data: Miz } | null>(null)
+  const [miz, setMiz] = useState<{ file: string; data: Miz; handle?: FileHandle } | null>(null)
   const [chosen, setChosen] = useState<string[]>([])
   const [showAi, setShowAi] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const theatre = mission.mission.theatre
 
-  async function open(file: File | undefined) {
+  /** Open dialog that remembers the file, so the save dialog can start in the same folder. */
+  async function pick() {
+    try {
+      const [handle] = await pickers().showOpenFilePicker!({ id: 'miz', types: MIZ_TYPES })
+      await open(await handle.getFile(), handle)
+    } catch (e) {
+      if ((e as Error)?.name !== 'AbortError') setMsg(`Could not open: ${(e as Error)?.message ?? e}`)
+    }
+  }
+
+  async function open(file: File | undefined, handle?: FileHandle) {
     if (!file) return
     setMsg(null)
     try {
       const data = readMiz(new Uint8Array(await file.arrayBuffer()))
-      setMiz({ file: file.name, data })
+      setMiz({ file: file.name, data, handle })
       setChosen([])
       setShowAi(!data.groups.some((g) => g.human))
       if (data.theatre !== theatre) setMsg(`${file.name} is on the ${data.theatre} map; this plan is on ${theatre}.`)
@@ -41,11 +57,12 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
     }
     const name = miz.file.replace(/\.miz$/i, '') + '_planned.miz'
     const blob = new Blob([bytes as BlobPart], { type: 'application/octet-stream' })
-    const picker = (window as unknown as { showSaveFilePicker?: SavePicker }).showSaveFilePicker
+    const picker = pickers().showSaveFilePicker
     const done = `Wrote the route into ${chosen.length} group${chosen.length === 1 ? '' : 's'}`
     if (picker) {
       try {
-        const handle = await picker({ suggestedName: name, types: [{ description: 'DCS mission', accept: { 'application/octet-stream': ['.miz'] } }] })
+        // Starts in the folder the mission was opened from.
+        const handle = await picker({ id: 'miz', suggestedName: name, startIn: miz.handle, types: MIZ_TYPES })
         const w = await handle.createWritable()
         await w.write(blob)
         await w.close()
@@ -82,10 +99,14 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
       </p>
       {!hasGrid(theatre) && <p class="warn-text">The planner can't convert positions for the {theatre} map yet.</p>}
       <div class="row">
-        <label class="button">
-          Open .miz
-          <input type="file" accept=".miz" hidden onChange={(e) => { const i = e.target as HTMLInputElement; open(i.files?.[0]); i.value = '' }} />
-        </label>
+        {pickers().showOpenFilePicker ? (
+          <button type="button" onClick={pick}>Open .miz</button>
+        ) : (
+          <label class="button">
+            Open .miz
+            <input type="file" accept=".miz" hidden onChange={(e) => { const i = e.target as HTMLInputElement; open(i.files?.[0]); i.value = '' }} />
+          </label>
+        )}
         {miz && <span class="small"><b>{miz.file}</b> <span class="muted">({miz.data.theatre}, {miz.data.groups.length} aircraft groups)</span></span>}
       </div>
       {miz && !wrongMap && (
