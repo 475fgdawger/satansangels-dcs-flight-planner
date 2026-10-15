@@ -269,3 +269,15 @@ describe('departure and destination', () => {
     expect(ids(setEndpoint([wp('1'), wp('2')], 'departure', null))).toBe('1 2')
   })
 })
+
+describe('adding waypoints', () => {
+  it('keeps the destination airfield last', async () => {
+    const { appendIndex } = await import('../src/nav/plan')
+    const ab = (id: string) => ({ id, name: id, source: 'airfield', lat: 37, lon: 35 })
+    const wp = (id: string) => ({ id, name: id, source: 'manual', lat: 36, lon: 36 })
+    expect(appendIndex([ab('A'), wp('1'), ab('B')])).toBe(2)
+    expect(appendIndex([ab('A'), wp('1')])).toBe(2)
+    expect(appendIndex([ab('A')])).toBe(1)
+    expect(appendIndex([])).toBe(0)
+  })
+})

@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import type { LatLon, MissionExport, Target } from '../nav/types'
 import { ddm, heading3 } from '../nav/format'
 import { airfields, magVarAt, nearRef, runwayPairs, tacanFix, M_TO_FT, type PointKind } from '../nav/mission'
-import { carryLegData, type Row, type Waypoint } from '../nav/plan'
+import { appendIndex, carryLegData, type Row, type Waypoint } from '../nav/plan'
 import { boundsOf, drawingLayers, insertIndex, legMidpoint, missionBounds, threatRing, type Bounds } from '../nav/map'
 import { drawingLayer } from './drawings'
 
@@ -145,7 +145,7 @@ export function MapPanel({ mission, route, rows, onRoute }: {
 
   function addWaypoint(wp: Waypoint, at?: number) {
     const { route: r, onRoute: set } = live.current
-    const i = at ?? r.length
+    const i = at ?? appendIndex(r)
     set([...r.slice(0, i), carryLegData(r, i, wp), ...r.slice(i)])
   }
 
@@ -155,7 +155,9 @@ export function MapPanel({ mission, route, rows, onRoute }: {
     const at = insertIndex(r, p)
     const done = (i?: number) => () => { addWaypoint(wp(), i); map.current?.closePopup() }
     const last = r.length - 1
-    const actions: PopupAction[] = [{ label: add, title: last < 0 ? 'Start the route' : `After ${last} ${r[last].name}`, run: done() }]
+    const end = appendIndex(r)
+    const actions: PopupAction[] = [{ label: add, run: done(),
+      title: last < 0 ? 'Start the route' : end <= last ? `Before ${last} ${r[last].name} (destination)` : `After ${last} ${r[last].name}` }]
     if (at !== null) actions.push({ label: insert, title: `Between ${at - 1} ${r[at - 1].name} and ${at} ${r[at].name}`, run: done(at) })
     return actions
   }
