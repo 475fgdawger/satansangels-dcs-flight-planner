@@ -5,9 +5,9 @@
   "file": "Syria_TDY_433rd.miz",
   "theatre": "Syria",
   "date": "2016-06-21 00:00:00",
-  "start_time": 46800
+  "start_time": 18000
  },
- "built_utc": "2026-10-15T14:52:15Z",
+ "built_utc": "2026-10-15T15:07:45Z",
  "mag_var": {
   "source": "DCS",
   "fallback": 5.0
@@ -186,6 +186,34 @@
    "elev_ft": 1594
   },
   {
+   "name": "Bassel Al-Assad SA-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "Bassel Al-Assad SA-2",
+   "lat": 35.411182,
+   "lon": 35.923238,
+   "mag_var": 5.01,
+   "latlon": "N35°24'40\" E035°55'24\"",
+   "tacan": "DAN 161/99, KON 128/224",
+   "near": "1 nm WNW of Bassel Al-Assad EWR",
+   "line": "Bassel Al-Assad SA-2, N35°24'40\" E035°55'24\", DAN 161/99, KON 128/224, 1 nm WNW of Bassel Al-Assad EWR",
+   "elev_ft": 39
+  },
+  {
+   "name": "Hama SA-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "HAMA SA-2",
+   "lat": 35.064043,
+   "lon": 36.748742,
+   "mag_var": 4.98,
+   "latlon": "N35°03'51\" E036°44'55\"",
+   "tacan": "DAN 146/133, KON 125/268",
+   "near": "4 nm S of Hama",
+   "line": "Hama SA-2, N35°03'51\" E036°44'55\", DAN 146/133, KON 125/268, 4 nm S of Hama",
+   "elev_ft": 1162
+  },
+  {
    "name": "Latakia SA-2",
    "kind": "SAM",
    "section": "SAM Sites",
@@ -198,6 +226,20 @@
    "near": "1 nm E of Latakia",
    "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 163/91, KON 127/215, 1 nm E of Latakia",
    "elev_ft": 69
+  },
+  {
+   "name": "Tartus SA-2",
+   "kind": "SAM",
+   "section": "SAM Sites",
+   "group": "Tartus SA-2",
+   "lat": 34.964657,
+   "lon": 35.926761,
+   "mag_var": 4.95,
+   "latlon": "N34°57'53\" E035°55'36\"",
+   "tacan": "DAN 164/125, KON 132/244",
+   "near": "5 nm NNE of Tartus",
+   "line": "Tartus SA-2, N34°57'53\" E035°55'36\", DAN 164/125, KON 132/244, 5 nm NNE of Tartus",
+   "elev_ft": 860
   },
   {
    "name": "Aleppo EWR",
@@ -223,8 +265,8 @@
    "mag_var": 5.01,
    "latlon": "N35°24'07\" E035°56'49\"",
    "tacan": "DAN 161/100, KON 127/225",
-   "near": "at Bassel Al-Assad",
-   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, at Bassel Al-Assad",
+   "near": "1 nm ESE of Bassel Al-Assad SA-2",
+   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, 1 nm ESE of Bassel Al-Assad SA-2",
    "elev_ft": 94
   },
   {
@@ -634,7 +676,7 @@
    "elev_ft": 3407
   },
   {
-   "name": "KON14546",
+   "name": "KON12546",
    "lat": 37.603039,
    "lon": 33.395035,
    "elev_ft": 3286
@@ -744,10 +786,34 @@
    "elev_ft": 3638
   },
   {
-   "text": "KON 145/46 nm",
-   "lat": 37.600064,
-   "lon": 33.392241,
+   "text": "KON 135/30 nm",
+   "lat": 37.600025,
+   "lon": 33.392197,
    "elev_ft": 3286
+  },
+  {
+   "text": "KON 125/46 nm",
+   "lat": 37.662486,
+   "lon": 33.037128,
+   "elev_ft": 3266
+  },
+  {
+   "text": "DAN 280/50 nm",
+   "lat": 37.591245,
+   "lon": 34.078142,
+   "elev_ft": 3332
+  },
+  {
+   "text": "DAN 300/75 nm",
+   "lat": 37.100586,
+   "lon": 34.399909,
+   "elev_ft": 5618
+  },
+  {
+   "text": "DAN 240/42 nm",
+   "lat": 36.651779,
+   "lon": 34.703679,
+   "elev_ft": 0
   },
   {
    "text": "Karapinar West",
@@ -1332,17 +1398,77 @@
   },
   {
    "layer": "Common",
-   "name": "KON14546",
+   "name": "KON13530",
    "type": "TextBox",
    "color": "0x000000ff",
    "fill": "0xffffffff",
-   "text": "KON 145/46 nm",
+   "text": "KON 135/30 nm",
    "font_size": 9,
    "angle": -1.3310297373544,
    "layer_visible": true,
    "closed": false,
-   "lat": 37.600064,
-   "lon": 33.392241,
+   "lat": 37.600025,
+   "lon": 33.392197,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "KON12546-1",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0xffffffff",
+   "text": "KON 125/46 nm",
+   "font_size": 9,
+   "angle": -1.3310297373544,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 37.662486,
+   "lon": 33.037128,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "DAN28050",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0xffffffff",
+   "text": "DAN 280/50 nm",
+   "font_size": 9,
+   "angle": -1.3310297373544,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 37.591245,
+   "lon": 34.078142,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "DAN30075-1",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0xffffffff",
+   "text": "DAN 300/75 nm",
+   "font_size": 9,
+   "angle": -1.3310297373544,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 37.100586,
+   "lon": 34.399909,
+   "points": []
+  },
+  {
+   "layer": "Common",
+   "name": "DAN24042",
+   "type": "TextBox",
+   "color": "0x000000ff",
+   "fill": "0xffffffff",
+   "text": "DAN 240/42 nm",
+   "font_size": 9,
+   "angle": -1.3310297373544,
+   "layer_visible": true,
+   "closed": false,
+   "lat": 36.651779,
+   "lon": 34.703679,
    "points": []
   }
  ],
