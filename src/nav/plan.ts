@@ -156,6 +156,8 @@ export interface Waypoint extends LatLon {
   elevFt?: number
   /** Where elevFt came from: the DCS export, a real-world terrain lookup, or typed by the crew. */
   elevSource?: 'dcs' | 'dem' | 'typed'
+  /** Set on an airfield picked as the departure or destination, so it keeps that end of the route. */
+  end?: 'departure' | 'destination'
   /** Planned altitude at this waypoint, ft, as typed: above sea level or above the ground. */
   alt?: { ft?: number; ref: AltRef }
 }
@@ -410,13 +412,16 @@ function profile(p: PerfData, s: PlanSettings, fromFt: number, cruiseFt: number,
     cruiseNm, min: up.min + cruiseMin + down.min, fuel: up.lb + (cruise.ff * cruiseMin) / 60 + down.lb, flags: [...flags] }
 }
 
-/** Departure and destination airfields: the route's first and last waypoints when they are airfields. */
+/**
+ * Departure and destination airfields: the route's first and last waypoints when they are airfields. An airfield
+ * picked as the destination stays the destination even while it is the only waypoint.
+ */
 export function endpoints(route: Waypoint[]): { departure: Waypoint | null; destination: Waypoint | null } {
   const first = route[0], last = route[route.length - 1]
-  return {
-    departure: first?.source === 'airfield' ? first : null,
-    destination: route.length > 1 && last.source === 'airfield' ? last : null,
-  }
+  const destination = last && (last.end === 'destination' || (route.length > 1 && last.source === 'airfield' && last.end !== 'departure'))
+    ? last : null
+  const departure = first && first !== destination && first.source === 'airfield' && first.end !== 'destination' ? first : null
+  return { departure, destination }
 }
 
 /** Where an added waypoint goes: the end of the route, but always ahead of the destination airfield. */
@@ -432,7 +437,8 @@ export function setEndpoint(route: Waypoint[], end: 'departure' | 'destination',
   const current = endpoints(route)[end]
   const rest = current === null ? route : end === 'departure' ? route.slice(1) : route.slice(0, -1)
   if (!wp) return rest
-  return end === 'departure' ? [wp, ...rest] : [...rest, wp]
+  const marked = { ...wp, end }
+  return end === 'departure' ? [marked, ...rest] : [...rest, marked]
 }
 
 export interface MissionFuel {

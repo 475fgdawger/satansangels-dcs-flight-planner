@@ -281,3 +281,22 @@ describe('adding waypoints', () => {
     expect(appendIndex([])).toBe(0)
   })
 })
+
+describe('destination picked first', () => {
+  it('stays the destination, whatever order the pickers and adds come in', async () => {
+    const { appendIndex, endpoints, setEndpoint } = await import('../src/nav/plan')
+    const ab = (id: string) => ({ id, name: id, source: 'airfield', lat: 37, lon: 35 })
+    const wp = (id: string) => ({ id, name: id, source: 'manual', lat: 36, lon: 36 })
+    const ids = (r: { id: string }[]) => r.map((w) => w.id).join(' ')
+    let r = setEndpoint([], 'destination', ab('B'))
+    expect(endpoints(r).departure).toBeNull()
+    expect(endpoints(r).destination?.id).toBe('B')
+    expect(appendIndex(r)).toBe(0)
+    r = [...r.slice(0, appendIndex(r)), wp('1'), ...r.slice(appendIndex(r))]
+    expect(ids(r)).toBe('1 B')
+    r = setEndpoint(r, 'departure', ab('A'))
+    expect(ids(r)).toBe('A 1 B')
+    r = [...r.slice(0, appendIndex(r)), wp('2'), ...r.slice(appendIndex(r))]
+    expect(ids(r)).toBe('A 1 2 B')
+  })
+})
