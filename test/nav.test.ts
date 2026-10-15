@@ -127,7 +127,10 @@ describe('legs', () => {
     expect(leg.nm).toBeLessThan(95)
     expect(leg.ete).toBeCloseTo((leg.nm / 420) * 60, 6)
     expect(leg.climbMin).toBe(4)
-    const want = 4400 - d.beforeFirstLeg - (6000 * 4 + 2200 * (leg.ete - 4)) / 60
+    // The departure row shows fuel after taxi; the AB takeoff counts in leg 1.
+    expect(d.beforeFirstLeg).toBeCloseTo(10 * 12, 6)
+    expect(rows[0].fuelRemaining).toBeCloseTo(4400 - 120, 6)
+    const want = 4400 - d.beforeFirstLeg - d.takeoff - (6000 * 4 + 2200 * (leg.ete - 4)) / 60
     expect(rows[1].fuelRemaining).toBeCloseTo(want, 6)
     expect(rows[2].leg!.climbMin).toBe(0)
     expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)
@@ -222,5 +225,47 @@ describe('altitude', () => {
     expect(altAgl(wp({ ft: 500, ref: 'msl' }))).toBe(undefined)
     expect(altMsl(wp({ ref: 'msl' }, 100))).toBeUndefined()
     expect(altMsl(wp(undefined, 100))).toBeUndefined()
+  })
+})
+
+describe('mission fuel', () => {
+  it('is the fuel burned from engine start to the last waypoint plus landing pattern fuel', async () => {
+    const { missionFuel, defaultSettings, AIRCRAFT } = await import('../src/nav/plan')
+    const s = { ...defaultSettings('F-4E'), startFuel: 12200 }
+    const rows = [{ fuelAfter: 11000 }, { fuelAfter: 7000 }, { fuelAfter: 4000 }] as never
+    const m = missionFuel(rows, s)!
+    expect(m.burn).toBe(8200)
+    expect(m.pattern).toBe(1500)
+    expect(m.required).toBe(9700)
+    expect(m.margin).toBe(2500)
+    expect(missionFuel([{ fuelAfter: 11000 }] as never, s)).toBeNull()
+    expect(AIRCRAFT['F-5E'].patternFuel).toBe(800)
+    expect(AIRCRAFT['F-100D'].patternFuel).toBe(800)
+  })
+})
+
+describe('departure and destination', () => {
+  const ab = (id: string) => ({ id, name: id, source: 'airfield', lat: 37, lon: 35 })
+  const wp = (id: string) => ({ id, name: id, source: 'manual', lat: 36, lon: 36 })
+
+  it('reads the airfields at either end of the route', async () => {
+    const { endpoints } = await import('../src/nav/plan')
+    expect(endpoints([ab('A'), wp('1'), ab('B')]).departure?.name).toBe('A')
+    expect(endpoints([ab('A'), wp('1'), ab('B')]).destination?.name).toBe('B')
+    expect(endpoints([wp('1'), wp('2')])).toEqual({ departure: null, destination: null })
+    expect(endpoints([ab('A')]).destination).toBeNull()
+  })
+
+  it('replaces an airfield at that end, or adds one', async () => {
+    const { setEndpoint } = await import('../src/nav/plan')
+    const ids = (r: { id: string }[]) => r.map((w) => w.id).join(' ')
+    expect(ids(setEndpoint([ab('A'), wp('1'), ab('B')], 'departure', ab('C')))).toBe('C 1 B')
+    expect(ids(setEndpoint([ab('A'), wp('1'), ab('B')], 'destination', ab('C')))).toBe('A 1 C')
+    expect(ids(setEndpoint([wp('1'), wp('2')], 'departure', ab('C')))).toBe('C 1 2')
+    expect(ids(setEndpoint([wp('1'), wp('2')], 'destination', ab('C')))).toBe('1 2 C')
+    expect(ids(setEndpoint([ab('A')], 'destination', ab('A')))).toBe('A A')
+    expect(ids(setEndpoint([], 'departure', ab('C')))).toBe('C')
+    expect(ids(setEndpoint([ab('A'), wp('1'), ab('B')], 'destination', null))).toBe('A 1')
+    expect(ids(setEndpoint([wp('1'), wp('2')], 'departure', null))).toBe('1 2')
   })
 })

@@ -150,8 +150,10 @@ describe('F-4E route planning from the tables', () => {
     expect(leg.descent).toBeNull()
     const cruiseMin = ((leg.nm - leg.climb!.nm) / leg.gs) * 60
     expect(leg.ete).toBeCloseTo(leg.climb!.min + cruiseMin, 6)
-    expect(leg.fuelUsed).toBeCloseTo(climbLb + (leg.ff * cruiseMin) / 60, 6)
-    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1115 - leg.fuelUsed, 6)
+    // Leg 1 carries the 732 lb max AB takeoff; the departure row is fuel after the 383 lb taxi.
+    expect(leg.fuelUsed).toBeCloseTo(732 + climbLb + (leg.ff * cruiseMin) / 60, 6)
+    expect(rows[0].fuelRemaining).toBeCloseTo(12200 - 383, 0)
+    expect(rows[1].fuelRemaining).toBeCloseTo(12200 - 1115 - (leg.fuelUsed - 732), 6)
   })
 
   it('descent leg: cruise high, idle descent at the end with the top of descent', () => {

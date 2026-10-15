@@ -44,6 +44,8 @@ export interface AircraftProfile {
   perf?: PerfData
   /** Drag category the bingo is flown at, whatever the plan's category (stores gone, missiles and tank kept). */
   bingoDrag?: string
+  /** Minimum fuel on arrival for the landing pattern, lb: the floor of the mission fuel. */
+  patternFuel: number
 }
 
 /** Leg phases for aircraft with recorded data: fuel flow and RPM come from the tables. */
@@ -76,6 +78,8 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
     perf: PERF['F-4E'],
     // Squadron (2026-10-08): bingo at BFM No Tank drag (missiles kept, stores and centerline tank gone).
     bingoDrag: 'BFM No Tank',
+    // Minimum landing pattern fuel (Patrick, 2026-10-15): F-4 1,500, F-5 800, F-100 800.
+    patternFuel: 1500,
   },
   'F-5E': {
     id: 'F-5E',
@@ -90,6 +94,7 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
       { id: 'ab', label: 'Afterburner', short: 'AB', ff: 20000, note: 'placeholder' },
     ],
     bingoFloor: 1200,
+    patternFuel: 800,
     placeholder: true,
   },
   'F-100D': {
@@ -105,6 +110,7 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
       { id: 'ab', label: 'Afterburner', short: 'AB', ff: 30000, note: 'placeholder' },
     ],
     bingoFloor: 2000,
+    patternFuel: 800,
     placeholder: true,
   },
 }
@@ -262,19 +268,19 @@ export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSet
 }
 
 /**
- * Departure fuel burned before the first waypoint: taxi at ground idle, then full afterburner for takeoff and
+ * Departure fuel: taxi at ground idle (before the departure row), then full afterburner for takeoff and
  * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS, then the MIL climb is
  * part of the first leg. Without: AB for a set time (to about 400 kt), then a fixed MIL climb at the start of the
- * first leg.
+ * first leg. The takeoff burn is counted in the first leg.
  */
 export function departureFuel(s: PlanSettings): { taxi: number; takeoff: number; climb: number; beforeFirstLeg: number; total: number } {
   const a = AIRCRAFT[s.aircraft]
   const taxi = s.taxiMin * a.idleLbMin
   const recorded = a.perf?.ground.takeoff
-  if (recorded) return { taxi, takeoff: recorded.lb, climb: 0, beforeFirstLeg: taxi + recorded.lb, total: taxi + recorded.lb }
+  if (recorded) return { taxi, takeoff: recorded.lb, climb: 0, beforeFirstLeg: taxi, total: taxi + recorded.lb }
   const takeoff = (s.abTakeoffMin * fixedFf(s.aircraft, 'ab')) / 60
   const climb = (Math.max(s.climbMin, 0) * fixedFf(s.aircraft, 'mil')) / 60
-  return { taxi, takeoff, climb, beforeFirstLeg: taxi + takeoff, total: taxi + takeoff + climb }
+  return { taxi, takeoff, climb, beforeFirstLeg: taxi, total: taxi + takeoff + climb }
 }
 
 /** A climb or descent within a leg: minutes, ground nm (with wind) and fuel. */
@@ -404,13 +410,58 @@ function profile(p: PerfData, s: PlanSettings, fromFt: number, cruiseFt: number,
     cruiseNm, min: up.min + cruiseMin + down.min, fuel: up.lb + (cruise.ff * cruiseMin) / 60 + down.lb, flags: [...flags] }
 }
 
+/** Departure and destination airfields: the route's first and last waypoints when they are airfields. */
+export function endpoints(route: Waypoint[]): { departure: Waypoint | null; destination: Waypoint | null } {
+  const first = route[0], last = route[route.length - 1]
+  return {
+    departure: first?.source === 'airfield' ? first : null,
+    destination: route.length > 1 && last.source === 'airfield' ? last : null,
+  }
+}
+
+/**
+ * The route with its departure or destination set to an airfield waypoint (null clears it): an airfield already at
+ * that end is replaced, otherwise the airfield goes in front of the route (departure) or after it (destination).
+ */
+export function setEndpoint(route: Waypoint[], end: 'departure' | 'destination', wp: Waypoint | null): Waypoint[] {
+  const current = endpoints(route)[end]
+  const rest = current === null ? route : end === 'departure' ? route.slice(1) : route.slice(0, -1)
+  if (!wp) return rest
+  return end === 'departure' ? [wp, ...rest] : [...rest, wp]
+}
+
+export interface MissionFuel {
+  /** Minimum fuel at engine start to fly the plan and arrive with pattern fuel, lb. */
+  required: number
+  /** Fuel burned from engine start to the last waypoint: taxi, takeoff, legs and loiters, lb. */
+  burn: number
+  /** Landing pattern fuel added on top, lb. */
+  pattern: number
+  /** Start fuel minus required: spare when positive, short when negative. */
+  margin: number
+}
+
+/**
+ * Mission fuel: the least fuel to start with to fly the planned sortie (taxi, takeoff, every leg and loiter) and
+ * reach the last waypoint with the aircraft's landing pattern fuel. Null until the route has a leg.
+ */
+export function missionFuel(rows: Row[], s: PlanSettings): MissionFuel | null {
+  if (rows.length < 2) return null
+  const burn = s.startFuel - rows[rows.length - 1].fuelAfter
+  const pattern = AIRCRAFT[s.aircraft].patternFuel
+  const required = burn + pattern
+  return { required, burn, pattern, margin: s.startFuel - required }
+}
+
 export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings): Row[] {
   const rows: Row[] = []
   const p = AIRCRAFT[s.aircraft].perf
   const alts = routeAltitudes(route)
   let elapsed = 0
   let totalNm = 0
-  let fuel = s.startFuel - departureFuel(s).beforeFirstLeg
+  // The departure row shows fuel after taxi; the takeoff burn goes on the first leg (squadron, 2026-10-15).
+  const dep = departureFuel(s)
+  let fuel = s.startFuel - dep.beforeFirstLeg
   route.forEach((wp, i) => {
     let leg: Leg | null = null
     if (i > 0) {
@@ -419,7 +470,7 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
       const magVar = magVarAt(m, from)
       const l = p ? perfLeg(p, wp, alts[i - 1], alts[i], az, nm, s) : fixedLeg(wp, i, az, nm, s)
       // The leg functions return a true heading; the nav log is magnetic.
-      leg = { ...l, to: i, magCourse: norm360(az - magVar), magHeading: norm360(l.magHeading - magVar), magVar }
+      leg = { ...l, fuelUsed: l.fuelUsed + (i === 1 ? dep.takeoff : 0), to: i, magCourse: norm360(az - magVar), magHeading: norm360(l.magHeading - magVar), magVar }
       elapsed += leg.ete
       totalNm += nm
       fuel -= leg.fuelUsed

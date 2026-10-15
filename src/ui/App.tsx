@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { TerrainGrid } from '../nav/terrain'
 import { loadTerrain } from './terrain'
 import type { MissionExport } from '../nav/types'
-import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
+import { M_TO_FT, airfields, catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } from '../nav/mission'
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
   WAYPOINT_TAGS, altAgl, altMsl, attackRun, carryLegData, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
-  fuelPlan, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
+  endpoints, fuelPlan, missionFuel, phaseOf, setEndpoint, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
   type Row, type Waypoint } from '../nav/plan'
 import { NO_STORES, dragCategories } from '../nav/perf'
 import { machFromKcas } from '../nav/atmo'
@@ -185,6 +185,7 @@ export function App() {
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
   const fuel = useMemo(() => (settings ? fuelPlan(route, settings, rows) : null), [route, settings, rows])
+  const need = useMemo(() => (settings ? missionFuel(rows, settings) : null), [rows, settings])
   // Waypoints with no elevation get one from the terrain lookup; each is tried once per visit.
   const tried = useRef(new Set<string>())
   useEffect(() => {
@@ -265,7 +266,8 @@ export function App() {
 
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} onChange={setSettings} />
+          <SettingsPanel settings={settings} mission={mission} route={route} fuel={fuel} need={need} onChange={setSettings}
+            onRoute={setRoute} />
           <RoutePanel mission={mission} route={route} rows={rows} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
@@ -281,8 +283,29 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
-  { settings: PlanSettings; missionName: string; route: Waypoint[]; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, mission, route, fuel, need, onChange, onRoute }:
+  { settings: PlanSettings; mission: MissionExport; route: Waypoint[]; fuel: FuelPlan | null; need: MissionFuel | null
+    onChange: (s: PlanSettings) => void; onRoute: (r: Waypoint[]) => void }) {
+  const missionName = mission.mission.name
+  const fields = useMemo(() => airfields(mission).slice().sort((x, y) => x.name.localeCompare(y.name)), [mission])
+  const ends = endpoints(route)
+  // Departure and destination are the route's first and last waypoints; picking one puts that airfield there.
+  const endpoint = (label: string, end: 'departure' | 'destination', note: string) => (
+    <label class="field">
+      <span>{label}</span>
+      <select value={ends[end]?.name ?? ''}
+        onChange={(e) => {
+          const a = fields.find((f) => f.name === (e.target as HTMLSelectElement).value)
+          onRoute(setEndpoint(route, end, a ? { id: newId(), name: a.name, source: 'airfield', lat: a.lat, lon: a.lon,
+            elevFt: Math.round(a.elev_m * M_TO_FT), elevSource: 'dcs' } : null))
+        }}>
+        <option value="">None</option>
+        {ends[end] && !fields.some((f) => f.name === ends[end]!.name) && <option value={ends[end]!.name}>{ends[end]!.name}</option>}
+        {fields.map((f) => <option value={f.name}>{f.name}</option>)}
+      </select>
+      <small>{note}</small>
+    </label>
+  )
   const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
@@ -332,6 +355,10 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
             onInput={(e) => set({ callsign: (e.target as HTMLInputElement).value || undefined })} />
           <small>optional</small>
         </label>
+      </div>
+      <div class="grid">
+        {endpoint('Departure', 'departure', 'first waypoint')}
+        {endpoint('Destination', 'destination', 'last waypoint')}
       </div>
       <div class="grid">
         <label class="field">
@@ -406,14 +433,22 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
       {perf ? (
         <p class="muted small">
           Departure: {ft(dep.total)} lb = {ft(dep.taxi)} taxi + {ft(dep.takeoff)} max AB from brake release
-          to {perf.ground.takeoff?.kias ?? 450} KIAS, then a MIL climb on the first leg. Climbs (MIL) and descents (idle) are
+          to {perf.ground.takeoff?.kias ?? 450} KIAS, then a MIL climb. The departure row shows fuel after taxi; the takeoff and climb count in the first leg. Climbs (MIL) and descents (idle) are
           flown in the legs: the altitude column is the altitude at each waypoint (crossing altitude).
         </p>
       ) : (
         <p class="muted small">
           Departure (taxi, AB takeoff to 400 kt, MIL climb): {ft(dep.total)} lb
           = {Math.round(dep.taxi)} taxi + {Math.round(dep.takeoff)} AB
-          + {Math.round(dep.climb)} climb. The climb is flown at the start of the first leg.
+          + {Math.round(dep.climb)} climb. The departure row shows fuel after taxi; the takeoff and climb count in the first leg.
+        </p>
+      )}
+      {need && (
+        <p class={`small ${need.margin < 0 ? 'warn-text' : 'muted'}`}>
+          <b>Mission fuel {ft(need.required)} lb</b>: {ft(need.burn)} burned from engine start to the last waypoint
+          + {ft(need.pattern)} landing pattern fuel. {need.margin < 0
+            ? <b>{ft(-need.margin)} lb short of the {ft(s.startFuel)} lb start fuel.</b>
+            : <>{ft(need.margin)} lb spare with {ft(s.startFuel)} lb.</>}
         </p>
       )}
       {fuel?.profiles && <JokerBingo fuel={fuel} where={route[fuel.target].name} />}

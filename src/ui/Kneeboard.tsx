@@ -3,7 +3,7 @@ import { useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
-import { AIRCRAFT, JOKER_ESCAPE_RPM, altAgl, altMsl, departureFuel, planTitle, phaseOf, type AttackRun, type Waypoint, type FuelPlan,
+import { AIRCRAFT, JOKER_ESCAPE_RPM, altAgl, altMsl, departureFuel, missionFuel, planTitle, phaseOf, type AttackRun, type Waypoint, type FuelPlan,
   type PlanSettings, type Row } from '../nav/plan'
 import { NO_STORES } from '../nav/perf'
 import { approx, ft, machText, powerText, speedText } from './perfLabels'
@@ -122,6 +122,7 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
   const lb = (n: number) => Math.round(n).toLocaleString('en-US')
   const lowFuel = (f: number) => (!fuel ? '' : f < fuel.bingo ? 'bingo' : f < fuel.joker ? 'joker' : '')
   const dep = departureFuel(s)
+  const need = missionFuel(all, s)
   const perf = AIRCRAFT[s.aircraft].perf
   const beacons = [
     ...mission.tacans.map((t) => `${t.id} ${t.chan}`),
@@ -146,6 +147,10 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
       </div>
       <div class="kb-fuel">
         <div><small>START</small><b>{lb(s.startFuel)}</b></div>
+        <div class={need && need.margin < 0 ? 'short' : ''}>
+          <small>MISSION</small><b>{need ? lb(need.required) : '—'}</b>
+          {need && <span class="kb-margin">{need.margin < 0 ? `${lb(-need.margin)} SHORT` : `+${lb(need.margin)} spare`}</span>}
+        </div>
         <div class="joker"><small>JOKER</small><b>{fuel ? lb(fuel.joker) : '—'}</b></div>
         <div class="bingo"><small>BINGO</small><b>{fuel ? lb(fuel.bingo) : '—'}</b></div>
         <div><small>AT {fuel?.targetKind === 'CAP' ? 'CAP' : 'TGT'}</small><b>{fuel ? all[fuel.target].wp.name : '—'}</b></div>
@@ -215,14 +220,14 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
       {perf ? (
         <div class="kb-foot">
           MC/MH magnetic · ALT ft at the waypoint as planned, other reference below · PWR RPM to set (or MIL/AB) and speed for the leg,
-          ≈ approximate · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} max AB T/O;
-          legs include MIL climbs and idle descents (TOD = start descent, nm before the waypoint); fuel on arrival, OUT = leaving after
-          loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
+          ≈ approximate · TACAN radial from station/nm · Fuel lb remaining, after {lb(dep.taxi)} taxi at the departure;
+          leg 1 includes {lb(dep.takeoff)} max AB T/O; legs include MIL climbs and idle descents (TOD = start descent, nm before the waypoint); fuel on arrival, OUT = leaving after
+          loiter{fuel ? ' · shaded rows below joker/bingo' : ''}{need ? ` · MISSION = ${lb(need.burn)} burned start to landing + ${lb(need.pattern)} pattern fuel` : ''}
         </div>
       ) : (
         <div class="kb-foot">
-          MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
-          leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}
+          MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining, after {lb(dep.taxi)} taxi at the departure;
+          leg 1 includes {lb(dep.takeoff)} AB T/O and {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}{need ? ` · MISSION = ${lb(need.burn)} burned start to landing + ${lb(need.pattern)} pattern fuel` : ''}
         </div>
       )}
     </div>
