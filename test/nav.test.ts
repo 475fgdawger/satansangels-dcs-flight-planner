@@ -127,7 +127,10 @@ describe('legs', () => {
     expect(leg.nm).toBeLessThan(95)
     expect(leg.ete).toBeCloseTo((leg.nm / 420) * 60, 6)
     expect(leg.climbMin).toBe(4)
-    const want = 4400 - d.beforeFirstLeg - (6000 * 4 + 2200 * (leg.ete - 4)) / 60
+    // The departure row shows fuel after taxi; the AB takeoff counts in leg 1.
+    expect(d.beforeFirstLeg).toBeCloseTo(10 * 12, 6)
+    expect(rows[0].fuelRemaining).toBeCloseTo(4400 - 120, 6)
+    const want = 4400 - d.beforeFirstLeg - d.takeoff - (6000 * 4 + 2200 * (leg.ete - 4)) / 60
     expect(rows[1].fuelRemaining).toBeCloseTo(want, 6)
     expect(rows[2].leg!.climbMin).toBe(0)
     expect(leg.magCourse).toBeCloseTo(leg.trueCourse - 5.23, 6)

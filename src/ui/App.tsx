@@ -433,14 +433,14 @@ function SettingsPanel({ settings: s, mission, route, fuel, need, onChange, onRo
       {perf ? (
         <p class="muted small">
           Departure: {ft(dep.total)} lb = {ft(dep.taxi)} taxi + {ft(dep.takeoff)} max AB from brake release
-          to {perf.ground.takeoff?.kias ?? 450} KIAS, then a MIL climb on the first leg. Climbs (MIL) and descents (idle) are
+          to {perf.ground.takeoff?.kias ?? 450} KIAS, then a MIL climb. The departure row shows fuel after taxi; the takeoff and climb count in the first leg. Climbs (MIL) and descents (idle) are
           flown in the legs: the altitude column is the altitude at each waypoint (crossing altitude).
         </p>
       ) : (
         <p class="muted small">
           Departure (taxi, AB takeoff to 400 kt, MIL climb): {ft(dep.total)} lb
           = {Math.round(dep.taxi)} taxi + {Math.round(dep.takeoff)} AB
-          + {Math.round(dep.climb)} climb. The climb is flown at the start of the first leg.
+          + {Math.round(dep.climb)} climb. The departure row shows fuel after taxi; the takeoff and climb count in the first leg.
         </p>
       )}
       {need && (

@@ -268,19 +268,19 @@ export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSet
 }
 
 /**
- * Departure fuel burned before the first waypoint: taxi at ground idle, then full afterburner for takeoff and
+ * Departure fuel: taxi at ground idle (before the departure row), then full afterburner for takeoff and
  * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS, then the MIL climb is
  * part of the first leg. Without: AB for a set time (to about 400 kt), then a fixed MIL climb at the start of the
- * first leg.
+ * first leg. The takeoff burn is counted in the first leg.
  */
 export function departureFuel(s: PlanSettings): { taxi: number; takeoff: number; climb: number; beforeFirstLeg: number; total: number } {
   const a = AIRCRAFT[s.aircraft]
   const taxi = s.taxiMin * a.idleLbMin
   const recorded = a.perf?.ground.takeoff
-  if (recorded) return { taxi, takeoff: recorded.lb, climb: 0, beforeFirstLeg: taxi + recorded.lb, total: taxi + recorded.lb }
+  if (recorded) return { taxi, takeoff: recorded.lb, climb: 0, beforeFirstLeg: taxi, total: taxi + recorded.lb }
   const takeoff = (s.abTakeoffMin * fixedFf(s.aircraft, 'ab')) / 60
   const climb = (Math.max(s.climbMin, 0) * fixedFf(s.aircraft, 'mil')) / 60
-  return { taxi, takeoff, climb, beforeFirstLeg: taxi + takeoff, total: taxi + takeoff + climb }
+  return { taxi, takeoff, climb, beforeFirstLeg: taxi, total: taxi + takeoff + climb }
 }
 
 /** A climb or descent within a leg: minutes, ground nm (with wind) and fuel. */
@@ -459,7 +459,9 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
   const alts = routeAltitudes(route)
   let elapsed = 0
   let totalNm = 0
-  let fuel = s.startFuel - departureFuel(s).beforeFirstLeg
+  // The departure row shows fuel after taxi; the takeoff burn goes on the first leg (squadron, 2026-10-15).
+  const dep = departureFuel(s)
+  let fuel = s.startFuel - dep.beforeFirstLeg
   route.forEach((wp, i) => {
     let leg: Leg | null = null
     if (i > 0) {
@@ -468,7 +470,7 @@ export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings
       const magVar = magVarAt(m, from)
       const l = p ? perfLeg(p, wp, alts[i - 1], alts[i], az, nm, s) : fixedLeg(wp, i, az, nm, s)
       // The leg functions return a true heading; the nav log is magnetic.
-      leg = { ...l, to: i, magCourse: norm360(az - magVar), magHeading: norm360(l.magHeading - magVar), magVar }
+      leg = { ...l, fuelUsed: l.fuelUsed + (i === 1 ? dep.takeoff : 0), to: i, magCourse: norm360(az - magVar), magHeading: norm360(l.magHeading - magVar), magVar }
       elapsed += leg.ete
       totalNm += nm
       fuel -= leg.fuelUsed

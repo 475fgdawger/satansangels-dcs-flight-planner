@@ -220,14 +220,14 @@ function Page({ mission, all, rows, first, page, pageCount, settings: s, fuel }:
       {perf ? (
         <div class="kb-foot">
           MC/MH magnetic · ALT ft at the waypoint as planned, other reference below · PWR RPM to set (or MIL/AB) and speed for the leg,
-          ≈ approximate · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} max AB T/O;
-          legs include MIL climbs and idle descents (TOD = start descent, nm before the waypoint); fuel on arrival, OUT = leaving after
+          ≈ approximate · TACAN radial from station/nm · Fuel lb remaining, after {lb(dep.taxi)} taxi at the departure;
+          leg 1 includes {lb(dep.takeoff)} max AB T/O; legs include MIL climbs and idle descents (TOD = start descent, nm before the waypoint); fuel on arrival, OUT = leaving after
           loiter{fuel ? ' · shaded rows below joker/bingo' : ''}{need ? ` · MISSION = ${lb(need.burn)} burned start to landing + ${lb(need.pattern)} pattern fuel` : ''}
         </div>
       ) : (
         <div class="kb-foot">
-          MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining after {lb(dep.taxi)} taxi + {lb(dep.takeoff)} AB T/O;
-          leg 1 includes {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}{need ? ` · MISSION = ${lb(need.burn)} burned start to landing + ${lb(need.pattern)} pattern fuel` : ''}
+          MC/MH magnetic · ALT ft as planned, other reference below · TACAN radial from station/nm · Fuel lb remaining, after {lb(dep.taxi)} taxi at the departure;
+          leg 1 includes {lb(dep.takeoff)} AB T/O and {lb(dep.climb)} MIL climb; fuel shown on arrival, OUT = leaving after loiter{fuel ? ' · shaded rows below joker/bingo' : ''}{need ? ` · MISSION = ${lb(need.burn)} burned start to landing + ${lb(need.pattern)} pattern fuel` : ''}
         </div>
       )}
     </div>
