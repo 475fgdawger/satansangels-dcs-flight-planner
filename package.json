@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/leaflet": "^1.9.22",
+    "fflate": "^0.8.3",
     "html-to-image": "^1.11.13",
     "jspdf": "^4.2.1",
     "leaflet": "^1.9.4",
