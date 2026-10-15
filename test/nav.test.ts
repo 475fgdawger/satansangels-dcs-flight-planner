@@ -224,3 +224,19 @@ describe('altitude', () => {
     expect(altMsl(wp(undefined, 100))).toBeUndefined()
   })
 })
+
+describe('mission fuel', () => {
+  it('is the fuel burned from engine start to the last waypoint plus landing pattern fuel', async () => {
+    const { missionFuel, defaultSettings, AIRCRAFT } = await import('../src/nav/plan')
+    const s = { ...defaultSettings('F-4E'), startFuel: 12200 }
+    const rows = [{ fuelAfter: 11000 }, { fuelAfter: 7000 }, { fuelAfter: 4000 }] as never
+    const m = missionFuel(rows, s)!
+    expect(m.burn).toBe(8200)
+    expect(m.pattern).toBe(1500)
+    expect(m.required).toBe(9700)
+    expect(m.margin).toBe(2500)
+    expect(missionFuel([{ fuelAfter: 11000 }] as never, s)).toBeNull()
+    expect(AIRCRAFT['F-5E'].patternFuel).toBe(800)
+    expect(AIRCRAFT['F-100D'].patternFuel).toBe(800)
+  })
+})

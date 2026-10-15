@@ -44,6 +44,8 @@ export interface AircraftProfile {
   perf?: PerfData
   /** Drag category the bingo is flown at, whatever the plan's category (stores gone, missiles and tank kept). */
   bingoDrag?: string
+  /** Minimum fuel on arrival for the landing pattern, lb: the floor of the mission fuel. */
+  patternFuel: number
 }
 
 /** Leg phases for aircraft with recorded data: fuel flow and RPM come from the tables. */
@@ -76,6 +78,8 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
     perf: PERF['F-4E'],
     // Squadron (2026-10-08): bingo at BFM No Tank drag (missiles kept, stores and centerline tank gone).
     bingoDrag: 'BFM No Tank',
+    // Minimum landing pattern fuel (Patrick, 2026-10-15): F-4 1,500, F-5 800, F-100 800.
+    patternFuel: 1500,
   },
   'F-5E': {
     id: 'F-5E',
@@ -90,6 +94,7 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
       { id: 'ab', label: 'Afterburner', short: 'AB', ff: 20000, note: 'placeholder' },
     ],
     bingoFloor: 1200,
+    patternFuel: 800,
     placeholder: true,
   },
   'F-100D': {
@@ -105,6 +110,7 @@ export const AIRCRAFT: Record<AircraftId, AircraftProfile> = {
       { id: 'ab', label: 'Afterburner', short: 'AB', ff: 30000, note: 'placeholder' },
     ],
     bingoFloor: 2000,
+    patternFuel: 800,
     placeholder: true,
   },
 }
@@ -402,6 +408,29 @@ function profile(p: PerfData, s: PlanSettings, fromFt: number, cruiseFt: number,
   const cruiseMin = (cruiseNm / wind.gs) * 60
   return { ktas, heading: wind.heading, gs: wind.gs, climb: up.min > 0 ? up : null, descent: down.min > 0 ? down : null,
     cruiseNm, min: up.min + cruiseMin + down.min, fuel: up.lb + (cruise.ff * cruiseMin) / 60 + down.lb, flags: [...flags] }
+}
+
+export interface MissionFuel {
+  /** Minimum fuel at engine start to fly the plan and arrive with pattern fuel, lb. */
+  required: number
+  /** Fuel burned from engine start to the last waypoint: taxi, takeoff, legs and loiters, lb. */
+  burn: number
+  /** Landing pattern fuel added on top, lb. */
+  pattern: number
+  /** Start fuel minus required: spare when positive, short when negative. */
+  margin: number
+}
+
+/**
+ * Mission fuel: the least fuel to start with to fly the planned sortie (taxi, takeoff, every leg and loiter) and
+ * reach the last waypoint with the aircraft's landing pattern fuel. Null until the route has a leg.
+ */
+export function missionFuel(rows: Row[], s: PlanSettings): MissionFuel | null {
+  if (rows.length < 2) return null
+  const burn = s.startFuel - rows[rows.length - 1].fuelAfter
+  const pattern = AIRCRAFT[s.aircraft].patternFuel
+  const required = burn + pattern
+  return { required, burn, pattern, margin: s.startFuel - required }
 }
 
 export function computeRows(m: MissionExport, route: Waypoint[], s: PlanSettings): Row[] {

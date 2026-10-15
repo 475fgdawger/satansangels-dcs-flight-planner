@@ -6,7 +6,7 @@ import { catalog, kindLabel, parseMission, parseTacanFix, type CatalogPoint } fr
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
   WAYPOINT_TAGS, altAgl, altMsl, attackRun, carryLegData, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
-  fuelPlan, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
+  fuelPlan, missionFuel, phaseOf, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
   type Row, type Waypoint } from '../nav/plan'
 import { NO_STORES, dragCategories } from '../nav/perf'
 import { machFromKcas } from '../nav/atmo'
@@ -185,6 +185,7 @@ export function App() {
 
   const rows = useMemo(() => (mission && settings ? computeRows(mission, route, settings) : []), [mission, route, settings])
   const fuel = useMemo(() => (settings ? fuelPlan(route, settings, rows) : null), [route, settings, rows])
+  const need = useMemo(() => (settings ? missionFuel(rows, settings) : null), [rows, settings])
   // Waypoints with no elevation get one from the terrain lookup; each is tried once per visit.
   const tried = useRef(new Set<string>())
   useEffect(() => {
@@ -265,7 +266,7 @@ export function App() {
 
       {mission && settings && (
         <>
-          <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} onChange={setSettings} />
+          <SettingsPanel settings={settings} missionName={mission.mission.name} route={route} fuel={fuel} need={need} onChange={setSettings} />
           <RoutePanel mission={mission} route={route} rows={rows} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
@@ -281,8 +282,9 @@ function num(v: string, fallback: number) {
   return Number.isFinite(n) ? n : fallback
 }
 
-function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
-  { settings: PlanSettings; missionName: string; route: Waypoint[]; fuel: FuelPlan | null; onChange: (s: PlanSettings) => void }) {
+function SettingsPanel({ settings: s, missionName, route, fuel, need, onChange }:
+  { settings: PlanSettings; missionName: string; route: Waypoint[]; fuel: FuelPlan | null; need: MissionFuel | null
+    onChange: (s: PlanSettings) => void }) {
   const a = AIRCRAFT[s.aircraft]
   const set = (patch: Partial<PlanSettings>) => onChange({ ...s, ...patch })
   const field = (label: string, key: keyof PlanSettings, unit: string) => (
@@ -414,6 +416,14 @@ function SettingsPanel({ settings: s, missionName, route, fuel, onChange }:
           Departure (taxi, AB takeoff to 400 kt, MIL climb): {ft(dep.total)} lb
           = {Math.round(dep.taxi)} taxi + {Math.round(dep.takeoff)} AB
           + {Math.round(dep.climb)} climb. The climb is flown at the start of the first leg.
+        </p>
+      )}
+      {need && (
+        <p class={`small ${need.margin < 0 ? 'warn-text' : 'muted'}`}>
+          <b>Mission fuel {ft(need.required)} lb</b>: {ft(need.burn)} burned from engine start to the last waypoint
+          + {ft(need.pattern)} landing pattern fuel. {need.margin < 0
+            ? <b>{ft(-need.margin)} lb short of the {ft(s.startFuel)} lb start fuel.</b>
+            : <>{ft(need.margin)} lb spare with {ft(s.startFuel)} lb.</>}
         </p>
       )}
       {fuel?.profiles && <JokerBingo fuel={fuel} where={route[fuel.target].name} />}
