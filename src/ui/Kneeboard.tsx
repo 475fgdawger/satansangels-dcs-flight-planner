@@ -1,5 +1,5 @@
 import { Fragment } from 'preact'
-import { useMemo, useRef, useState } from 'preact/hooks'
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
 import { magVarAt, nearRef, tacanFix } from '../nav/mission'
@@ -13,6 +13,7 @@ import type { PopupResult } from '../nav/popup'
 import { legStrip, stripProjection } from '../nav/chart'
 import { maxElevationNear, shadeTerrain, type TerrainGrid } from '../nav/terrain'
 import { shadingImage } from './terrain'
+import { allowWrite, canPickFolder, forgetFolder, pickFolder, savedFolder, writePages, type DirHandle } from './folder'
 
 // DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
@@ -34,6 +35,9 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
 }) {
   const pagesRef = useRef<HTMLDivElement>(null)
   const [busy, setBusy] = useState<string | null>(null)
+  const [folder, setFolder] = useState<DirHandle | null>(null)
+  const [note, setNote] = useState<string | null>(null)
+  useEffect(() => { savedFolder().then(setFolder) }, [])
   // Every page heads with the mission name; the crew's title block replaces it.
   const title = planTitle(exported.mission.name, s)
   const mission = { ...exported, mission: { ...exported.mission, name: title } }
@@ -58,6 +62,9 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
   async function exportAs(kind: 'png' | 'pdf') {
     const els = Array.from(pagesRef.current?.querySelectorAll<HTMLElement>('.kb-page') ?? [])
     if (els.length === 0) return
+    // Ask for write access first, while the click still counts as the user's.
+    const dir = kind === 'png' && folder && (await allowWrite(folder)) ? folder : null
+    setNote(null)
     setBusy(kind === 'png' ? 'Making PNG…' : 'Making PDF…')
     try {
       const { toJpeg, toPng } = await import('html-to-image')
@@ -71,7 +78,13 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
         restore()
       }
       if (kind === 'png') {
-        images.forEach((url, i) => download(url, `${fileBase}_${i + 1}.png`))
+        if (dir) {
+          await writePages(dir, fileBase, images)
+          setNote(`Saved ${images.length} page${images.length === 1 ? '' : 's'} to ${dir.name}.`)
+        } else {
+          images.forEach((url, i) => download(url, `${fileBase}_${i + 1}.png`))
+          if (folder) setNote(`No permission to write to ${folder.name}; saved to Downloads instead.`)
+        }
       } else {
         const { jsPDF } = await import('jspdf')
         // 576 x 768 pt = 8 x 10.67 in, the same 3:4 as the kneeboard.
@@ -82,19 +95,35 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
         })
         pdf.save(`${fileBase}.pdf`)
       }
+    } catch (e) {
+      setNote(`Could not save: ${e instanceof Error ? e.message : String(e)}`)
     } finally {
       setBusy(null)
     }
   }
 
+  async function chooseFolder() {
+    const dir = await pickFolder(folder)
+    if (dir) { setFolder(dir); setNote(null) }
+  }
+
   return (
     <section class="kneeboard">
       <div class="row no-print">
+        {canPickFolder() && (
+          <button type="button" disabled={!!busy} onClick={chooseFolder}
+            title="Pick the folder kneeboard PNGs are saved to, such as Saved Games\DCS\Kneeboard\F-4E">
+            {folder ? 'Change PNG folder' : 'Choose PNG folder…'}
+          </button>
+        )}
         <button type="button" disabled={!!busy} onClick={() => exportAs('png')}>Save kneeboard PNG</button>
         <button type="button" disabled={!!busy} onClick={() => exportAs('pdf')}>Save PDF</button>
         <button type="button" onClick={() => window.print()}>Print</button>
         <span class="muted small">
-          {busy ?? <>PNGs go in <code>Saved Games\DCS\Kneeboard\{s.aircraft}</code> (or <code>Kneeboard</code> for every aircraft).</>}
+          {busy ?? note ?? (folder
+            ? <>PNGs save to <code>{folder.name}</code> (<button type="button" class="link" onClick={() => { forgetFolder(); setFolder(null) }}>use Downloads</button>).</>
+            : <>PNGs go in <code>Saved Games\DCS\Kneeboard\{s.aircraft}</code> (or <code>Kneeboard</code> for every aircraft).
+              {!canPickFolder() && ' This browser saves to Downloads; use Chrome or Edge to pick a folder.'}</>)}
         </span>
       </div>
       <div ref={pagesRef} class="kb-pages">
