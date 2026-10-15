@@ -6,7 +6,7 @@ import { M_TO_FT, airfields, catalog, kindLabel, parseMission, parseTacanFix, ty
 import { clock, parseClock, parseLatLon } from '../nav/format'
 import { AIRCRAFT, COMBAT_LOITER, DEFAULT_BINGO_CAP_FT, DEFAULT_LOW_KIAS, JOKER_ESCAPE_RPM,
   WAYPOINT_TAGS, altAgl, altMsl, attackRun, carryLegData, planTitle, refreshElevations, computeRows, popupInputs, defaultSettings, departureFuel,
-  endpoints, fuelPlan, missionFuel, phaseOf, setEndpoint, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
+  appendIndex, endpoints, fuelPlan, missionFuel, phaseOf, setEndpoint, routeAltitudes, type AircraftId, type FuelPlan, type MissionFuel, type LoiterPower, type Phase, type PhaseId, type PlanSettings,
   type Row, type Waypoint } from '../nav/plan'
 import { NO_STORES, dragCategories } from '../nav/perf'
 import { machFromKcas } from '../nav/atmo'
@@ -534,7 +534,8 @@ function RoutePanel({ mission, route, rows, settings, onChange }:
       setHint('Not found. Pick from the list, or type a TACAN fix (DAN 287/99) or coordinates (N37 37.05 E033 30.65).')
       return
     }
-    onChange([...route, carryLegData(route, route.length, wp)])
+    const at = appendIndex(route)
+    onChange([...route.slice(0, at), carryLegData(route, at, wp), ...route.slice(at)])
     setText('')
     setHint(null)
   }

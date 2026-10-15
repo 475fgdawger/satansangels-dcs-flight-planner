@@ -419,6 +419,11 @@ export function endpoints(route: Waypoint[]): { departure: Waypoint | null; dest
   }
 }
 
+/** Where an added waypoint goes: the end of the route, but always ahead of the destination airfield. */
+export function appendIndex(route: Waypoint[]): number {
+  return endpoints(route).destination ? route.length - 1 : route.length
+}
+
 /**
  * The route with its departure or destination set to an airfield waypoint (null clears it): an airfield already at
  * that end is replaced, otherwise the airfield goes in front of the route (departure) or after it (destination).
