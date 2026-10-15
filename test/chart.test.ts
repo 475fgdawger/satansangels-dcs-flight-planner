@@ -70,6 +70,25 @@ describe('kneeboard leg strip', () => {
     expect(Math.abs(Number(mh![1]) - start)).toBeLessThan(100)
   })
 
+  it.each([1, 2, 3, 4])('leg into %i shows the turn and next MH near its end', (to) => {
+    const { svg } = legStrip(m, rows, to, { width: W, height: H })
+    const leg = rows[to].leg!, next = rows[to + 1].leg!
+    const h3 = (d: number) => String(Math.round(d) % 360 || 360).padStart(3, '0')
+    const mh = new RegExp(`class="ch-mh" x="([\\d.-]+)" y="([\\d.-]+)">MH ${h3(next.magHeading)}°<`).exec(svg)
+    expect(mh).not.toBeNull()
+    const delta = ((next.trueCourse - leg.trueCourse + 540) % 360) - 180
+    expect(svg).toContain(`>${delta >= 0 ? 'R' : 'L'} ${Math.round(Math.abs(delta))}° to ${to + 1}<`)
+    expect(svg).toContain('class="ch-turn"')
+    // Beside the end of the leg, on the side of the turn.
+    const end = /class="ch-route" x1="([\d.-]+)" y1="[\d.-]+" x2="[\d.-]+" y2="([\d.-]+)"/.exec(svg)!
+    expect(Math.abs(Number(mh![2]) - Number(end[2]))).toBeLessThan(100)
+    expect(Math.sign(Number(mh![1]) - Number(end[1]))).toBe(delta >= 0 ? 1 : -1)
+  })
+
+  it('has no turn on the last leg', () => {
+    expect(legStrip(m, rows, 5, { width: W, height: H }).svg).not.toContain('class="ch-turn"')
+  })
+
   it('turns true north with the course', () => {
     // Leg 1 is flown about 127 magnetic / 132 true: north points up and to the left.
     const { svg } = legStrip(m, rows, 1, { width: W, height: H })
