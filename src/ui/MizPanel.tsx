@@ -1,8 +1,9 @@
 import { useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
-import type { Row } from '../nav/plan'
+import { computeRows, planTitle, type PlanSettings, type Row } from '../nav/plan'
 import { hasGrid } from '../nav/dcsgrid'
-import { airdromeName, readMiz, routePoints, startOf, writeRoute, type Miz, type MizGroup } from '../nav/miz'
+import { readLibrary } from '../nav/library'
+import { airdromeName, readMiz, routePoints, startOf, writeRoutes, type Miz, type MizGroup } from '../nav/miz'
 
 const MIZ_TYPES = [{ description: 'DCS mission', accept: { 'application/octet-stream': ['.miz'] } }]
 
@@ -13,10 +14,18 @@ type SavePicker = (o: { id?: string; suggestedName: string; startIn?: FileHandle
   Promise<{ createWritable(): Promise<{ write(b: Blob): Promise<void>; close(): Promise<void> }> }>
 const pickers = () => window as unknown as { showOpenFilePicker?: OpenPicker; showSaveFilePicker?: SavePicker }
 
-/** Writes the planned route into chosen aircraft groups of a mission file and saves it as a new .miz. */
-export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[] }) {
+const CURRENT = 'current'
+
+interface PlanChoice { id: string; label: string; rows: Row[] }
+
+/**
+ * Writes flight plans into aircraft groups of a mission file and saves it as a new .miz: each flight gets the plan
+ * open in the planner or one of the saved routes on the same map, all in one save.
+ */
+export function MizPanel({ mission, rows, settings }: { mission: MissionExport; rows: Row[]; settings: PlanSettings }) {
   const [miz, setMiz] = useState<{ file: string; data: Miz; handle?: FileHandle } | null>(null)
-  const [chosen, setChosen] = useState<string[]>([])
+  /** Group key -> plan id (CURRENT or a saved route's id). */
+  const [assigned, setAssigned] = useState<Record<string, string>>({})
   const [showAi, setShowAi] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const theatre = mission.mission.theatre
@@ -37,7 +46,7 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
     try {
       const data = readMiz(new Uint8Array(await file.arrayBuffer()))
       setMiz({ file: file.name, data, handle })
-      setChosen([])
+      setAssigned({})
       setShowAi(!data.groups.some((g) => g.human))
       if (data.theatre !== theatre) setMsg(`${file.name} is on the ${data.theatre} map; this plan is on ${theatre}.`)
     } catch (e) {
@@ -47,10 +56,16 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
   }
 
   async function save() {
-    if (!miz || chosen.length === 0) return
+    const keys = Object.keys(assigned)
+    if (!miz || keys.length === 0) return
     let bytes: Uint8Array
     try {
-      bytes = writeRoute(miz.data, chosen, rows)
+      const plans: Record<string, Row[]> = {}
+      for (const k of keys) {
+        const p = choices.find((c) => c.id === assigned[k])
+        if (p) plans[k] = p.rows
+      }
+      bytes = writeRoutes(miz.data, plans)
     } catch (e) {
       setMsg(e instanceof Error ? e.message : String(e))
       return
@@ -58,7 +73,7 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
     const name = miz.file.replace(/\.miz$/i, '') + '_planned.miz'
     const blob = new Blob([bytes as BlobPart], { type: 'application/octet-stream' })
     const picker = pickers().showSaveFilePicker
-    const done = `Wrote the route into ${chosen.length} group${chosen.length === 1 ? '' : 's'}`
+    const done = `Wrote flight plans into ${keys.length} flight${keys.length === 1 ? '' : 's'}`
     if (picker) {
       try {
         // Starts in the folder the mission was opened from.
@@ -82,20 +97,34 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
     setMsg(`${done} and saved ${name} to Downloads.`)
   }
 
-  const groups = miz?.data.groups.filter((g) => showAi || g.human) ?? []
-  const toggle = (k: string) => setChosen((c) => (c.includes(k) ? c.filter((x) => x !== k) : [...c, k]))
+  const groups = miz?.data.groups.filter((g) => showAi || g.human || assigned[g.key]) ?? []
   const wrongMap = !!miz && miz.data.theatre !== theatre
-  // As written for the first ticked flight (a departure at its start isn't repeated).
-  const sample = miz?.data.groups.find((g) => g.key === chosen[0]) ?? groups[0]
-  const preview = miz && !wrongMap && rows.length > 1 && hasGrid(theatre) ? routePoints(theatre, rows, sample ? startOf(sample) : null) : []
-  const lands = preview.at(-1)?.land
+  // The plan open now, then every saved route on this map (read fresh, so routes saved since show up).
+  const choices: PlanChoice[] = []
+  if (miz && !wrongMap) {
+    if (rows.length > 1) choices.push({ id: CURRENT, label: `This plan: ${planTitle(mission.mission.name, settings)} (${settings.aircraft})`, rows })
+    for (const r of readLibrary(localStorage)) {
+      if (r.plan.mission.theatre !== theatre || r.plan.route.length < 2) continue
+      try {
+        const other = r.plan.mission.name === mission.mission.name ? '' : `, ${r.plan.mission.name}`
+        choices.push({ id: r.id, label: `${r.name} (${r.plan.settings.aircraft}${other})`, rows: computeRows(mission, r.plan.route, r.plan.settings) })
+      } catch { /* a saved plan this version can't read */ }
+    }
+  }
+  const assign = (k: string, id: string) => setAssigned((a) => {
+    const next = { ...a }
+    if (id) next[k] = id
+    else delete next[k]
+    return next
+  })
+  const count = Object.keys(assigned).length
 
   return (
     <section class="panel no-print">
       <h2>Mission file</h2>
       <p class="muted small">
-        Open a mission (.miz), tick the flights that should fly this plan, and save a copy. Each flight keeps its
-        start (parking, runway or air start); its other waypoints are replaced by the planned route.
+        Open a mission (.miz), choose a flight plan for each flight, and save a copy. Each flight keeps its start
+        (parking, runway or air start); its other waypoints are replaced by its plan.
       </p>
       {!hasGrid(theatre) && <p class="warn-text">The planner can't convert positions for the {theatre} map yet.</p>}
       <div class="row">
@@ -112,37 +141,56 @@ export function MizPanel({ mission, rows }: { mission: MissionExport; rows: Row[
       {miz && !wrongMap && (
         <>
           <table class="library">
-            <thead><tr><th /><th>Group</th><th>Side</th><th>Aircraft</th><th>Start</th><th>Waypoints now</th></tr></thead>
+            <thead><tr><th>Flight</th><th>Side</th><th>Aircraft</th><th>Start</th><th>Flight plan</th><th>Writes</th></tr></thead>
             <tbody>
-              {groups.map((g) => (
-                <tr key={g.key} onClick={() => toggle(g.key)} style={{ cursor: 'pointer' }}>
-                  <td><input type="checkbox" checked={chosen.includes(g.key)} onClick={(e) => e.stopPropagation()} onChange={() => toggle(g.key)} /></td>
-                  <td><b>{g.name}</b>{g.human && <span class="muted small"> · {g.units.length} client{g.units.length === 1 ? '' : 's'}</span>}</td>
-                  <td>{g.coalition}</td>
-                  <td>{aircraft(g)}</td>
-                  <td class="small">{startText(miz.data.theatre, g)}</td>
-                  <td>{g.points}</td>
-                </tr>
-              ))}
+              {groups.map((g) => {
+                const plan = choices.find((c) => c.id === assigned[g.key])
+                return (
+                  <tr key={g.key}>
+                    <td><b>{g.name}</b>{g.human && <span class="muted small"> · {g.units.length} client{g.units.length === 1 ? '' : 's'}</span>}</td>
+                    <td>{g.coalition}</td>
+                    <td>{aircraft(g)}</td>
+                    <td class="small">{startText(miz.data.theatre, g)}</td>
+                    <td>
+                      <select value={assigned[g.key] ?? ''} onChange={(e) => assign(g.key, (e.target as HTMLSelectElement).value)}>
+                        <option value="">Leave as is ({g.points} waypoint{g.points === 1 ? '' : 's'})</option>
+                        {choices.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+                      </select>
+                    </td>
+                    <td class="small">{plan ? summary(theatre, plan.rows, g) : ''}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
           {groups.length === 0 && <p class="muted small">No flights with client or player slots in this mission.</p>}
+          {choices.length === 0 && <p class="muted small">Build a route or save one under Saved routes to have a plan to assign.</p>}
           <div class="row">
             <label class="small"><input type="checkbox" checked={showAi} onChange={() => setShowAi(!showAi)} /> Show AI flights</label>
-            <button type="button" disabled={chosen.length === 0 || rows.length < 2} onClick={save}>
-              Write route to {chosen.length || ''} flight{chosen.length === 1 ? '' : 's'} and save
+            <button type="button" disabled={count === 0} onClick={save}>
+              Write {count || ''} flight plan{count === 1 ? '' : 's'} and save
             </button>
           </div>
           <p class="muted small">
-            {preview.length} waypoint{preview.length === 1 ? '' : 's'} after the start
-            {lands ? `, ending with a landing at ${airdromeName(theatre, lands.airdromeId)}` : ', ending over the last waypoint (no DCS airfield there to land at)'}.
-            Altitudes and speeds come from the plan. Open the saved mission in the editor to check it before flying.
+            Pick a plan for each flight, then save once. Plans come from this page and from Saved routes on the
+            {' '}{theatre} map. Altitudes and speeds come from each plan. Open the saved mission in the editor to check it before flying.
           </p>
         </>
       )}
       {msg && <p class={wrongMap ? 'warn-text' : 'small'}>{msg}</p>}
     </section>
   )
+}
+
+/** What a plan writes into this flight: waypoints after its start, and where it ends. */
+function summary(theatre: string, rows: Row[], g: MizGroup): string {
+  try {
+    const pts = routePoints(theatre, rows, startOf(g))
+    const land = pts.at(-1)?.land
+    return `${pts.length} waypoint${pts.length === 1 ? '' : 's'}, ${land ? `lands ${airdromeName(theatre, land.airdromeId)}` : 'no landing'}`
+  } catch (e) {
+    return e instanceof Error ? e.message : String(e)
+  }
 }
 
 function aircraft(g: MizGroup): string {

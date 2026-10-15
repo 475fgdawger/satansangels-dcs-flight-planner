@@ -4,7 +4,7 @@ import raw from './fixtures/targets_syria.json'
 import { parseMission } from '../src/nav/mission'
 import { computeRows, defaultSettings, type Waypoint } from '../src/nav/plan'
 import { parseLuaAssignments, luaGet, luaList } from '../src/nav/lua'
-import { readMiz, writeRoute } from '../src/nav/miz'
+import { readMiz, writeRoutes } from '../src/nav/miz'
 import { toDcs } from '../src/nav/dcsgrid'
 
 const m = parseMission(raw)
@@ -105,7 +105,7 @@ describe('mission (.miz) route writing', () => {
 
   it('replaces only the chosen group\'s route, keeping its start point and everything else', () => {
     const r = readMiz(miz())
-    const out = unzipSync(writeRoute(r, [r.groups[0].key], rows))
+    const out = unzipSync(writeRoutes(r, { [r.groups[0].key]: rows }))
     expect(strFromU8(out['l10n/DEFAULT/dictionary'])).toBe('dictionary = {}\n')
     const text = strFromU8(out.mission)
     // Text before and after the replaced table is unchanged.
@@ -132,6 +132,17 @@ describe('mission (.miz) route writing', () => {
     expect(luaGet(pts[1], 'speed')).toBeCloseTo(rows[1].leg!.tas * 1852 / 3600, 1)
     // The other group is untouched.
     expect(luaList(luaGet(groups[1], 'route', 'points'))).toHaveLength(1)
+  })
+
+  it('writes a different plan into each flight in one save', () => {
+    const r = readMiz(miz())
+    const short = computeRows(m, [route[0], route[1], route[3]], defaultSettings('F-4E'))
+    const text = strFromU8(unzipSync(writeRoutes(r, { [r.groups[0].key]: rows, [r.groups[1].key]: short })).mission)
+    const groups = luaList(luaGet(parseLuaAssignments(text).get('mission'), 'coalition', 'blue', 'country', 1, 'plane', 'group'))
+    const names = (g: unknown) => luaList(luaGet(g as never, 'route', 'points')).map((p) => luaGet(p, 'name'))
+    expect(names(groups[0])).toEqual(['Ramp "A"', 'Hatay', 'IP "low"', 'Incirlik'])
+    // The air-start flight is far from Incirlik, so its plan starts with the departure.
+    expect(names(groups[1])).toEqual([undefined, 'Incirlik', 'Hatay', 'Incirlik'])
   })
 
   it('rejects a file that is not a mission', () => {

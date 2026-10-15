@@ -272,7 +272,7 @@ export function App() {
           <RoutePanel mission={mission} route={route} rows={rows} settings={settings} onChange={setRoute} />
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
-          <MizPanel mission={mission} rows={rows} />
+          <MizPanel mission={mission} rows={rows} settings={settings} />
           <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} terrain={terrain} />
         </>
       )}
