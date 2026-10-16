@@ -17,6 +17,7 @@ import { MapPanel } from './MapPanel'
 import { defaultPopup, popupAttack } from '../nav/popup'
 import { lookupElevations } from '../nav/elevation'
 import { decodePlan, encodePlan, planFromHash, SHARE_KEY, type SharedPlan } from '../nav/share'
+import { BriefingPanel } from './Briefing'
 import { MizPanel } from './MizPanel'
 import { LibraryPanel } from './Library'
 
@@ -273,6 +274,7 @@ export function App() {
           <MapPanel mission={mission} route={route} rows={rows} onRoute={setRoute} />
           <PopupPanel route={route} run={run} settings={settings} attack={attack} onSettings={setSettings} onRoute={setRoute} />
           <MizPanel mission={mission} rows={rows} settings={settings} />
+          <BriefingPanel mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} terrain={terrain} />
           <Kneeboard mission={mission} rows={rows} settings={settings} fuel={fuel} run={run} attack={attack} terrain={terrain} />
         </>
       )}

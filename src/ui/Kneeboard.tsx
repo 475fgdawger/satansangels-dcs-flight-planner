@@ -423,7 +423,7 @@ function powerLabel(leg: NonNullable<Row['leg']>, s: PlanSettings): string {
 const SVG_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linejoin', 'opacity',
   'paint-order', 'font-family', 'font-size', 'font-weight', 'font-style', 'letter-spacing']
 
-function inlineSvgStyles(pages: HTMLElement[]): () => void {
+export function inlineSvgStyles(pages: HTMLElement[]): () => void {
   const saved: [Element, string | null][] = []
   for (const page of pages) {
     for (const node of Array.from(page.querySelectorAll('svg *'))) {

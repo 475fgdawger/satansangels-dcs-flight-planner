@@ -139,22 +139,7 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
   const back: string[] = [], mid: string[] = [], top: string[] = [], text: string[] = []
   const pa = xy(A), pb = xy(B)
 
-  // Corner furniture first so nothing is labelled underneath it: true north arrow (top left)
-  // and the scale (bottom left).
-  const scaleNm = [100, 50, 25, 20, 10, 5, 2, 1].find((n) => n <= (w / 5) * nmPerPx) ?? 1
-  const bar = scaleNm / nmPerPx
-  labels.reserve(0, 0, 70, 78)
-  labels.reserve(0, h - 40, bar + 30, h)
-  const nx = 35, ny = 34
-  const furniture = [
-    `<rect class="ch-box" x="4" y="4" width="62" height="70"/>`,
-    `<g transform="rotate(${f(turn / DEG)} ${nx} ${ny})">`
-      + `<path class="ch-north" d="M${nx},${ny - 22} l7,20 l-7,-5 l-7,5 z"/><line class="ch-scale" x1="${nx}" y1="${ny - 2}" x2="${nx}" y2="${ny + 16}"/></g>`,
-    `<text class="ch-gl" x="${nx}" y="69" text-anchor="middle">TRUE N</text>`,
-    `<path class="ch-scale" d="M16,${h - 22} v6 h${f(bar)} v-6"/>`,
-    `<text class="ch-gl" x="16" y="${h - 26}">0</text>`,
-    `<text class="ch-gl" x="${f(16 + bar)}" y="${h - 26}" text-anchor="end">${scaleNm} nm</text>`,
-  ]
+  const furniture = cornerFurniture(turn, nmPerPx, w, h, labels)
 
   // This leg, heavy, and the rest of the route, light, so the turn at each end shows.
   for (let i = 1; i < route.length; i++) {
@@ -265,6 +250,40 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
     }
   }
 
+  mapSymbols(m, xy, nmPerPx, turn, inView, labels, back, mid, text)
+
+  const svg = [
+    `<defs><clipPath id="ch-clip-${to}"><rect width="${w}" height="${h}"/></clipPath></defs>`,
+    `<g clip-path="url(#ch-clip-${to})">`,
+    ...(background ? [`<image href="${background}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"/>`] : []),
+    ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
+    `<rect class="ch-frame" x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}"/>`,
+  ].join('')
+  return { svg, nmPerPx, tickNm }
+}
+
+// Corner furniture, reserved first so nothing is labelled underneath it: true north arrow (top left)
+// and the scale (bottom left).
+function cornerFurniture(turn: number, nmPerPx: number, w: number, h: number, labels: Labels): string[] {
+  const scaleNm = [100, 50, 25, 20, 10, 5, 2, 1].find((n) => n <= (w / 5) * nmPerPx) ?? 1
+  const bar = scaleNm / nmPerPx
+  labels.reserve(0, 0, 70, 78)
+  labels.reserve(0, h - 40, bar + 30, h)
+  const nx = 35, ny = 34
+  return [
+    `<rect class="ch-box" x="4" y="4" width="62" height="70"/>`,
+    `<g transform="rotate(${f(turn / DEG)} ${nx} ${ny})">`
+      + `<path class="ch-north" d="M${nx},${ny - 22} l7,20 l-7,-5 l-7,5 z"/><line class="ch-scale" x1="${nx}" y1="${ny - 2}" x2="${nx}" y2="${ny + 16}"/></g>`,
+    `<text class="ch-gl" x="${nx}" y="69" text-anchor="middle">TRUE N</text>`,
+    `<path class="ch-scale" d="M16,${h - 22} v6 h${f(bar)} v-6"/>`,
+    `<text class="ch-gl" x="16" y="${h - 26}">0</text>`,
+    `<text class="ch-gl" x="${f(16 + bar)}" y="${h - 26}" text-anchor="end">${scaleNm} nm</text>`,
+  ]
+}
+
+/** What the mission has around the route: threat rings, drawings, airfields, TACANs and targets. */
+function mapSymbols(m: MissionExport, xy: (p: LatLon) => { x: number; y: number }, nmPerPx: number, turn: number,
+  inView: (p: { x: number; y: number }, margin?: number) => boolean, labels: Labels, back: string[], mid: string[], text: string[]) {
   // Threat rings, then point symbols. Rings are clipped by the page; points off the page are skipped.
   const ringLabels: { lab: string; x: number; y: number }[] = []
   for (const t of m.targets) {
@@ -318,15 +337,6 @@ export function legStrip(m: MissionExport, rows: Row[], to: number, { width: w, 
     const at = labels.place(p.x, p.y, t.name, 10.5, AROUND(8))
     if (at) text.push(`<text class="ch-pl" x="${f(at.x)}" y="${f(at.y)}" text-anchor="${at.anchor}">${esc(t.name)}</text>`)
   }
-
-  const svg = [
-    `<defs><clipPath id="ch-clip-${to}"><rect width="${w}" height="${h}"/></clipPath></defs>`,
-    `<g clip-path="url(#ch-clip-${to})">`,
-    ...(background ? [`<image href="${background}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"/>`] : []),
-    ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
-    `<rect class="ch-frame" x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}"/>`,
-  ].join('')
-  return { svg, nmPerPx, tickNm }
 }
 
 /** Mission editor drawings on the visible layers (Red skipped, as on the map), in grey so the route stands out. */
@@ -357,4 +367,137 @@ function drawings(m: MissionExport, xy: (p: LatLon) => { x: number; y: number },
       ? `<polygon class="ch-draw${dash}${d.type === 'Polygon' ? filled : ''}" points="${list}"/>`
       : `<polyline class="ch-draw${dash}" points="${list}"/>`)
   }
+}
+
+/** Route indexes a north-up page covers: the legs from waypoint `from` to waypoint `to`. */
+export interface Section { from: number; to: number }
+
+/** Finest scale for a route page, nm per pixel: about 95 x 120 nm on the briefing page, enough to read the terrain. */
+export const SECTION_NM_PER_PX = 0.12
+
+function fit(rows: Row[], sec: Section, w: number, h: number) {
+  const pts = rows.slice(sec.from, sec.to + 1).map((r) => r.wp)
+  const lat0 = Math.min(...pts.map((p) => p.lat)), lat1 = Math.max(...pts.map((p) => p.lat))
+  const lon0 = Math.min(...pts.map((p) => p.lon)), lon1 = Math.max(...pts.map((p) => p.lon))
+  const c = { lat: (lat0 + lat1) / 2, lon: (lon0 + lon1) / 2 }
+  const k = Math.cos(c.lat * DEG)
+  const spanE = Math.max((lon1 - lon0) * 60 * k, 1), spanN = Math.max((lat1 - lat0) * 60, 1)
+  return { c, k, nmPerPx: Math.max(spanE / (w - 2 * END_PAD), spanN / (h - 2 * END_PAD), MIN_WIDTH_NM / w) }
+}
+
+/** North-up projection that fits a section of the route (default: all of it) on a width x height page. */
+export function overviewProjection(rows: Row[], { width: w, height: h }: ChartOptions,
+  sec: Section = { from: 0, to: rows.length - 1 }): Projection {
+  const { c, k, nmPerPx } = fit(rows, sec, w, h)
+  return {
+    xy: (p) => ({ x: w / 2 + ((p.lon - c.lon) * 60 * k) / nmPerPx, y: h / 2 - ((p.lat - c.lat) * 60) / nmPerPx }),
+    ll: (x, y) => ({ lat: c.lat + ((h / 2 - y) * nmPerPx) / 60, lon: c.lon + ((x - w / 2) * nmPerPx) / 60 / k }),
+    nmPerPx,
+    turn: 0,
+  }
+}
+
+/**
+ * Pages for a route too big to read on one: consecutive runs of legs, each as long as fits at
+ * SECTION_NM_PER_PX (a single longer leg gets a page of its own). Each section starts where the last
+ * ended. Empty when the whole route already fits.
+ */
+export function routeSections(rows: Row[], { width: w, height: h }: ChartOptions): Section[] {
+  const last = rows.length - 1
+  if (last < 1 || fit(rows, { from: 0, to: last }, w, h).nmPerPx <= SECTION_NM_PER_PX) return []
+  const out: Section[] = []
+  let from = 0
+  while (from < last) {
+    let to = from + 1
+    while (to < last && fit(rows, { from, to: to + 1 }, w, h).nmPerPx <= SECTION_NM_PER_PX) to++
+    out.push({ from, to })
+    from = to
+  }
+  return out
+}
+
+/**
+ * The route on one north-up page: the legs of the section (default: all of them) heavy with their magnetic
+ * course and distance, the rest of the route light, the numbered waypoints, and the mission's threats,
+ * drawings, airfields, TACANs and targets around it. background is the terrain shading for
+ * overviewProjection, the size of the page.
+ */
+export function routeOverview(m: MissionExport, rows: Row[], { width: w, height: h }: ChartOptions, background?: string,
+  sec: Section = { from: 0, to: rows.length - 1 }): Strip {
+  const route = rows.map((r) => r.wp)
+  const { xy, nmPerPx } = overviewProjection(rows, { width: w, height: h }, sec)
+  const inView = (p: { x: number; y: number }, margin = 0) => p.x >= -margin && p.x <= w + margin && p.y >= -margin && p.y <= h + margin
+  const labels = new Labels(w, h)
+  const back: string[] = [], mid: string[] = [], top: string[] = [], text: string[] = []
+  const furniture = cornerFurniture(0, nmPerPx, w, h, labels)
+  const pts = route.map(xy)
+  const inSec = (i: number) => i > sec.from && i <= sec.to
+
+  for (let i = 1; i < pts.length; i++) {
+    top.push(`<line class="${inSec(i) ? 'ch-route' : 'ch-other'}" x1="${f(pts[i - 1].x)}" y1="${f(pts[i - 1].y)}" x2="${f(pts[i].x)}" y2="${f(pts[i].y)}"/>`)
+  }
+
+  // Waypoint marks; one on top of another (the recovery base) shares its mark: "0/5".
+  const marks: { at: number; nums: number[] }[] = []
+  pts.forEach((p, i) => {
+    const same = marks.find((mk) => Math.hypot(pts[mk.at].x - p.x, pts[mk.at].y - p.y) < 4)
+    if (same) same.nums.push(i)
+    else marks.push({ at: i, nums: [i] })
+  })
+  const own = (nums: number[]) => nums.some((i) => i >= sec.from && i <= sec.to)
+  marks.sort((a, b) => Number(own(b.nums)) - Number(own(a.nums)))
+  const placed: { p: { x: number; y: number }; half: number; name: string; own: boolean }[] = []
+  for (const { at, nums } of marks) {
+    const p = pts[at]
+    if (!inView(p, 12)) continue
+    const tags = [...new Set(nums.flatMap((i) => route[i].tags ?? []))]
+    const num = nums.join('/')
+    const r = 11, half = Math.max(r, num.length * 3.6 + 5)
+    top.push(tags.includes('TGT')
+      ? `<rect class="ch-wp ch-fill" x="${f(p.x - half + 1)}" y="${f(p.y - 10)}" width="${f(2 * half - 2)}" height="20"/>`
+      : `<rect class="ch-wp${tags.length ? ' ch-fill' : ''}" x="${f(p.x - half)}" y="${f(p.y - r)}" width="${f(2 * half)}" height="${2 * r}" rx="${r}"/>`)
+    top.push(`<text class="ch-wpn${tags.length ? ' inv' : ''}" x="${f(p.x)}" y="${f(p.y + 4.5)}" text-anchor="middle">${num}</text>`)
+    labels.reserve(p.x - half - 1, p.y - r - 1, p.x + half + 1, p.y + r + 1)
+    const wp = route[at]
+    const extra = tags.filter((t) => t !== wp.name.trim().toUpperCase())
+    placed.push({ p, half, name: `${wp.name}${extra.length ? ` ${extra.join('/')}` : ''}`, own: own(nums) })
+  }
+
+  // Each leg's magnetic course and distance in a box beside its middle, on whichever side is clear.
+  for (let i = sec.from + 1; i <= sec.to; i++) {
+    const leg = rows[i].leg
+    if (!leg) continue
+    const a = pts[i - 1], b = pts[i]
+    const len = Math.hypot(b.x - a.x, b.y - a.y)
+    if (len < 60) continue
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2
+    const nx = -(b.y - a.y) / len, ny = (b.x - a.x) / len
+    const l1 = `${heading3(leg.magCourse)}°`, l2 = `${Math.round(leg.nm)} nm`
+    const bw = Math.max(l1.length, l2.length) * 14 * 0.6 + 12, bh = 36
+    const box = labels.placeBox([16, -16, 34, -34].map((d) => {
+      const cx = mx + nx * (d + Math.sign(d) * bw / 2), cy = my + ny * (d + Math.sign(d) * bh / 2)
+      return { x0: cx - bw / 2, y0: cy - bh / 2, x1: cx + bw / 2, y1: cy + bh / 2 }
+    }))
+    if (!box) continue
+    top.push(`<rect class="ch-legbox" x="${f(box.x0)}" y="${f(box.y0)}" width="${f(bw)}" height="${bh}"/>`)
+    text.push(`<text class="ch-ovmc" x="${f(box.x0 + 6)}" y="${f(box.y0 + 16)}">${l1}</text>`,
+      `<text class="ch-dist" x="${f(box.x0 + 6)}" y="${f(box.y0 + 31)}">${l2}</text>`)
+  }
+
+  for (const { p, half, name, own: o } of placed) {
+    const lab = labels.place(p.x, p.y, name, o ? 14 : 12, AROUND(half + 5))
+    if (lab) text.push(`<text class="${o ? 'ch-wpl' : 'ch-pl'}" x="${f(lab.x)}" y="${f(lab.y)}" text-anchor="${lab.anchor}">${esc(name)}</text>`)
+  }
+
+  mapSymbols(m, xy, nmPerPx, 0, inView, labels, back, mid, text)
+
+  const id = `ch-clip-ov-${sec.from}-${sec.to}`
+  const svg = [
+    `<defs><clipPath id="${id}"><rect width="${w}" height="${h}"/></clipPath></defs>`,
+    `<g clip-path="url(#${id})">`,
+    ...(background ? [`<image href="${background}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none"/>`] : []),
+    ...back, ...mid, ...top, ...text, `</g>`, ...furniture,
+    `<rect class="ch-frame" x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}"/>`,
+  ].join('')
+  return { svg, nmPerPx, tickNm: 0 }
 }
