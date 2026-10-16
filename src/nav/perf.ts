@@ -43,15 +43,35 @@ export interface PerfData {
   basis: string
   disclaimer: string
   bands: Band[]
-  /** Drag categories; `bands`: the category's own level points per altitude band (7.5 units AoA or less). */
-  configs: { name: string; factor: number | null; loadout: string | null; bands?: { alt_ft: number; points: LevelPoint[] }[] }[]
+  /**
+   * Drag categories; `bands`: the category's own level points per altitude band (7.5 units AoA or less); `takeoff`:
+   * the category's recorded max AB takeoff, when one was flown.
+   */
+  configs: { name: string; factor: number | null; loadout: string | null; bands?: { alt_ft: number; points: LevelPoint[] }[]; takeoff?: Takeoff }[]
   /** MIL climb, cumulative from the first row's altitude up. */
   climb: ProfileRow[] | null
   /** Idle descent, cumulative from an altitude down to the first row's altitude. */
   descent: ProfileRow[] | null
-  ground: { idle_lb_min: number | null; takeoff: { kias: number; min: number; lb: number; nm: number } | null }
+  ground: { idle_lb_min: number | null; takeoff: Takeoff | null }
   /** [alt ft, Mach, lb/hr] points recorded at MIL and at max afterburner. */
   power: Record<'MIL' | 'ABMAX', [number, number, number][]>
+}
+
+/** Max AB takeoff from brake release to a set KIAS. */
+export interface Takeoff { kias: number; min: number; lb: number; nm: number; fuel_lb?: number }
+
+/**
+ * The max AB takeoff for a drag category: its own recorded one; for a loaded category without one, the heaviest
+ * recorded loaded takeoff (a loaded jet needs more than the clean figure); else the clean ground figure.
+ */
+export function takeoffOf(p: PerfData, name: string | undefined): Takeoff | null {
+  const own = p.configs.find((c) => c.name === (name ?? NO_STORES))
+  if (own?.takeoff) return own.takeoff
+  if (own && (own.factor ?? 1) > 1) {
+    const loaded = p.configs.filter((c) => c.takeoff && (c.factor ?? 1) > 1).map((c) => c.takeoff!)
+    if (loaded.length) return loaded.reduce((a, b) => (b.lb > a.lb ? b : a))
+  }
+  return p.ground.takeoff
 }
 
 export const PERF: Record<string, PerfData | undefined> = { 'F-4E': f4e as unknown as PerfData }
