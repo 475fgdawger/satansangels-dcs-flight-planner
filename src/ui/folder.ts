@@ -1,4 +1,4 @@
-// A folder the user picks once for kneeboard PNGs, kept in IndexedDB so it survives reloads.
+// A folder the user picks once for kneeboard pages, kept in IndexedDB so it survives reloads.
 // Uses the File System Access API (Chrome, Edge); other browsers fall back to downloads.
 
 /** The parts of a directory handle this module uses; declared here so it builds whatever DOM typings are present. */
@@ -78,17 +78,20 @@ export async function allowWrite(dir: DirHandle): Promise<boolean> {
   }
 }
 
-/** Names of earlier pages of this kneeboard (`base_N.png`) beyond the ones just written, so a shorter route leaves no stale pages. */
+/**
+ * Earlier pages of this kneeboard that the new export doesn't replace: `base_N.jpg` beyond the pages just written
+ * (a shorter route), and any `base_N.png` from before the export was JPEG, so DCS shows no stale pages.
+ */
 export function stalePages(names: string[], base: string, written: number): string[] {
-  const re = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}_(\\d+)\\.png$`)
-  return names.filter((n) => { const m = re.exec(n); return !!m && Number(m[1]) > written })
+  const re = new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}_(\\d+)\\.(png|jpg)$`)
+  return names.filter((n) => { const m = re.exec(n); return !!m && (m[2] === 'png' || Number(m[1]) > written) })
 }
 
-/** Writes the pages into the folder as base_1.png, base_2.png..., replacing any with those names. */
+/** Writes the pages into the folder as base_1.jpg, base_2.jpg..., replacing any with those names. */
 export async function writePages(dir: DirHandle, base: string, dataUrls: string[]) {
   for (const [i, url] of dataUrls.entries()) {
     const blob = await (await fetch(url)).blob()
-    const w = await (await dir.getFileHandle(`${base}_${i + 1}.png`, { create: true })).createWritable()
+    const w = await (await dir.getFileHandle(`${base}_${i + 1}.jpg`, { create: true })).createWritable()
     await w.write(blob)
     await w.close()
   }
