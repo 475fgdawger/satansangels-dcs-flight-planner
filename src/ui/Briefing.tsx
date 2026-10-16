@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
-import { briefing, type FieldInfo, type TimePoint } from '../nav/briefing'
+import { briefing, egressIndex, routeThreats, type Briefing, type FieldInfo, type TimePoint } from '../nav/briefing'
 import { AIRCRAFT, planTitle, type AttackRun, type FuelPlan, type PlanSettings, type Row } from '../nav/plan'
 import { NO_STORES } from '../nav/perf'
 import { COMMON_COMMS, EXTRA_BEACONS } from './comms'
@@ -9,6 +9,9 @@ import { overviewProjection, routeOverview, routeSections, type Section } from '
 import { shadeTerrain, type TerrainGrid } from '../nav/terrain'
 import { shadingImage } from './terrain'
 import { inlineSvgStyles } from './Kneeboard'
+import { AttackCard, AttackPicture } from './Popup'
+import type { PopupResult } from '../nav/popup'
+import { tacanFix } from '../nav/mission'
 
 // US Letter at 96 dpi; the PDF is the same page at 2x.
 const PAGE_W = 816
@@ -16,14 +19,17 @@ const PAGE_H = 1056
 // The route overview fills page 2 under a one-line heading.
 const MAP_W = 776
 const MAP_H = 980
+// The attack area map on the attack page, the page's full text width.
+const ATK_W = 736
+const ATK_H = 400
 
 const lb = (n: number) => Math.round(n).toLocaleString('en-US')
 const when = (t: TimePoint) => (t.clock === null ? `T/O+${duration(t.elapsed)}` : `${clock(t.clock)}`)
 
 /** A one-page mission briefing for this flight plan, with PDF export. */
-export function BriefingPanel({ mission, rows, settings: s, fuel, run, terrain }: {
+export function BriefingPanel({ mission, rows, settings: s, fuel, run, attack, terrain }: {
   mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null; run: AttackRun | null
-  terrain: TerrainGrid | null
+  attack: PopupResult | null; terrain: TerrainGrid | null
 }) {
   const pagesRef = useRef<HTMLDivElement>(null)
   const [busy, setBusy] = useState(false)
@@ -41,6 +47,13 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, terrain }
       return { sec, ground }
     })
   }, [terrain, extent])
+  // The attack area: IP through the target to the egress point.
+  const atkSec = run ? { from: run.ip, to: egressIndex(rows, run.tgt) } : null
+  const atkGround = useMemo(() => {
+    if (!atkSec || !terrain || rows.length < 2) return undefined
+    const p = overviewProjection(rows, { width: ATK_W, height: ATK_H }, atkSec)
+    return shadingImage(shadeTerrain(terrain, p.ll, ATK_W, ATK_H, p.nmPerPx, p.turn), ATK_W, ATK_H)
+  }, [terrain, extent, atkSec?.from, atkSec?.to])
   if (rows.length < 2) return null
 
   const title = planTitle(mission.mission.name, s)
@@ -82,7 +95,7 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, terrain }
       <div class="row no-print">
         <h2>Mission briefing</h2>
         <button type="button" disabled={busy} onClick={savePdf}>{busy ? 'Making PDF…' : 'Save briefing PDF'}</button>
-        <span class="muted small">Briefing sheet, a full-page route overview, and closer section maps when the route is too big to read on one page.</span>
+        <span class="muted small">Briefing sheet, the attack from IP to egress, a full-page route overview, and closer section maps when the route is too big to read on one page.</span>
       </div>
       <div ref={pagesRef} class="bf-pages">
       <div class="bf-page">
@@ -176,6 +189,28 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, terrain }
           <div><small>CONTINGENCIES</small></div>
         </div>
       </div>
+      {b.attackLegs && (
+        <AttackBrief mission={mission} rows={rows} b={b} title={title} callsign={s.callsign} attack={attack}
+          map={routeOverview(mission, rows, { width: ATK_W, height: ATK_H }, atkGround, { from: b.attackLegs.ip, to: b.attackLegs.ep }).svg} />
+      )}
+      {b.attackLegs && attack && (
+        <div class="bf-page kb-attack bf-popup">
+          <div class="bf-head">
+            <div>
+              <div class="bf-kicker">POP-UP DELIVERY</div>
+              <div class="bf-title">{rows[b.attackLegs.ip].wp.name} → {rows[b.attackLegs.tgt].wp.name}</div>
+            </div>
+            <div class="bf-flight">
+              <div>Dive <b>{attack.inputs.dive}°</b> · release <b>{lb(attack.inputs.relAgl)}</b> ft AGL</div>
+              <div>Target elevation <b>{lb(attack.inputs.tgtElev)}</b> ft MSL</div>
+            </div>
+          </div>
+          {attack.warning && <div class="kb-warn">{attack.warning}</div>}
+          <AttackCard attack={attack} />
+          <AttackPicture attack={attack} />
+          <div class="bf-foot">Nil wind · action right drawn, left is the mirror image · ranges are ground distance to the target</div>
+        </div>
+      )}
       {maps.map(({ sec, ground }, i) => (
         <div key={`${sec.from}-${sec.to}`} class="bf-page bf-map">
           <div class="bf-maphead">
@@ -191,6 +226,95 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, terrain }
       ))}
       </div>
     </section>
+  )
+}
+
+/** The attack from the IP through the target to the egress point: target, run-in, area map, legs and threats. */
+function AttackBrief({ mission, rows, b, title, callsign, attack, map }: {
+  mission: MissionExport; rows: Row[]; b: Briefing; title: string; callsign?: string; attack: PopupResult | null; map: string
+}) {
+  const { ip, tgt, ep } = b.attackLegs!
+  const ipWp = rows[ip].wp, tgtRow = rows[tgt], epRow = ep > tgt ? rows[ep] : null
+  const threats = routeThreats(mission, rows.slice(ip, ep + 1)).map((t) => ({ ...t, leg: t.leg + ip }))
+  const eta = (i: number) => (rows[i].eta === null ? `T/O+${duration(rows[i].elapsed)}` : clock(rows[i].eta!))
+  return (
+    <div class="bf-page bf-attack">
+      <div class="bf-head">
+        <div>
+          <div class="bf-kicker">ATTACK · {title}</div>
+          <div class="bf-title">{ipWp.name} → {tgtRow.wp.name}{epRow ? ` → ${epRow.wp.name}` : ''}</div>
+        </div>
+        <div class="bf-flight">
+          {callsign?.trim() && <div class="bf-callsign">{callsign.trim().toUpperCase()}</div>}
+          <div>{b.tot?.kind === 'CAP' ? 'ON STATION' : 'TOT'} <b>{eta(tgt)}</b></div>
+        </div>
+      </div>
+
+      <div class="bf-cols bf-cols2">
+        <div class="bf-box">
+          <small>TARGET</small>
+          {b.target && <>
+            <div class="bf-tname">{b.target.name}{b.target.kind && <span class="tag">{b.target.kind}</span>}</div>
+            <div>{b.target.near}{b.target.elevFt !== undefined && <> · elev <b>{lb(b.target.elevFt)} ft</b></>}</div>
+            <div>INS <b>{ddm(b.target)}</b></div>
+            <div>{dms(b.target)} · <b>{b.target.tacan}</b></div>
+          </>}
+        </div>
+        <div class="bf-box">
+          <small>RUN-IN AND EGRESS</small>
+          <div>IP <b>{ipWp.name}</b> · {tacanFix(mission, ipWp)}</div>
+          {b.attack && <div>Run-in <b>{heading3(b.attack.magCourse)}° M</b> · <b>{b.attack.ipNm.toFixed(1)} nm</b>
+            {tgtRow.leg && <> · {Math.round(tgtRow.leg.tas)} KTAS · {duration(tgtRow.leg.ete)}</>}</div>}
+          {epRow?.leg && <div>Off target <b>{heading3(epRow.leg.magCourse)}° M</b> · {epRow.leg.nm.toFixed(1)} nm to <b>{epRow.wp.name}</b></div>}
+          {attack && <div>Pop-up: dive <b>{attack.inputs.dive}°</b>, action L {attack.actionLeft}° / R {attack.actionRight}°, release {lb(attack.inputs.tgtElev + attack.inputs.relAgl)} MSL</div>}
+        </div>
+      </div>
+
+      <h3>ATTACK AREA</h3>
+      <svg class="kb-chart bf-atkmap" viewBox={`0 0 ${ATK_W} ${ATK_H}`} dangerouslySetInnerHTML={{ __html: map }} />
+
+      <h3>IP TO EGRESS</h3>
+      <table class="bf-table">
+        <thead><tr><th>#</th><th>WAYPOINT</th><th class="n">MC</th><th class="n">DIST</th><th class="n">ALT</th><th class="n">TAS</th><th class="n">ETE</th><th class="n">{b.takeoff === null ? 'T/O+' : 'ETA'}</th><th class="n">FUEL</th></tr></thead>
+        <tbody>
+          {rows.slice(ip, ep + 1).map((r, k) => {
+            const i = ip + k, leg = k > 0 ? r.leg : undefined
+            return (
+              <tr key={r.wp.id}>
+                <td>{i}</td>
+                <td>{r.wp.name}{r.wp.tags?.map((t) => <span key={t} class="tag">{t}</span>)}</td>
+                <td class="n">{leg ? heading3(leg.magCourse) : ''}</td>
+                <td class="n">{leg ? leg.nm.toFixed(1) : ''}</td>
+                <td class="n">{r.wp.alt?.ft !== undefined ? `${lb(r.wp.alt.ft)} ${r.wp.alt.ref.toUpperCase()}` : ''}</td>
+                <td class="n">{leg ? Math.round(leg.tas) : ''}</td>
+                <td class="n">{leg ? duration(leg.ete) : ''}</td>
+                <td class="n">{eta(i)}</td>
+                <td class="n">{lb(r.fuelRemaining)}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+      <h3>THREATS NEAR THE ATTACK</h3>
+      {threats.length ? (
+        <table class="bf-table">
+          <thead><tr><th>THREAT</th><th>SYSTEM</th><th class="n">RING</th><th class="n">CLOSEST</th><th>LEG</th><th>TACAN</th></tr></thead>
+          <tbody>
+            {threats.slice(0, 5).map((t) => (
+              <tr key={t.name} class={t.inside ? 'bf-inside' : ''}>
+                <td>{t.name}</td><td>{t.system}</td><td class="n">{t.ringNm} nm</td>
+                <td class="n">{t.inside ? 'INSIDE ' : ''}{t.closestNm.toFixed(1)} nm</td>
+                <td>{rows[t.leg - 1].wp.name} → {rows[t.leg].wp.name}</td><td>{t.tacan}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : <div class="bf-box muted">No known SAM or AAA within 10 nm of its ring.</div>}
+
+      <h3>ATTACK NOTES</h3>
+      <div class="bf-notes bf-notes1"><div><small>SEQUENCE / DECONFLICTION / ABORT</small></div></div>
+    </div>
   )
 }
 

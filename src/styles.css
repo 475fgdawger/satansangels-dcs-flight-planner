@@ -337,3 +337,9 @@ button.link { background: none; border: none; padding: 0; color: inherit; text-d
   padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; letter-spacing: 1px; }
 .bf-maphead b { font-size: 18px; letter-spacing: 0; }
 .kb-chart .ch-ovmc { font-size: 15px; font-weight: 700; stroke: none; }
+.bf-cols2 { grid-template-columns: repeat(2, 1fr); }
+.bf-atkmap { display: block; flex-shrink: 0; width: 736px; height: 400px; }
+.bf-notes1 { grid-template-rows: 1fr; min-height: 40px; }
+.bf-popup .pp-pic { margin-top: 6px; }
+.bf-foot { margin-top: auto; font-size: 11px; color: #444; }
+.bf-popup .pp-row b { white-space: nowrap; }
