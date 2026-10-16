@@ -295,3 +295,45 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .grid .span2 { grid-column: span 2; }
 
 button.link { background: none; border: none; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
+
+/* Mission briefing sheet: US Letter, printed or saved as PDF. */
+.bf-page { width: 816px; height: 1056px; box-sizing: border-box; padding: 36px 40px; background: #fff; color: #000;
+  border: 1px solid #000; font-size: 13px; line-height: 1.35; overflow: hidden; display: flex; flex-direction: column; }
+.bf-page h3 { font-size: 13px; letter-spacing: 1px; margin: 12px 0 4px; border-bottom: 1.5px solid #000; }
+.bf-page small { display: block; font-size: 10px; letter-spacing: 1px; color: #444; }
+.bf-page .tag { margin-left: 6px; font-size: 10px; font-weight: 700; border: 1.5px solid #000; padding: 0 3px; }
+.bf-page .muted { color: #555; }
+.bf-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #000; padding-bottom: 6px; }
+.bf-kicker { font-size: 11px; letter-spacing: 2px; font-weight: 700; }
+.bf-title { font-size: 26px; font-weight: 700; }
+.bf-flight { text-align: right; font-size: 14px; }
+.bf-callsign { font-size: 20px; font-weight: 700; }
+.bf-times, .bf-fuel { display: grid; grid-template-columns: repeat(6, 1fr); border: 2px solid #000; margin-top: 10px; }
+.bf-fuel { grid-template-columns: repeat(4, 1fr); }
+.bf-times > div, .bf-fuel > div { padding: 4px 8px; border-right: 1px solid #000; }
+.bf-times > div:last-child, .bf-fuel > div:last-child { border-right: none; }
+.bf-times b, .bf-fuel b { font-size: 16px; }
+.bf-sub { display: block; font-size: 11px; }
+.bf-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.bf-box { border: 1.5px solid #000; padding: 6px 8px; }
+.bf-fname, .bf-tname { font-weight: 700; font-size: 15px; }
+.bf-freqs { font-size: 11px; }
+.bf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.bf-table th { text-align: left; font-size: 10px; letter-spacing: 1px; border-bottom: 1.5px solid #000; }
+.bf-table td { border-bottom: 1px solid #bbb; padding: 2px 4px 2px 0; }
+.bf-table .n { text-align: right; }
+.bf-inside td { font-weight: 700; background: #fde2e2; }
+.bf-strip { margin-top: 6px; font-size: 12px; }
+.bf-strip small { display: inline; margin-right: 6px; }
+.bf-notes { flex: 1; display: grid; grid-template-rows: repeat(3, 1fr); border: 1.5px solid #000; min-height: 90px; }
+.bf-notes > div { border-bottom: 1px solid #999; padding: 4px 8px;
+  background: repeating-linear-gradient(transparent 0 21px, #ddd 21px 22px); }
+.bf-notes > div:last-child { border-bottom: none; }
+.briefing .row h2 { margin: 0 8px 0 0; }
+@media print { .briefing { display: none; } }
+.bf-pages { display: flex; flex-wrap: wrap; gap: 16px; }
+.bf-map { padding: 20px; }
+.bf-maphead { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #000;
+  padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; letter-spacing: 1px; }
+.bf-maphead b { font-size: 18px; letter-spacing: 0; }
+.kb-chart .ch-ovmc { font-size: 15px; font-weight: 700; stroke: none; }
