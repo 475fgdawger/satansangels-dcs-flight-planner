@@ -1,3 +1,4 @@
+import { Fragment } from 'preact'
 import { useMemo, useRef, useState } from 'preact/hooks'
 import type { MissionExport } from '../nav/types'
 import { clock, ddm, dms, duration, heading3 } from '../nav/format'
@@ -64,6 +65,34 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, attack, t
     ...mission.tacans.map((t) => `${t.id} ${t.chan}`),
     ...(EXTRA_BEACONS[mission.mission.theatre] ?? []).map((x) => `${x.id} ${x.chan}`),
   ]
+
+  const al = b.attackLegs
+  const attackPages = al && (
+    <>
+      <AttackBrief mission={mission} rows={rows} b={b} title={title} callsign={s.callsign} attack={attack}
+        map={routeOverview(mission, rows, { width: ATK_W, height: ATK_H }, atkGround, { from: al.ip, to: al.ep }).svg} />
+      {attack && (
+        <div class="bf-page kb-attack bf-popup">
+          <div class="bf-head">
+            <div>
+              <div class="bf-kicker">POP-UP DELIVERY</div>
+              <div class="bf-title">{rows[al.ip].wp.name} → {rows[al.tgt].wp.name}</div>
+            </div>
+            <div class="bf-flight">
+              <div>Dive <b>{attack.inputs.dive}°</b> · release <b>{lb(attack.inputs.relAgl)}</b> ft AGL</div>
+              <div>Target elevation <b>{lb(attack.inputs.tgtElev)}</b> ft MSL</div>
+            </div>
+          </div>
+          {attack.warning && <div class="kb-warn">{attack.warning}</div>}
+          <AttackCard attack={attack} />
+          <AttackPicture attack={attack} />
+          <div class="bf-foot">Nil wind · action right drawn, left is the mirror image · ranges are ground distance to the target</div>
+        </div>
+      )}
+    </>
+  )
+  // The attack pages follow the route overview, or the section map that reaches the IP when there are sections.
+  const attackAfter = al ? Math.max(0, maps.findIndex((m, i) => i > 0 && m.sec.to >= al.ip)) : -1
 
   async function savePdf() {
     const els = Array.from(pagesRef.current?.querySelectorAll<HTMLElement>('.bf-page') ?? [])
@@ -189,30 +218,9 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, attack, t
           <div><small>CONTINGENCIES</small></div>
         </div>
       </div>
-      {b.attackLegs && (
-        <AttackBrief mission={mission} rows={rows} b={b} title={title} callsign={s.callsign} attack={attack}
-          map={routeOverview(mission, rows, { width: ATK_W, height: ATK_H }, atkGround, { from: b.attackLegs.ip, to: b.attackLegs.ep }).svg} />
-      )}
-      {b.attackLegs && attack && (
-        <div class="bf-page kb-attack bf-popup">
-          <div class="bf-head">
-            <div>
-              <div class="bf-kicker">POP-UP DELIVERY</div>
-              <div class="bf-title">{rows[b.attackLegs.ip].wp.name} → {rows[b.attackLegs.tgt].wp.name}</div>
-            </div>
-            <div class="bf-flight">
-              <div>Dive <b>{attack.inputs.dive}°</b> · release <b>{lb(attack.inputs.relAgl)}</b> ft AGL</div>
-              <div>Target elevation <b>{lb(attack.inputs.tgtElev)}</b> ft MSL</div>
-            </div>
-          </div>
-          {attack.warning && <div class="kb-warn">{attack.warning}</div>}
-          <AttackCard attack={attack} />
-          <AttackPicture attack={attack} />
-          <div class="bf-foot">Nil wind · action right drawn, left is the mirror image · ranges are ground distance to the target</div>
-        </div>
-      )}
       {maps.map(({ sec, ground }, i) => (
-        <div key={`${sec.from}-${sec.to}`} class="bf-page bf-map">
+        <Fragment key={`${sec.from}-${sec.to}`}>
+        <div class="bf-page bf-map">
           <div class="bf-maphead">
             <b>{title}</b>
             <span>
@@ -223,6 +231,8 @@ export function BriefingPanel({ mission, rows, settings: s, fuel, run, attack, t
           <svg class="kb-chart" viewBox={`0 0 ${MAP_W} ${MAP_H}`}
             dangerouslySetInnerHTML={{ __html: routeOverview(mission, rows, size, ground, sec).svg }} />
         </div>
+        {i === attackAfter && attackPages}
+        </Fragment>
       ))}
       </div>
     </section>
