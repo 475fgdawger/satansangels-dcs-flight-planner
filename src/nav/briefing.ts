@@ -61,6 +61,8 @@ export interface Briefing {
   divert: Divert | null
   target: (LatLon & { name: string; kind?: string; elevFt?: number; tacan: string; near: string; group?: string | null }) | null
   attack: { ip: string; ipNm: number; magCourse: number } | null
+  /** Route indexes of the attack: IP, target and egress point. */
+  attackLegs: { ip: number; tgt: number; ep: number } | null
   threats: ThreatInfo[]
   fuel: { start: number; required: number | null; margin: number | null; joker: number | null; bingo: number | null }
 }
@@ -111,6 +113,12 @@ export function routeThreats(m: MissionExport, rows: Row[]): ThreatInfo[] {
   return out.sort((a, b) => (a.closestNm - a.ringNm) - (b.closestNm - b.ringNm))
 }
 
+/** The egress point: the first waypoint marked EP after the target, else the waypoint after it. */
+export function egressIndex(rows: Row[], tgt: number): number {
+  for (let i = tgt + 1; i < rows.length; i++) if (rows[i].wp.tags?.includes('EP')) return i
+  return Math.min(tgt + 1, rows.length - 1)
+}
+
 const timeAt = (r: Row): TimePoint => ({ elapsed: r.elapsed, clock: r.eta })
 
 export function briefing(m: MissionExport, rows: Row[], s: PlanSettings, fuel: FuelPlan | null, run: AttackRun | null): Briefing {
@@ -155,6 +163,7 @@ export function briefing(m: MissionExport, rows: Row[], s: PlanSettings, fuel: F
     divert,
     target,
     attack: run ? { ip: rows[run.ip].wp.name, ipNm: run.ipNm, magCourse: run.magCourse } : null,
+    attackLegs: run ? { ip: run.ip, tgt: run.tgt, ep: egressIndex(rows, run.tgt) } : null,
     threats: routeThreats(m, rows),
     fuel: {
       start: s.startFuel,

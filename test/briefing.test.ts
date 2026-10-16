@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import raw from './fixtures/targets_syria.json'
 import { parseMission } from '../src/nav/mission'
 import { attackRun, computeRows, defaultSettings, fuelPlan, type Waypoint } from '../src/nav/plan'
-import { briefing } from '../src/nav/briefing'
+import { briefing, egressIndex } from '../src/nav/briefing'
 import { overviewProjection, routeOverview, routeSections, SECTION_NM_PER_PX } from '../src/nav/chart'
 
 const m = parseMission(raw)
@@ -84,5 +84,17 @@ describe('mission briefing', () => {
   it('keeps a short route on one page', () => {
     const short = computeRows(m, [route[2], route[3], route[4]], s)
     expect(routeSections(short, { width: 776, height: 980 })).toEqual([])
+  })
+})
+
+describe('attack briefing', () => {
+  it('runs from the IP through the target to the waypoint marked EP', () => {
+    expect(briefing(m, rows, s, fuel, run).attackLegs).toEqual({ ip: 2, tgt: 3, ep: 4 })
+  })
+
+  it('egresses to the waypoint after the target when none is marked EP', () => {
+    const r2 = computeRows(m, route.map((w) => (w.id === 'e' ? { ...w, tags: undefined } : w)), s)
+    expect(egressIndex(r2, 3)).toBe(4)
+    expect(egressIndex(r2.slice(0, 4), 3)).toBe(3)
   })
 })
