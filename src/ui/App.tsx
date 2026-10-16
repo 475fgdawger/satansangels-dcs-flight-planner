@@ -349,7 +349,7 @@ function SettingsPanel({ settings: s, mission, route, fuel, need, onChange, onRo
           <span>Title</span>
           <input type="text" value={s.title ?? ''} placeholder={missionName}
             onInput={(e) => set({ title: (e.target as HTMLInputElement).value || undefined })} />
-          <small>heads every kneeboard page; blank uses the mission name</small>
+          <small>heads every kneeboard page and names its files; blank uses the mission name. Start with a number (1 Low Level, 2 Strike) to set the order of several plans on the kneeboard.</small>
         </label>
         <label class="field">
           <span>Callsign</span>

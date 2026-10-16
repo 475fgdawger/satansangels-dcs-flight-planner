@@ -15,11 +15,15 @@ import { maxElevationNear, shadeTerrain, type TerrainGrid } from '../nav/terrain
 import { shadingImage } from './terrain'
 import { allowWrite, canPickFolder, forgetFolder, pickFolder, savedFolder, writePages, type DirHandle } from './folder'
 
-// DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. PNGs are
+// DCS kneeboard pages are 3:4 portrait; 768x1024 is the usual size. Pages are
 // exported at 2x (1536x2048) so text stays sharp, same aspect ratio.
 export const PAGE_W = 768
 export const PAGE_H = 1024
 const EXPORT_SCALE = 2
+// Kneeboard pages are JPEG named .jpg (DCS skips .jpeg) at the server kneeboard injector's quality.
+const JPG_QUALITY = 0.85
+/** DCS names each aircraft's kneeboard folder after its type. */
+const KNEEBOARD_DIR: Record<string, string> = { 'F-4E': 'F-4E-45MC', 'F-5E': 'F-5E-3', 'F-100D': 'F-100D' }
 const ROWS_PER_PAGE = 10
 // A loiter line is about 40% of a waypoint's height on the page.
 const LOITER_ROW = 0.4
@@ -28,7 +32,7 @@ const CLIMB_ROW = 0.25
 
 const COMM_SHORT: Record<string, string> = { Tower: 'TWR', Squadron: 'SQN', 'ARCO (tanker)': 'ARCO', 'SHELL (tanker)': 'SHELL' }
 
-/** The nav log as one or more kneeboard pages, with PNG and PDF export. */
+/** The nav log as one or more kneeboard pages, with JPG and PDF export. */
 export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, attack, terrain }: {
   mission: MissionExport; rows: Row[]; settings: PlanSettings; fuel: FuelPlan | null
   run: AttackRun | null; attack: PopupResult | null; terrain: TerrainGrid | null
@@ -57,32 +61,32 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
     pages[pages.length - 1].rows.push(r)
     used += h
   })
+  const dcsDir = KNEEBOARD_DIR[s.aircraft] ?? s.aircraft
   const fileBase = `${s.title?.trim() || mission.mission.theatre}_navlog`.replace(/[^A-Za-z0-9_-]+/g, '_')
 
-  async function exportAs(kind: 'png' | 'pdf') {
+  async function exportAs(kind: 'jpg' | 'pdf') {
     const els = Array.from(pagesRef.current?.querySelectorAll<HTMLElement>('.kb-page') ?? [])
     if (els.length === 0) return
     // Ask for write access first, while the click still counts as the user's.
-    const dir = kind === 'png' && folder && (await allowWrite(folder)) ? folder : null
+    const dir = kind === 'jpg' && folder && (await allowWrite(folder)) ? folder : null
     setNote(null)
-    setBusy(kind === 'png' ? 'Making PNG…' : 'Making PDF…')
+    setBusy(kind === 'jpg' ? 'Making JPG…' : 'Making PDF…')
     try {
-      const { toJpeg, toPng } = await import('html-to-image')
+      const { toJpeg } = await import('html-to-image')
       const opts = { pixelRatio: EXPORT_SCALE, width: PAGE_W, height: PAGE_H, backgroundColor: '#ffffff' }
       const images = []
       const restore = inlineSvgStyles(els)
       try {
-        // PNG for the DCS kneeboard folder; JPEG inside the PDF keeps the file small.
-        for (const el of els) images.push(kind === 'png' ? await toPng(el, opts) : await toJpeg(el, { ...opts, quality: 0.92 }))
+        for (const el of els) images.push(await toJpeg(el, { ...opts, quality: kind === 'jpg' ? JPG_QUALITY : 0.92 }))
       } finally {
         restore()
       }
-      if (kind === 'png') {
+      if (kind === 'jpg') {
         if (dir) {
           await writePages(dir, fileBase, images)
           setNote(`Saved ${images.length} page${images.length === 1 ? '' : 's'} to ${dir.name}.`)
         } else {
-          images.forEach((url, i) => download(url, `${fileBase}_${i + 1}.png`))
+          images.forEach((url, i) => download(url, `${fileBase}_${i + 1}.jpg`))
           if (folder) setNote(`No permission to write to ${folder.name}; saved to Downloads instead.`)
         }
       } else {
@@ -112,17 +116,17 @@ export function Kneeboard({ mission: exported, rows, settings: s, fuel, run, att
       <div class="row no-print">
         {canPickFolder() && (
           <button type="button" disabled={!!busy} onClick={chooseFolder}
-            title="Pick the folder kneeboard PNGs are saved to, such as Saved Games\DCS\Kneeboard\F-4E">
-            {folder ? 'Change PNG folder' : 'Choose PNG folder…'}
+            title={`Pick the folder kneeboard pages are saved to, such as Saved Games\\DCS\\Kneeboard\\${dcsDir}`}>
+            {folder ? 'Change kneeboard folder' : 'Choose kneeboard folder…'}
           </button>
         )}
-        <button type="button" disabled={!!busy} onClick={() => exportAs('png')}>Save kneeboard PNG</button>
+        <button type="button" disabled={!!busy} onClick={() => exportAs('jpg')}>Save kneeboard JPG</button>
         <button type="button" disabled={!!busy} onClick={() => exportAs('pdf')}>Save PDF</button>
         <button type="button" onClick={() => window.print()}>Print</button>
         <span class="muted small">
           {busy ?? note ?? (folder
-            ? <>PNGs save to <code>{folder.name}</code> (<button type="button" class="link" onClick={() => { forgetFolder(); setFolder(null) }}>use Downloads</button>).</>
-            : <>PNGs go in <code>Saved Games\DCS\Kneeboard\{s.aircraft}</code> (or <code>Kneeboard</code> for every aircraft).
+            ? <>JPGs save to <code>{folder.name}</code> (<button type="button" class="link" onClick={() => { forgetFolder(); setFolder(null) }}>use Downloads</button>).</>
+            : <>JPGs go in <code>Saved Games\DCS\Kneeboard\{dcsDir}</code> (or <code>Kneeboard</code> for every aircraft).
               {!canPickFolder() && ' This browser saves to Downloads; use Chrome or Edge to pick a folder.'}</>)}
         </span>
       </div>
