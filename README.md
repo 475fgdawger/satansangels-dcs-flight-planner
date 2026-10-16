@@ -64,7 +64,8 @@ These match the bot's target list, and the tests check them against a real expor
 - **Climb / descent**: MIL climb and idle descent tables; loaded climbs are the No Stores climb × √factor (estimate,
   flagged, until a loaded climb is recorded).
 - **MIL / max AB** fuel flow points, ground idle and the max AB takeoff (brake release to 450 KIAS; the MIL climb
-  follows on the first leg).
+  follows on the first leg). Takeoff fuel is per drag category where one was recorded (No Stores 756 lb, BFM Only
+  904 lb); a loaded category without its own uses the heaviest recorded loaded takeoff.
 
 Joker and bingo with recorded data (fuel states at the TGT or CAP):
 

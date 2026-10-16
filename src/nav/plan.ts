@@ -6,7 +6,7 @@ import { inverse, norm360 } from './geodesy'
 import { catalog, magVarAt } from './mission'
 import type { LatLon, MissionExport } from './types'
 import { kcasFromMach, ktasFromMach, machFromKcas, speedOfSoundKt } from './atmo'
-import { NO_STORES, PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, dragOf, levelAtRpm, powerFf, type ClimbDescent, type PerfData,
+import { NO_STORES, PERF, bestRangeKias, climb, cruiseAt, descent, dragFactor, dragOf, levelAtRpm, powerFf, takeoffOf, type ClimbDescent, type PerfData,
   type PerfFlag } from './perf'
 import { DEFAULT_INGRESS_AGL, type PopupInputs, type PopupSettings } from './popup'
 
@@ -271,14 +271,15 @@ export function defaultSettings(aircraft: AircraftId, takeoff?: number): PlanSet
 
 /**
  * Departure fuel: taxi at ground idle (before the departure row), then full afterburner for takeoff and
- * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS, then the MIL climb is
+ * acceleration. With recorded data: the recorded max AB takeoff from brake release to 450 KIAS for the plan's drag
+ * category (a loaded category without its own uses the heaviest recorded loaded takeoff), then the MIL climb is
  * part of the first leg. Without: AB for a set time (to about 400 kt), then a fixed MIL climb at the start of the
  * first leg. The takeoff burn is counted in the first leg.
  */
 export function departureFuel(s: PlanSettings): { taxi: number; takeoff: number; climb: number; beforeFirstLeg: number; total: number } {
   const a = AIRCRAFT[s.aircraft]
   const taxi = s.taxiMin * a.idleLbMin
-  const recorded = a.perf?.ground.takeoff
+  const recorded = a.perf ? takeoffOf(a.perf, s.drag) : null
   if (recorded) return { taxi, takeoff: recorded.lb, climb: 0, beforeFirstLeg: taxi, total: taxi + recorded.lb }
   const takeoff = (s.abTakeoffMin * fixedFf(s.aircraft, 'ab')) / 60
   const climb = (Math.max(s.climbMin, 0) * fixedFf(s.aircraft, 'mil')) / 60
