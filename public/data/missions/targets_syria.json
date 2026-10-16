@@ -4,10 +4,10 @@
   "name": "Syria TDY 433rd",
   "file": "Syria_TDY_433rd.miz",
   "theatre": "Syria",
-  "date": "2016-06-21 00:00:00",
-  "start_time": 18000
+  "date": "1967-06-01",
+  "start_time": 46800
  },
- "built_utc": "2026-10-15T15:07:45Z",
+ "built_utc": "2026-10-16T11:15:44Z",
  "mag_var": {
   "source": "DCS",
   "fallback": 5.0
@@ -18,7 +18,7 @@
    "chan": "21X",
    "lat": 37.015611,
    "lon": 35.448194,
-   "mag_var": 5.23,
+   "mag_var": 3.01,
    "elev_ft": 242
   },
   {
@@ -26,7 +26,7 @@
    "chan": "88X",
    "lat": 37.999037,
    "lon": 32.564838,
-   "mag_var": 5.21,
+   "mag_var": 2.8,
    "elev_ft": 3407
   }
  ],
@@ -38,11 +38,11 @@
    "group": null,
    "lat": 37.617523,
    "lon": 33.510843,
-   "mag_var": 5.22,
+   "mag_var": 2.87,
    "latlon": "N37°37'03\" E033°30'39\"",
-   "tacan": "DAN 287/99, KON 111/50",
+   "tacan": "DAN 289/99, KON 114/50",
    "near": "Karapinar West Range",
-   "line": "T-1, N37°37'03\" E033°30'39\", DAN 287/99, KON 111/50, Karapinar West Range",
+   "line": "T-1, N37°37'03\" E033°30'39\", DAN 289/99, KON 114/50, Karapinar West Range",
    "elev_ft": 3263
   },
   {
@@ -52,11 +52,11 @@
    "group": null,
    "lat": 37.58197,
    "lon": 33.50942,
-   "mag_var": 5.21,
+   "mag_var": 2.87,
    "latlon": "N37°34'55\" E033°30'34\"",
-   "tacan": "DAN 285/99, KON 114/51",
+   "tacan": "DAN 288/99, KON 116/51",
    "near": "Karapinar West Range",
-   "line": "T-2, N37°34'55\" E033°30'34\", DAN 285/99, KON 114/51, Karapinar West Range",
+   "line": "T-2, N37°34'55\" E033°30'34\", DAN 288/99, KON 116/51, Karapinar West Range",
    "elev_ft": 3264
   },
   {
@@ -66,11 +66,11 @@
    "group": null,
    "lat": 37.601265,
    "lon": 33.510606,
-   "mag_var": 5.22,
+   "mag_var": 2.87,
    "latlon": "N37°36'05\" E033°30'38\"",
-   "tacan": "DAN 286/99, KON 112/51",
+   "tacan": "DAN 288/99, KON 115/51",
    "near": "Karapinar West Range",
-   "line": "T-3, N37°36'05\" E033°30'38\", DAN 286/99, KON 112/51, Karapinar West Range",
+   "line": "T-3, N37°36'05\" E033°30'38\", DAN 288/99, KON 115/51, Karapinar West Range",
    "elev_ft": 3278
   },
   {
@@ -80,11 +80,11 @@
    "group": null,
    "lat": 37.602724,
    "lon": 33.703923,
-   "mag_var": 5.23,
+   "mag_var": 2.9,
    "latlon": "N37°36'10\" E033°42'14\"",
-   "tacan": "DAN 288/91, KON 108/59",
+   "tacan": "DAN 290/91, KON 111/59",
    "near": "Karapinar West Range",
-   "line": "T-4, N37°36'10\" E033°42'14\", DAN 288/91, KON 108/59, Karapinar West Range",
+   "line": "T-4, N37°36'10\" E033°42'14\", DAN 290/91, KON 111/59, Karapinar West Range",
    "elev_ft": 3269
   },
   {
@@ -94,11 +94,11 @@
    "group": null,
    "lat": 37.606407,
    "lon": 33.643025,
-   "mag_var": 5.22,
+   "mag_var": 2.89,
    "latlon": "N37°36'23\" E033°38'35\"",
-   "tacan": "DAN 288/93, KON 109/56",
+   "tacan": "DAN 290/93, KON 112/56",
    "near": "Karapinar West Range",
-   "line": "T-5, N37°36'23\" E033°38'35\", DAN 288/93, KON 109/56, Karapinar West Range",
+   "line": "T-5, N37°36'23\" E033°38'35\", DAN 290/93, KON 112/56, Karapinar West Range",
    "elev_ft": 3264
   },
   {
@@ -108,11 +108,11 @@
    "group": null,
    "lat": 37.589443,
    "lon": 33.573443,
-   "mag_var": 5.22,
+   "mag_var": 2.88,
    "latlon": "N37°35'22\" E033°34'24\"",
-   "tacan": "DAN 286/96, KON 112/54",
+   "tacan": "DAN 289/96, KON 114/54",
    "near": "Karapinar West Range",
-   "line": "T-6, N37°35'22\" E033°34'24\", DAN 286/96, KON 112/54, Karapinar West Range",
+   "line": "T-6, N37°35'22\" E033°34'24\", DAN 289/96, KON 114/54, Karapinar West Range",
    "elev_ft": 3249
   },
   {
@@ -122,11 +122,11 @@
    "group": null,
    "lat": 37.575707,
    "lon": 33.705057,
-   "mag_var": 5.22,
+   "mag_var": 2.89,
    "latlon": "N37°34'33\" E033°42'18\"",
-   "tacan": "DAN 287/90, KON 110/60",
+   "tacan": "DAN 289/90, KON 112/60",
    "near": "Karapinar West Range",
-   "line": "T-7, N37°34'33\" E033°42'18\", DAN 287/90, KON 110/60, Karapinar West Range",
+   "line": "T-7, N37°34'33\" E033°42'18\", DAN 289/90, KON 112/60, Karapinar West Range",
    "elev_ft": 3235
   },
   {
@@ -136,11 +136,11 @@
    "group": null,
    "lat": 37.60392,
    "lon": 33.818026,
-   "mag_var": 5.24,
+   "mag_var": 2.91,
    "latlon": "N37°36'14\" E033°49'05\"",
-   "tacan": "DAN 290/86, KON 106/64",
+   "tacan": "DAN 292/86, KON 108/64",
    "near": "Karapinar West Range",
-   "line": "T-8, N37°36'14\" E033°49'05\", DAN 290/86, KON 106/64, Karapinar West Range",
+   "line": "T-8, N37°36'14\" E033°49'05\", DAN 292/86, KON 108/64, Karapinar West Range",
    "elev_ft": 3322
   },
   {
@@ -150,11 +150,11 @@
    "group": null,
    "lat": 37.572565,
    "lon": 33.747498,
-   "mag_var": 5.23,
+   "mag_var": 2.9,
    "latlon": "N37°34'21\" E033°44'51\"",
-   "tacan": "DAN 288/88, KON 109/62",
+   "tacan": "DAN 290/88, KON 111/62",
    "near": "Karapinar West Range",
-   "line": "T-9, N37°34'21\" E033°44'51\", DAN 288/88, KON 109/62, Karapinar West Range",
+   "line": "T-9, N37°34'21\" E033°44'51\", DAN 290/88, KON 111/62, Karapinar West Range",
    "elev_ft": 3272
   },
   {
@@ -164,11 +164,11 @@
    "group": null,
    "lat": 37.575764,
    "lon": 33.804755,
-   "mag_var": 5.23,
+   "mag_var": 2.9,
    "latlon": "N37°34'33\" E033°48'17\"",
-   "tacan": "DAN 288/86, KON 108/64",
+   "tacan": "DAN 291/86, KON 110/64",
    "near": "Karapinar West Range",
-   "line": "T-10, N37°34'33\" E033°48'17\", DAN 288/86, KON 108/64, Karapinar West Range",
+   "line": "T-10, N37°34'33\" E033°48'17\", DAN 291/86, KON 110/64, Karapinar West Range",
    "elev_ft": 3303
   },
   {
@@ -178,11 +178,11 @@
    "group": "Aleppo SA-2",
    "lat": 36.298043,
    "lon": 37.158964,
-   "mag_var": 5.18,
+   "mag_var": 3.08,
    "latlon": "N36°17'53\" E037°09'32\"",
-   "tacan": "DAN 112/93, KON 108/243",
+   "tacan": "DAN 114/93, KON 111/243",
    "near": "8 nm NNW of Aleppo",
-   "line": "Aleppo SA-2, N36°17'53\" E037°09'32\", DAN 112/93, KON 108/243, 8 nm NNW of Aleppo",
+   "line": "Aleppo SA-2, N36°17'53\" E037°09'32\", DAN 114/93, KON 111/243, 8 nm NNW of Aleppo",
    "elev_ft": 1594
   },
   {
@@ -192,11 +192,11 @@
    "group": "Bassel Al-Assad SA-2",
    "lat": 35.411182,
    "lon": 35.923238,
-   "mag_var": 5.01,
+   "mag_var": 2.8,
    "latlon": "N35°24'40\" E035°55'24\"",
-   "tacan": "DAN 161/99, KON 128/224",
+   "tacan": "DAN 163/99, KON 130/224",
    "near": "1 nm WNW of Bassel Al-Assad EWR",
-   "line": "Bassel Al-Assad SA-2, N35°24'40\" E035°55'24\", DAN 161/99, KON 128/224, 1 nm WNW of Bassel Al-Assad EWR",
+   "line": "Bassel Al-Assad SA-2, N35°24'40\" E035°55'24\", DAN 163/99, KON 130/224, 1 nm WNW of Bassel Al-Assad EWR",
    "elev_ft": 39
   },
   {
@@ -206,11 +206,11 @@
    "group": "HAMA SA-2",
    "lat": 35.064043,
    "lon": 36.748742,
-   "mag_var": 4.98,
+   "mag_var": 2.83,
    "latlon": "N35°03'51\" E036°44'55\"",
-   "tacan": "DAN 146/133, KON 125/268",
+   "tacan": "DAN 148/133, KON 127/268",
    "near": "4 nm S of Hama",
-   "line": "Hama SA-2, N35°03'51\" E036°44'55\", DAN 146/133, KON 125/268, 4 nm S of Hama",
+   "line": "Hama SA-2, N35°03'51\" E036°44'55\", DAN 148/133, KON 127/268, 4 nm S of Hama",
    "elev_ft": 1162
   },
   {
@@ -220,11 +220,11 @@
    "group": "LATAKIA SA-2",
    "lat": 35.532766,
    "lon": 35.818429,
-   "mag_var": 5.03,
+   "mag_var": 2.81,
    "latlon": "N35°31'58\" E035°49'06\"",
-   "tacan": "DAN 163/91, KON 127/215",
+   "tacan": "DAN 165/91, KON 130/215",
    "near": "1 nm E of Latakia",
-   "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 163/91, KON 127/215, 1 nm E of Latakia",
+   "line": "Latakia SA-2, N35°31'58\" E035°49'06\", DAN 165/91, KON 130/215, 1 nm E of Latakia",
    "elev_ft": 69
   },
   {
@@ -234,11 +234,11 @@
    "group": "Tartus SA-2",
    "lat": 34.964657,
    "lon": 35.926761,
-   "mag_var": 4.95,
+   "mag_var": 2.73,
    "latlon": "N34°57'53\" E035°55'36\"",
-   "tacan": "DAN 164/125, KON 132/244",
+   "tacan": "DAN 166/125, KON 134/244",
    "near": "5 nm NNE of Tartus",
-   "line": "Tartus SA-2, N34°57'53\" E035°55'36\", DAN 164/125, KON 132/244, 5 nm NNE of Tartus",
+   "line": "Tartus SA-2, N34°57'53\" E035°55'36\", DAN 166/125, KON 134/244, 5 nm NNE of Tartus",
    "elev_ft": 860
   },
   {
@@ -248,11 +248,11 @@
    "group": "Aleppo EWR",
    "lat": 36.179271,
    "lon": 37.227435,
-   "mag_var": 5.16,
+   "mag_var": 3.06,
    "latlon": "N36°10'45\" E037°13'39\"",
-   "tacan": "DAN 114/100, KON 109/249",
+   "tacan": "DAN 117/100, KON 112/249",
    "near": "at Aleppo",
-   "line": "Aleppo EWR, N36°10'45\" E037°13'39\", DAN 114/100, KON 109/249, at Aleppo",
+   "line": "Aleppo EWR, N36°10'45\" E037°13'39\", DAN 117/100, KON 112/249, at Aleppo",
    "elev_ft": 1254
   },
   {
@@ -262,11 +262,11 @@
    "group": "BASSEL AL-ASSAD EWR",
    "lat": 35.401948,
    "lon": 35.946823,
-   "mag_var": 5.01,
+   "mag_var": 2.81,
    "latlon": "N35°24'07\" E035°56'49\"",
-   "tacan": "DAN 161/100, KON 127/225",
+   "tacan": "DAN 163/100, KON 130/225",
    "near": "1 nm ESE of Bassel Al-Assad SA-2",
-   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 161/100, KON 127/225, 1 nm ESE of Bassel Al-Assad SA-2",
+   "line": "Bassel Al-Assad EWR, N35°24'07\" E035°56'49\", DAN 163/100, KON 130/225, 1 nm ESE of Bassel Al-Assad SA-2",
    "elev_ft": 94
   },
   {
@@ -276,11 +276,11 @@
    "group": "DAMASCUS EWR",
    "lat": 33.427144,
    "lon": 36.522327,
-   "mag_var": 4.75,
+   "mag_var": 2.55,
    "latlon": "N33°25'38\" E036°31'20\"",
-   "tacan": "DAN 161/221, KON 138/335",
+   "tacan": "DAN 163/221, KON 141/335",
    "near": "1 nm NNE of Damascus",
-   "line": "Damascus EWR, N33°25'38\" E036°31'20\", DAN 161/221, KON 138/335, 1 nm NNE of Damascus",
+   "line": "Damascus EWR, N33°25'38\" E036°31'20\", DAN 163/221, KON 141/335, 1 nm NNE of Damascus",
    "elev_ft": 2008
   },
   {
@@ -290,11 +290,11 @@
    "group": "MINAKH EWR",
    "lat": 36.52277,
    "lon": 37.039825,
-   "mag_var": 5.21,
+   "mag_var": 3.1,
    "latlon": "N36°31'22\" E037°02'23\"",
-   "tacan": "DAN 105/82, KON 106/232",
+   "tacan": "DAN 108/82, KON 108/232",
    "near": "at Minakh",
-   "line": "Minakh EWR, N36°31'22\" E037°02'23\", DAN 105/82, KON 106/232, at Minakh",
+   "line": "Minakh EWR, N36°31'22\" E037°02'23\", DAN 108/82, KON 108/232, at Minakh",
    "elev_ft": 1614
   },
   {
@@ -304,11 +304,11 @@
    "group": "SHAYRAT EWR",
    "lat": 34.491685,
    "lon": 36.908634,
-   "mag_var": 4.9,
+   "mag_var": 2.76,
    "latlon": "N34°29'30\" E036°54'31\"",
-   "tacan": "DAN 149/167, KON 128/298",
+   "tacan": "DAN 151/167, KON 131/298",
    "near": "at Shayrat",
-   "line": "Shayrat EWR, N34°29'30\" E036°54'31\", DAN 149/167, KON 128/298, at Shayrat",
+   "line": "Shayrat EWR, N34°29'30\" E036°54'31\", DAN 151/167, KON 131/298, at Shayrat",
    "elev_ft": 2638
   },
   {
@@ -318,11 +318,11 @@
    "group": "Aleppo Fire Can 1-1",
    "lat": 36.18312,
    "lon": 37.200199,
-   "mag_var": 5.16,
+   "mag_var": 3.06,
    "latlon": "N36°10'59\" E037°12'01\"",
-   "tacan": "DAN 115/98, KON 109/248",
+   "tacan": "DAN 117/98, KON 112/248",
    "near": "1 nm W of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-1, N36°10'59\" E037°12'01\", DAN 115/98, KON 109/248, 1 nm W of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-1, N36°10'59\" E037°12'01\", DAN 117/98, KON 112/248, 1 nm W of Aleppo EWR",
    "elev_ft": 1284
   },
   {
@@ -332,11 +332,11 @@
    "group": "Aleppo Fire Can 1-2",
    "lat": 36.175716,
    "lon": 37.209686,
-   "mag_var": 5.16,
+   "mag_var": 3.06,
    "latlon": "N36°10'33\" E037°12'35\"",
-   "tacan": "DAN 115/99, KON 109/248",
+   "tacan": "DAN 117/99, KON 112/248",
    "near": "1 nm WSW of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-2, N36°10'33\" E037°12'35\", DAN 115/99, KON 109/248, 1 nm WSW of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-2, N36°10'33\" E037°12'35\", DAN 117/99, KON 112/248, 1 nm WSW of Aleppo EWR",
    "elev_ft": 1244
   },
   {
@@ -346,11 +346,11 @@
    "group": "Aleppo Fire Can 1-3",
    "lat": 36.1768,
    "lon": 37.250974,
-   "mag_var": 5.16,
+   "mag_var": 3.06,
    "latlon": "N36°10'36\" E037°15'04\"",
-   "tacan": "DAN 114/101, KON 109/250",
+   "tacan": "DAN 116/101, KON 112/250",
    "near": "1 nm E of Aleppo EWR",
-   "line": "Aleppo Fire Can 1-3, N36°10'36\" E037°15'04\", DAN 114/101, KON 109/250, 1 nm E of Aleppo EWR",
+   "line": "Aleppo Fire Can 1-3, N36°10'36\" E037°15'04\", DAN 116/101, KON 112/250, 1 nm E of Aleppo EWR",
    "elev_ft": 1208
   },
   {
@@ -360,11 +360,11 @@
    "group": "Latakia Fire Can 1-4",
    "lat": 35.539111,
    "lon": 35.814677,
-   "mag_var": 5.03,
+   "mag_var": 2.81,
    "latlon": "N35°32'21\" E035°48'53\"",
-   "tacan": "DAN 163/90, KON 127/215",
+   "tacan": "DAN 166/90, KON 129/215",
    "near": "at Latakia SA-2",
-   "line": "Latakia Fire Can 1-4, N35°32'21\" E035°48'53\", DAN 163/90, KON 127/215, at Latakia SA-2",
+   "line": "Latakia Fire Can 1-4, N35°32'21\" E035°48'53\", DAN 166/90, KON 129/215, at Latakia SA-2",
    "elev_ft": 96
   },
   {
@@ -374,11 +374,11 @@
    "group": "Latakia Fire Can 1-5",
    "lat": 35.512165,
    "lon": 35.831862,
-   "mag_var": 5.02,
+   "mag_var": 2.81,
    "latlon": "N35°30'44\" E035°49'55\"",
-   "tacan": "DAN 163/92, KON 127/217",
+   "tacan": "DAN 165/92, KON 130/217",
    "near": "1 nm SSE of Latakia SA-2",
-   "line": "Latakia Fire Can 1-5, N35°30'44\" E035°49'55\", DAN 163/92, KON 127/217, 1 nm SSE of Latakia SA-2",
+   "line": "Latakia Fire Can 1-5, N35°30'44\" E035°49'55\", DAN 165/92, KON 130/217, 1 nm SSE of Latakia SA-2",
    "elev_ft": 27
   },
   {
@@ -388,11 +388,11 @@
    "group": "Latakia Fire Can 1-6",
    "lat": 35.498443,
    "lon": 35.829027,
-   "mag_var": 5.02,
+   "mag_var": 2.81,
    "latlon": "N35°29'54\" E035°49'44\"",
-   "tacan": "DAN 163/93, KON 127/217",
+   "tacan": "DAN 165/93, KON 130/217",
    "near": "3 nm SE of Latakia",
-   "line": "Latakia Fire Can 1-6, N35°29'54\" E035°49'44\", DAN 163/93, KON 127/217, 3 nm SE of Latakia",
+   "line": "Latakia Fire Can 1-6, N35°29'54\" E035°49'44\", DAN 165/93, KON 130/217, 3 nm SE of Latakia",
    "elev_ft": 25
   },
   {
@@ -402,11 +402,11 @@
    "group": "Latakia Fire Can 1-7",
    "lat": 35.526006,
    "lon": 35.839201,
-   "mag_var": 5.03,
+   "mag_var": 2.81,
    "latlon": "N35°31'34\" E035°50'21\"",
-   "tacan": "DAN 163/91, KON 127/216",
+   "tacan": "DAN 165/91, KON 129/216",
    "near": "1 nm ESE of Latakia SA-2",
-   "line": "Latakia Fire Can 1-7, N35°31'34\" E035°50'21\", DAN 163/91, KON 127/216, 1 nm ESE of Latakia SA-2",
+   "line": "Latakia Fire Can 1-7, N35°31'34\" E035°50'21\", DAN 165/91, KON 129/216, 1 nm ESE of Latakia SA-2",
    "elev_ft": 19
   },
   {
@@ -416,11 +416,11 @@
    "group": "Minakh Fire Can 1",
    "lat": 36.5247,
    "lon": 37.041682,
-   "mag_var": 5.21,
+   "mag_var": 3.1,
    "latlon": "N36°31'29\" E037°02'30\"",
-   "tacan": "DAN 105/82, KON 106/232",
+   "tacan": "DAN 107/82, KON 108/232",
    "near": "at Minakh EWR",
-   "line": "Minakh Fire Can 1, N36°31'29\" E037°02'30\", DAN 105/82, KON 106/232, at Minakh EWR",
+   "line": "Minakh Fire Can 1, N36°31'29\" E037°02'30\", DAN 107/82, KON 108/232, at Minakh EWR",
    "elev_ft": 1614
   },
   {
@@ -430,11 +430,11 @@
    "group": "Minakh Fire Can 2",
    "lat": 36.532813,
    "lon": 37.048508,
-   "mag_var": 5.21,
+   "mag_var": 3.11,
    "latlon": "N36°31'58\" E037°02'55\"",
-   "tacan": "DAN 105/82, KON 106/232",
+   "tacan": "DAN 107/82, KON 108/232",
    "near": "1 nm NNE of Minakh EWR",
-   "line": "Minakh Fire Can 2, N36°31'58\" E037°02'55\", DAN 105/82, KON 106/232, 1 nm NNE of Minakh EWR",
+   "line": "Minakh Fire Can 2, N36°31'58\" E037°02'55\", DAN 107/82, KON 108/232, 1 nm NNE of Minakh EWR",
    "elev_ft": 1578
   }
  ],
@@ -1503,7 +1503,7 @@
      0
     ]
    ],
-   "mag_var": 5.09
+   "mag_var": 2.97
   },
   {
    "name": "Adana Sakirpasa",
@@ -1535,7 +1535,7 @@
      0
     ]
    ],
-   "mag_var": 5.22
+   "mag_var": 2.99
   },
   {
    "name": "Al Qusayr",
@@ -1567,7 +1567,7 @@
      0
     ]
    ],
-   "mag_var": 4.91
+   "mag_var": 2.74
   },
   {
    "name": "An Nasiriyah",
@@ -1599,7 +1599,7 @@
      0
     ]
    ],
-   "mag_var": 4.82
+   "mag_var": 2.66
   },
   {
    "name": "Tha'lah",
@@ -1631,7 +1631,7 @@
      0
     ]
    ],
-   "mag_var": 4.66
+   "mag_var": 2.44
   },
   {
    "name": "Beirut-Rafic Hariri",
@@ -1667,7 +1667,7 @@
      0
     ]
    ],
-   "mag_var": 4.79
+   "mag_var": 2.51
   },
   {
    "name": "Damascus",
@@ -1701,7 +1701,7 @@
      0
     ]
    ],
-   "mag_var": 4.75
+   "mag_var": 2.55
   },
   {
    "name": "Marj as Sultan South",
@@ -1733,7 +1733,7 @@
      0
     ]
    ],
-   "mag_var": 4.76
+   "mag_var": 2.56
   },
   {
    "name": "Al-Dumayr",
@@ -1765,7 +1765,7 @@
      0
     ]
    ],
-   "mag_var": 4.78
+   "mag_var": 2.6
   },
   {
    "name": "Eyn Shemer",
@@ -1797,7 +1797,7 @@
      0
     ]
    ],
-   "mag_var": 4.61
+   "mag_var": 2.27
   },
   {
    "name": "Gaziantep",
@@ -1829,7 +1829,7 @@
      0
     ]
    ],
-   "mag_var": 5.29
+   "mag_var": 3.22
   },
   {
    "name": "H4",
@@ -1861,7 +1861,7 @@
      0
     ]
    ],
-   "mag_var": 4.63
+   "mag_var": 2.56
   },
   {
    "name": "Haifa",
@@ -1893,7 +1893,7 @@
      0
     ]
    ],
-   "mag_var": 4.66
+   "mag_var": 2.32
   },
   {
    "name": "Hama",
@@ -1925,7 +1925,7 @@
      0
     ]
    ],
-   "mag_var": 4.99
+   "mag_var": 2.84
   },
   {
    "name": "Hatay",
@@ -1957,7 +1957,7 @@
      0
     ]
    ],
-   "mag_var": 5.16
+   "mag_var": 3.0
   },
   {
    "name": "Incirlik",
@@ -1989,7 +1989,7 @@
      0
     ]
    ],
-   "mag_var": 5.23
+   "mag_var": 3.01
   },
   {
    "name": "Jirah",
@@ -2021,7 +2021,7 @@
      0
     ]
    ],
-   "mag_var": 5.16
+   "mag_var": 3.11
   },
   {
    "name": "Khalkhalah",
@@ -2055,7 +2055,7 @@
      0
     ]
    ],
-   "mag_var": 4.71
+   "mag_var": 2.5
   },
   {
    "name": "King Hussein Air College",
@@ -2087,7 +2087,7 @@
      0
     ]
    ],
-   "mag_var": 4.62
+   "mag_var": 2.37
   },
   {
    "name": "Kiryat Shmona",
@@ -2119,7 +2119,7 @@
      0
     ]
    ],
-   "mag_var": 4.71
+   "mag_var": 2.43
   },
   {
    "name": "Bassel Al-Assad",
@@ -2153,7 +2153,7 @@
      0
     ]
    ],
-   "mag_var": 5.01
+   "mag_var": 2.81
   },
   {
    "name": "Marj as Sultan North",
@@ -2185,7 +2185,7 @@
      0
     ]
    ],
-   "mag_var": 4.76
+   "mag_var": 2.56
   },
   {
    "name": "Marj Ruhayyil",
@@ -2217,7 +2217,7 @@
      0
     ]
    ],
-   "mag_var": 4.73
+   "mag_var": 2.53
   },
   {
    "name": "Megiddo",
@@ -2249,7 +2249,7 @@
      0
     ]
    ],
-   "mag_var": 4.63
+   "mag_var": 2.31
   },
   {
    "name": "Mezzeh",
@@ -2281,7 +2281,7 @@
      0
     ]
    ],
-   "mag_var": 4.76
+   "mag_var": 2.53
   },
   {
    "name": "Minakh",
@@ -2315,7 +2315,7 @@
      0
     ]
    ],
-   "mag_var": 5.21
+   "mag_var": 3.1
   },
   {
    "name": "Aleppo",
@@ -2347,7 +2347,7 @@
      0
     ]
    ],
-   "mag_var": 5.16
+   "mag_var": 3.06
   },
   {
    "name": "Palmyra",
@@ -2379,7 +2379,7 @@
      0
     ]
    ],
-   "mag_var": 4.92
+   "mag_var": 2.89
   },
   {
    "name": "Qabr as Sitt",
@@ -2411,7 +2411,7 @@
      0
     ]
    ],
-   "mag_var": 4.75
+   "mag_var": 2.54
   },
   {
    "name": "Ramat David",
@@ -2447,7 +2447,7 @@
      0
     ]
    ],
-   "mag_var": 4.64
+   "mag_var": 2.31
   },
   {
    "name": "Kuweires",
@@ -2479,7 +2479,7 @@
      0
     ]
    ],
-   "mag_var": 5.17
+   "mag_var": 3.1
   },
   {
    "name": "Rayak",
@@ -2511,7 +2511,7 @@
      0
     ]
    ],
-   "mag_var": 4.8
+   "mag_var": 2.57
   },
   {
    "name": "Rene Mouawad",
@@ -2543,7 +2543,7 @@
      0
     ]
    ],
-   "mag_var": 4.9
+   "mag_var": 2.68
   },
   {
    "name": "Rosh Pina",
@@ -2575,7 +2575,7 @@
      0
     ]
    ],
-   "mag_var": 4.68
+   "mag_var": 2.4
   },
   {
    "name": "Sayqal",
@@ -2607,7 +2607,7 @@
      0
     ]
    ],
-   "mag_var": 4.79
+   "mag_var": 2.66
   },
   {
    "name": "Shayrat",
@@ -2639,7 +2639,7 @@
      0
     ]
    ],
-   "mag_var": 4.9
+   "mag_var": 2.76
   },
   {
    "name": "Tabqa",
@@ -2671,7 +2671,7 @@
      0
     ]
    ],
-   "mag_var": 5.11
+   "mag_var": 3.11
   },
   {
    "name": "Taftanaz",
@@ -2703,7 +2703,7 @@
      0
     ]
    ],
-   "mag_var": 5.12
+   "mag_var": 2.98
   },
   {
    "name": "Tiyas",
@@ -2735,7 +2735,7 @@
      0
     ]
    ],
-   "mag_var": 4.91
+   "mag_var": 2.82
   },
   {
    "name": "Wujah Al Hajar",
@@ -2767,7 +2767,7 @@
      0
     ]
    ],
-   "mag_var": 4.85
+   "mag_var": 2.6
   },
   {
    "name": "Gazipasa",
@@ -2799,7 +2799,7 @@
      0
     ]
    ],
-   "mag_var": 4.96
+   "mag_var": 2.51
   },
   {
    "name": "Deir ez-Zor",
@@ -2831,7 +2831,7 @@
      0
     ]
    ],
-   "mag_var": 5.03
+   "mag_var": 3.15
   },
   {
    "name": "Akrotiri",
@@ -2863,7 +2863,7 @@
      0
     ]
    ],
-   "mag_var": 4.79
+   "mag_var": 2.35
   },
   {
    "name": "Kingsfield",
@@ -2895,7 +2895,7 @@
      0
     ]
    ],
-   "mag_var": 4.88
+   "mag_var": 2.5
   },
   {
    "name": "Paphos",
@@ -2927,7 +2927,7 @@
      0
     ]
    ],
-   "mag_var": 4.78
+   "mag_var": 2.3
   },
   {
    "name": "Larnaca",
@@ -2959,7 +2959,7 @@
      0
     ]
    ],
-   "mag_var": 4.86
+   "mag_var": 2.46
   },
   {
    "name": "Lakatamia",
@@ -2991,7 +2991,7 @@
      0
     ]
    ],
-   "mag_var": 4.87
+   "mag_var": 2.46
   },
   {
    "name": "Ercan",
@@ -3023,7 +3023,7 @@
      0
     ]
    ],
-   "mag_var": 4.88
+   "mag_var": 2.49
   },
   {
    "name": "Gecitkale",
@@ -3055,7 +3055,7 @@
      0
     ]
    ],
-   "mag_var": 4.91
+   "mag_var": 2.53
   },
   {
    "name": "Pinarbashi",
@@ -3087,7 +3087,7 @@
      0
     ]
    ],
-   "mag_var": 4.89
+   "mag_var": 2.48
   },
   {
    "name": "Naqoura",
@@ -3116,7 +3116,7 @@
      0
     ]
    ],
-   "mag_var": 4.69
+   "mag_var": 2.37
   },
   {
    "name": "H3",
@@ -3150,7 +3150,7 @@
      0
     ]
    ],
-   "mag_var": 4.66
+   "mag_var": 2.73
   },
   {
    "name": "H3 Northwest",
@@ -3182,7 +3182,7 @@
      0
     ]
    ],
-   "mag_var": 4.68
+   "mag_var": 2.74
   },
   {
    "name": "H3 Southwest",
@@ -3214,7 +3214,7 @@
      0
     ]
    ],
-   "mag_var": 4.63
+   "mag_var": 2.69
   },
   {
    "name": "Zarqa",
@@ -3246,7 +3246,7 @@
      0
     ]
    ],
-   "mag_var": 4.58
+   "mag_var": 2.31
   },
   {
    "name": "Ruwayshid",
@@ -3278,7 +3278,7 @@
      0
     ]
    ],
-   "mag_var": 4.6
+   "mag_var": 2.61
   },
   {
    "name": "Sanliurfa",
@@ -3310,7 +3310,7 @@
      0
     ]
    ],
-   "mag_var": 5.41
+   "mag_var": 3.45
   },
   {
    "name": "Kharab Ishk",
@@ -3339,7 +3339,7 @@
      0
     ]
    ],
-   "mag_var": 5.24
+   "mag_var": 3.25
   },
   {
    "name": "Tal Siman",
@@ -3371,7 +3371,7 @@
      0
     ]
    ],
-   "mag_var": 5.2
+   "mag_var": 3.23
   },
   {
    "name": "H4 Emergency",
@@ -3403,7 +3403,7 @@
      0
     ]
    ],
-   "mag_var": 4.62
+   "mag_var": 2.51
   },
   {
    "name": "Nevatim",
@@ -3439,7 +3439,7 @@
      0
     ]
    ],
-   "mag_var": 4.48
+   "mag_var": 2.09
   },
   {
    "name": "At Tanf",
@@ -3468,7 +3468,7 @@
      0
     ]
    ],
-   "mag_var": 4.76
+   "mag_var": 2.74
   },
   {
    "name": "Prince Hassan",
@@ -3500,7 +3500,7 @@
      0
     ]
    ],
-   "mag_var": 4.59
+   "mag_var": 2.42
   },
   {
    "name": "King Abdullah II",
@@ -3532,7 +3532,7 @@
      0
     ]
    ],
-   "mag_var": 4.57
+   "mag_var": 2.32
   },
   {
    "name": "Herzliya",
@@ -3564,7 +3564,7 @@
      0
     ]
    ],
-   "mag_var": 4.58
+   "mag_var": 2.21
   },
   {
    "name": "Marka",
@@ -3596,7 +3596,7 @@
      0
     ]
    ],
-   "mag_var": 4.57
+   "mag_var": 2.29
   },
   {
    "name": "Muwaffaq Salti",
@@ -3630,7 +3630,7 @@
      0
     ]
    ],
-   "mag_var": 4.55
+   "mag_var": 2.34
   },
   {
    "name": "HC01",
@@ -3642,7 +3642,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.86
+   "mag_var": 2.47
   },
   {
    "name": "HC02",
@@ -3654,7 +3654,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.84
+   "mag_var": 2.44
   },
   {
    "name": "HC03",
@@ -3666,7 +3666,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.89
+   "mag_var": 2.49
   },
   {
    "name": "HC04",
@@ -3678,7 +3678,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.9
+   "mag_var": 2.51
   },
   {
    "name": "HC05",
@@ -3690,7 +3690,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.9
+   "mag_var": 2.53
   },
   {
    "name": "HC06",
@@ -3702,7 +3702,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.89
+   "mag_var": 2.53
   },
   {
    "name": "Kahramanmaras",
@@ -3734,7 +3734,7 @@
      0
     ]
    ],
-   "mag_var": 5.38
+   "mag_var": 3.27
   },
   {
    "name": "HI08",
@@ -3746,7 +3746,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.39
   },
   {
    "name": "HI09",
@@ -3758,7 +3758,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.39
   },
   {
    "name": "HI01",
@@ -3770,7 +3770,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.67
+   "mag_var": 2.4
   },
   {
    "name": "HI02",
@@ -3782,7 +3782,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.39
   },
   {
    "name": "Hatzerim",
@@ -3816,7 +3816,7 @@
      0
     ]
    ],
-   "mag_var": 4.47
+   "mag_var": 2.06
   },
   {
    "name": "HI03",
@@ -3828,7 +3828,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.36
   },
   {
    "name": "HI05",
@@ -3840,7 +3840,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.36
   },
   {
    "name": "HI06",
@@ -3852,7 +3852,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.63
+   "mag_var": 2.29
   },
   {
    "name": "HI07",
@@ -3864,7 +3864,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.36
   },
   {
    "name": "HI11",
@@ -3876,7 +3876,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.39
   },
   {
    "name": "HI12",
@@ -3888,7 +3888,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.69
+   "mag_var": 2.42
   },
   {
    "name": "Kedem",
@@ -3920,7 +3920,7 @@
      0
     ]
    ],
-   "mag_var": 4.48
+   "mag_var": 2.06
   },
   {
    "name": "HS02",
@@ -3932,7 +3932,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.01
+   "mag_var": 2.81
   },
   {
    "name": "Chukurova",
@@ -3966,7 +3966,7 @@
      0
     ]
    ],
-   "mag_var": 5.2
+   "mag_var": 2.95
   },
   {
    "name": "Teyman",
@@ -3998,7 +3998,7 @@
      0
     ]
    ],
-   "mag_var": 4.48
+   "mag_var": 2.07
   },
   {
    "name": "HS05",
@@ -4010,7 +4010,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.11
+   "mag_var": 3.04
   },
   {
    "name": "HS06",
@@ -4022,7 +4022,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.73
+   "mag_var": 2.49
   },
   {
    "name": "HS08",
@@ -4034,7 +4034,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.92
+   "mag_var": 2.76
   },
   {
    "name": "HS09",
@@ -4046,7 +4046,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.14
+   "mag_var": 3.05
   },
   {
    "name": "HS10",
@@ -4058,7 +4058,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.14
+   "mag_var": 3.05
   },
   {
    "name": "HS11",
@@ -4070,7 +4070,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.74
+   "mag_var": 2.53
   },
   {
    "name": "HS19",
@@ -4082,7 +4082,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.53
   },
   {
    "name": "HS18",
@@ -4094,7 +4094,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.93
+   "mag_var": 2.89
   },
   {
    "name": "HS17",
@@ -4106,7 +4106,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.93
+   "mag_var": 2.89
   },
   {
    "name": "HS16",
@@ -4118,7 +4118,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.13
+   "mag_var": 3.05
   },
   {
    "name": "HS15",
@@ -4130,7 +4130,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.53
   },
   {
    "name": "HS14",
@@ -4142,7 +4142,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.52
   },
   {
    "name": "HS13",
@@ -4154,7 +4154,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.8
+   "mag_var": 2.63
   },
   {
    "name": "HS12",
@@ -4166,7 +4166,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.52
   },
   {
    "name": "HS25",
@@ -4178,7 +4178,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.52
   },
   {
    "name": "HS24",
@@ -4190,7 +4190,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.54
   },
   {
    "name": "HS23",
@@ -4202,7 +4202,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.72
+   "mag_var": 2.52
   },
   {
    "name": "HS22",
@@ -4214,7 +4214,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.79
+   "mag_var": 2.61
   },
   {
    "name": "HS21",
@@ -4226,7 +4226,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.52
   },
   {
    "name": "HS20",
@@ -4238,7 +4238,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.74
+   "mag_var": 2.54
   },
   {
    "name": "HI17",
@@ -4250,7 +4250,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.64
+   "mag_var": 2.33
   },
   {
    "name": "HI16",
@@ -4262,7 +4262,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.67
+   "mag_var": 2.36
   },
   {
    "name": "HI15",
@@ -4274,7 +4274,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.69
+   "mag_var": 2.41
   },
   {
    "name": "HI14",
@@ -4286,7 +4286,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.65
+   "mag_var": 2.34
   },
   {
    "name": "HI13",
@@ -4298,7 +4298,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.69
+   "mag_var": 2.41
   },
   {
    "name": "HT01",
@@ -4310,7 +4310,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.17
+   "mag_var": 2.9
   },
   {
    "name": "HS33",
@@ -4322,7 +4322,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.36
   },
   {
    "name": "HMed10",
@@ -4334,7 +4334,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.71
+   "mag_var": 2.43
   },
   {
    "name": "HMed09",
@@ -4346,7 +4346,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.89
+   "mag_var": 2.54
   },
   {
    "name": "HMed08",
@@ -4358,7 +4358,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.89
+   "mag_var": 2.48
   },
   {
    "name": "HMed07",
@@ -4370,7 +4370,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.9
+   "mag_var": 2.5
   },
   {
    "name": "HMed06",
@@ -4382,7 +4382,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.99
+   "mag_var": 2.84
   },
   {
    "name": "HMed05",
@@ -4394,7 +4394,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.88
+   "mag_var": 2.47
   },
   {
    "name": "HMed04",
@@ -4406,7 +4406,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.23
+   "mag_var": 3.0
   },
   {
    "name": "HMed03",
@@ -4418,7 +4418,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.02
+   "mag_var": 2.81
   },
   {
    "name": "HMed02",
@@ -4430,7 +4430,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.15
+   "mag_var": 3.18
   },
   {
    "name": "HMed01",
@@ -4442,7 +4442,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.88
+   "mag_var": 2.51
   },
   {
    "name": "HMed00",
@@ -4454,7 +4454,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.19
+   "mag_var": 3.02
   },
   {
    "name": "HMed11",
@@ -4466,7 +4466,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.64
+   "mag_var": 2.37
   },
   {
    "name": "H_med_orig_08",
@@ -4478,7 +4478,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.8
+   "mag_var": 2.53
   },
   {
    "name": "H_med_orig_07",
@@ -4490,7 +4490,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.32
   },
   {
    "name": "H_med_orig_06",
@@ -4502,7 +4502,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.88
+   "mag_var": 2.47
   },
   {
    "name": "H_med_orig_05",
@@ -4514,7 +4514,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.65
+   "mag_var": 2.31
   },
   {
    "name": "H_med_orig_04",
@@ -4526,7 +4526,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.81
+   "mag_var": 2.36
   },
   {
    "name": "H_med_orig_03",
@@ -4538,7 +4538,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.86
+   "mag_var": 2.47
   },
   {
    "name": "H_med_orig_02",
@@ -4550,7 +4550,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.79
+   "mag_var": 2.31
   },
   {
    "name": "H_med_orig_01",
@@ -4562,7 +4562,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.23
+   "mag_var": 3.0
   },
   {
    "name": "HStad06",
@@ -4574,7 +4574,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.76
+   "mag_var": 2.55
   },
   {
    "name": "HStad05",
@@ -4586,7 +4586,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.99
+   "mag_var": 2.84
   },
   {
    "name": "HStad04",
@@ -4598,7 +4598,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.03
+   "mag_var": 2.81
   },
   {
    "name": "HStad03",
@@ -4610,7 +4610,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.16
+   "mag_var": 3.06
   },
   {
    "name": "HStad02",
@@ -4622,7 +4622,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.87
+   "mag_var": 2.47
   },
   {
    "name": "HStad01",
@@ -4634,7 +4634,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.22
+   "mag_var": 3.0
   },
   {
    "name": "HS26",
@@ -4646,7 +4646,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.74
   },
   {
    "name": "HS42",
@@ -4658,7 +4658,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.39
   },
   {
    "name": "HL13",
@@ -4670,7 +4670,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.41
   },
   {
    "name": "HL12",
@@ -4682,7 +4682,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.4
   },
   {
    "name": "HS41",
@@ -4694,7 +4694,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.4
   },
   {
    "name": "HS35",
@@ -4706,7 +4706,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.8
+   "mag_var": 2.58
   },
   {
    "name": "HL11",
@@ -4718,7 +4718,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.78
+   "mag_var": 2.55
   },
   {
    "name": "HL10",
@@ -4730,7 +4730,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.86
+   "mag_var": 2.68
   },
   {
    "name": "HL09",
@@ -4742,7 +4742,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.88
+   "mag_var": 2.7
   },
   {
    "name": "HL08",
@@ -4754,7 +4754,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.71
+   "mag_var": 2.41
   },
   {
    "name": "HL07",
@@ -4766,7 +4766,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.72
+   "mag_var": 2.42
   },
   {
    "name": "HS27",
@@ -4778,7 +4778,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.5
   },
   {
    "name": "HL06",
@@ -4790,7 +4790,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.72
+   "mag_var": 2.44
   },
   {
    "name": "HMed30",
@@ -4802,7 +4802,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.3
+   "mag_var": 3.23
   },
   {
    "name": "HMed29",
@@ -4814,7 +4814,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.04
+   "mag_var": 3.16
   },
   {
    "name": "HMed28",
@@ -4826,7 +4826,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.92
+   "mag_var": 2.88
   },
   {
    "name": "HMed27",
@@ -4838,7 +4838,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.14
+   "mag_var": 3.1
   },
   {
    "name": "HMed26",
@@ -4850,7 +4850,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.16
+   "mag_var": 3.05
   },
   {
    "name": "HMed25",
@@ -4862,7 +4862,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.54
+   "mag_var": 2.24
   },
   {
    "name": "HMed24",
@@ -4874,7 +4874,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.8
+   "mag_var": 2.53
   },
   {
    "name": "HMed23",
@@ -4886,7 +4886,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.8
+   "mag_var": 2.36
   },
   {
    "name": "HMed22",
@@ -4898,7 +4898,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.56
+   "mag_var": 2.28
   },
   {
    "name": "HMed21",
@@ -4910,7 +4910,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.75
+   "mag_var": 2.53
   },
   {
    "name": "HMed20",
@@ -4922,7 +4922,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.58
+   "mag_var": 2.21
   },
   {
    "name": "HMed19",
@@ -4934,7 +4934,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.66
+   "mag_var": 2.32
   },
   {
    "name": "HMed18",
@@ -4946,7 +4946,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.65
+   "mag_var": 2.33
   },
   {
    "name": "HMed17",
@@ -4958,7 +4958,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.76
+   "mag_var": 2.55
   },
   {
    "name": "HMed16",
@@ -4970,7 +4970,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.93
+   "mag_var": 2.77
   },
   {
    "name": "HMed15",
@@ -4982,7 +4982,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.13
+   "mag_var": 2.96
   },
   {
    "name": "HMed14",
@@ -4994,7 +4994,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.94
+   "mag_var": 2.72
   },
   {
    "name": "HMed13",
@@ -5006,7 +5006,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.58
+   "mag_var": 2.23
   },
   {
    "name": "HMed12",
@@ -5018,7 +5018,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.57
+   "mag_var": 2.29
   },
   {
    "name": "HOil05",
@@ -5030,7 +5030,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.04
+   "mag_var": 3.16
   },
   {
    "name": "HOil04",
@@ -5042,7 +5042,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.01
+   "mag_var": 3.13
   },
   {
    "name": "HOil03",
@@ -5054,7 +5054,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.01
+   "mag_var": 3.12
   },
   {
    "name": "HOil02",
@@ -5066,7 +5066,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.04
+   "mag_var": 3.13
   },
   {
    "name": "HOil01",
@@ -5078,7 +5078,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.93
+   "mag_var": 2.86
   },
   {
    "name": "H_med_orig_09",
@@ -5090,7 +5090,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.23
+   "mag_var": 3.0
   },
   {
    "name": "HS34",
@@ -5102,7 +5102,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.94
+   "mag_var": 2.74
   },
   {
    "name": "HS04",
@@ -5114,7 +5114,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.11
+   "mag_var": 3.04
   },
   {
    "name": "HS07",
@@ -5126,7 +5126,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.93
+   "mag_var": 2.9
   },
   {
    "name": "HI18",
@@ -5138,7 +5138,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.62
+   "mag_var": 2.27
   },
   {
    "name": "HS03",
@@ -5150,7 +5150,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.94
+   "mag_var": 2.9
   },
   {
    "name": "HS36",
@@ -5162,7 +5162,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.72
+   "mag_var": 2.49
   },
   {
    "name": "HS28",
@@ -5174,7 +5174,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.73
+   "mag_var": 2.51
   },
   {
    "name": "HS29",
@@ -5186,7 +5186,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.73
+   "mag_var": 2.51
   },
   {
    "name": "HS30",
@@ -5198,7 +5198,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.73
+   "mag_var": 2.51
   },
   {
    "name": "HT02",
@@ -5210,7 +5210,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.23
+   "mag_var": 3.0
   },
   {
    "name": "HI20",
@@ -5222,7 +5222,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.68
+   "mag_var": 2.38
   },
   {
    "name": "HI26",
@@ -5234,7 +5234,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.57
+   "mag_var": 2.19
   },
   {
    "name": "HI25",
@@ -5246,7 +5246,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.39
   },
   {
    "name": "HI24",
@@ -5258,7 +5258,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.57
+   "mag_var": 2.2
   },
   {
    "name": "HI23",
@@ -5270,7 +5270,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.53
+   "mag_var": 2.16
   },
   {
    "name": "HI22",
@@ -5282,7 +5282,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.57
+   "mag_var": 2.21
   },
   {
    "name": "HI21",
@@ -5294,7 +5294,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.65
+   "mag_var": 2.35
   },
   {
    "name": "HJ04",
@@ -5306,7 +5306,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.63
+   "mag_var": 2.37
   },
   {
    "name": "HJ03",
@@ -5318,7 +5318,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.63
+   "mag_var": 2.37
   },
   {
    "name": "HJ02",
@@ -5330,7 +5330,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.64
+   "mag_var": 2.38
   },
   {
    "name": "HJ01",
@@ -5342,7 +5342,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.73
+   "mag_var": 2.72
   },
   {
    "name": "HL05",
@@ -5354,7 +5354,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.39
   },
   {
    "name": "HL04",
@@ -5366,7 +5366,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.4
   },
   {
    "name": "HL03",
@@ -5378,7 +5378,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.71
+   "mag_var": 2.42
   },
   {
    "name": "HL02",
@@ -5390,7 +5390,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.7
+   "mag_var": 2.39
   },
   {
    "name": "HL01",
@@ -5402,7 +5402,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.71
+   "mag_var": 2.4
   },
   {
    "name": "HS32",
@@ -5414,7 +5414,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.58
+   "mag_var": 2.32
   },
   {
    "name": "HS31",
@@ -5426,7 +5426,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.79
+   "mag_var": 2.6
   },
   {
    "name": "HOil06",
@@ -5438,7 +5438,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.59
+   "mag_var": 2.32
   },
   {
    "name": "HS40",
@@ -5450,7 +5450,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.67
+   "mag_var": 2.42
   },
   {
    "name": "HS39",
@@ -5462,7 +5462,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.63
+   "mag_var": 2.32
   },
   {
    "name": "HS38",
@@ -5474,7 +5474,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.62
+   "mag_var": 2.36
   },
   {
    "name": "HS37",
@@ -5486,7 +5486,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 4.77
+   "mag_var": 2.57
   },
   {
    "name": "Gulechoba",
@@ -5501,7 +5501,7 @@
    ],
    "rwy_heading_true": 11,
    "frequencies_hz": [],
-   "mag_var": 5.54
+   "mag_var": 3.65
   },
   {
    "name": "Diyarbakir",
@@ -5535,7 +5535,7 @@
      0
     ]
    ],
-   "mag_var": 5.52
+   "mag_var": 3.64
   },
   {
    "name": "Konya",
@@ -5569,7 +5569,7 @@
      0
     ]
    ],
-   "mag_var": 5.2
+   "mag_var": 2.8
   },
   {
    "name": "Adiyaman",
@@ -5601,7 +5601,7 @@
      0
     ]
    ],
-   "mag_var": 5.45
+   "mag_var": 3.46
   },
   {
    "name": "Tel Nof",
@@ -5637,7 +5637,7 @@
      0
     ]
    ],
-   "mag_var": 4.54
+   "mag_var": 2.16
   },
   {
    "name": "Ben Gurion",
@@ -5673,7 +5673,7 @@
      0
     ]
    ],
-   "mag_var": 4.56
+   "mag_var": 2.19
   },
   {
    "name": "Hatzor",
@@ -5709,7 +5709,7 @@
      0
     ]
    ],
-   "mag_var": 4.53
+   "mag_var": 2.14
   },
   {
    "name": "Palmachim",
@@ -5743,7 +5743,7 @@
      0
     ]
    ],
-   "mag_var": 4.55
+   "mag_var": 2.16
   },
   {
    "name": "Sanliurfa Heliport",
@@ -5755,7 +5755,7 @@
    "runways": [],
    "rwy_heading_true": 0,
    "frequencies_hz": [],
-   "mag_var": 5.36
+   "mag_var": 3.39
   },
   {
    "name": "T2",
@@ -5789,7 +5789,7 @@
      0
     ]
    ],
-   "mag_var": 4.88
+   "mag_var": 3.0
   },
   {
    "name": "T3",
@@ -5821,7 +5821,7 @@
      0
     ]
    ],
-   "mag_var": 4.91
+   "mag_var": 2.92
   }
  ]
 }
