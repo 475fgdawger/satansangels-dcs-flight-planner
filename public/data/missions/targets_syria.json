@@ -4,10 +4,10 @@
   "name": "Syria TDY 433rd",
   "file": "Syria_TDY_433rd.miz",
   "theatre": "Syria",
-  "date": "1967-06-02",
-  "start_time": 17945
+  "date": "1967-06-03",
+  "start_time": 17925
  },
- "built_utc": "2026-10-17T13:05:50Z",
+ "built_utc": "2026-10-18T04:32:27Z",
  "mag_var": {
   "source": "DCS",
   "fallback": 5.0
